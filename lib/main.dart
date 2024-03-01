@@ -47,8 +47,7 @@ String collectionTemplate = '''{
   ]
 }''';
 
-class CollectionsManager {
-  Future<String> get _localPath async {
+class CollectionsManager {  Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
@@ -70,7 +69,6 @@ class CollectionsManager {
       final file = await _localFile;
       final contents = await file.readAsString();
       final collections = jsonDecode(contents) as Map<String, dynamic>;
-      print('collections raw: $collections');
       return collections;
     } catch (error) {
       return {};
@@ -98,63 +96,31 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
 
-  Map<String, dynamic> collectionsFile = {};
-  Map<String, dynamic> currentCollection = {};
-
-  @override
-  void initState() {
-    super.initState();
-    widget.collections.readCollectionsFile().then((value) {
-      setState(() {
-        collectionsFile = value;
-        currentCollection = collectionsFile['collections'][0];
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
-    print('current collection: $currentCollection');
-
-    Widget page = CollectionsPage(collections: collectionsFile['collections'],);
-    switch (selectedIndex) {
-      case 0:
-        page = CollectionsPage(collections: collectionsFile['collections'],);
-    }
-
-    var mainArea = ColoredBox(
-      color: colorScheme.surfaceVariant,
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        child: page,
-      ),
-    );
+    // var colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
           title:
               Text(widget.title, style: const TextStyle(color: Colors.white)),
-          leading: 
-            IconButton(
-                onPressed: () => setState(() => selectedIndex = 0),
-                icon: const Icon(Icons.home_outlined),
-                iconSize: 40), 
-                
+          leading: IconButton(
+              onPressed: () => setState(() => selectedIndex = 0),
+              icon: const Icon(Icons.home_outlined),
+              iconSize: 40),
         ),
-        body: LayoutBuilder(builder: (context, constraints) {
-          return Row(children: [
-            NotificationListener<CollectionChanged>(
-                child: Expanded(child: mainArea),
-                onNotification: (n) {
-                  setState(() {
-                    // currentCollection = collectionsFile[n.val];
-                    // print (collectionsFile);
-                  });
-                  return true;
-                }),
-          ]);
-        }));
+        body: Center(
+            child: FutureBuilder(
+                future: widget.collections.readCollectionsFile(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Text('color: Colors.black,');
+                  } else {
+                    return CollectionsPage(
+                      collections: [snapshot.data],
+                    );
+                  }
+                })));
   }
 }
