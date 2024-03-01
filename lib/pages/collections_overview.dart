@@ -12,12 +12,7 @@ class CollectionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Column(children: [
-      Text(collections.toString()),
-      FloatingActionButton(onPressed: () {
-        CollectionChanged('Collection').dispatch(context);
-      })
-    ]));
+    return 
+      Text(collections.toString());
   }
 }
