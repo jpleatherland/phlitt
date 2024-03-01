@@ -50,6 +50,13 @@ class CollectionsManager {
       return {};
     }
   }
+
+  Future<File> writeCollections(Object collection) async {
+    final file = await _localFile;
+
+    return file.writeAsString('$collection');
+  }
+
 }
 
 class MyHomePage extends StatefulWidget {
@@ -69,14 +76,24 @@ class _MyHomePageState extends State<MyHomePage> {
   Object collectionsFile = {};
   Object currentCollection = {};
 
-  void writeCollections(Object collection) async {}
-
-  
+  @override
+  void initState() {
+    super.initState();
+    widget.collections.readCollectionsFile().then((value){
+      setState(() {
+        collectionsFile = value;
+      });
+    }).then((value){
+      setState(() {
+        currentCollection = value!;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
-    print('current collection: ${currentCollection.runtimeType}');
+    print('current collection: ${currentCollection}');
 
     // This method is rerun every time setState is called
 
@@ -120,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: mainArea,
                 onNotification: (n) {
                   setState(() {
-                    currentCollection = collectionsFile[n.val];
+                    // currentCollection = collectionsFile[n.val];
                   });
                   return true;
                 }),
