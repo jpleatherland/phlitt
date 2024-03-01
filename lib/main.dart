@@ -5,7 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:convert';
 
-// import 'pages/collections_overview.dart';
+import 'pages/collections_overview.dart';
 
 void main() {
   runApp(const MyApp());
@@ -111,24 +111,16 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: const Icon(Icons.home_outlined),
               iconSize: 40),
         ),
-        
         body: Center(
             child: FutureBuilder(
                 future: readCollectionsFile(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                      print('Not done yet');
-
-                    return const Text(
-                      'color: Colors.black,'
-                    );
+                    return const Text('color: Colors.black,');
                   } else {
-                      print('done now');
-
-                    return const Text('Hello');
-                    // return CollectionsPage(
-                    //   collections: [snapshot.data],
-                    // );
+                    return CollectionsPage(
+                      collections: [snapshot.data],
+                    );
                   }
                 })));
   }
