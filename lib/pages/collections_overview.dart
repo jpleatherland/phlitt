@@ -6,12 +6,15 @@ class CollectionChanged extends Notification {
 }
 
 class CollectionsPage extends StatelessWidget {
-  const CollectionsPage({super.key});
+
+  final List collections;
+  const CollectionsPage({super.key, required this.collections});
+
   @override
   Widget build(BuildContext context) {
     return Center(
         child: Column(children: [
-      const Text('Teapot'),
+      Text(collections.toString()),
       FloatingActionButton(onPressed: () {
         CollectionChanged('Collection').dispatch(context);
       })

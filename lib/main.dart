@@ -7,7 +7,7 @@ import 'dart:convert';
 
 import 'pages/collections_overview.dart';
 
-void main() async {
+void main() {
   runApp(const MyApp());
 }
 
@@ -29,6 +29,24 @@ class MyApp extends StatelessWidget {
   }
 }
 
+String collectionTemplate = '''{
+  "collections": [
+    {
+      "collectionName": "example",
+      "requestGroups": [
+        {
+          "requestGroupName": "exampleGroup",
+          "requests": [
+            {
+              "requestName": "exampleRequest"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}''';
+
 class CollectionsManager {
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -37,26 +55,33 @@ class CollectionsManager {
 
   Future<File> get _localFile async {
     final path = await _localPath;
-    return File('$path/collection.json');
+    final bool exists = await File('$path/collection.json').exists();
+    if (exists) {
+      return File('$path/collection.json');
+    } else {
+      File file = File('$path/collections.json');
+      file.writeAsString(collectionTemplate);
+      return File('$path/collections.json');
+    }
   }
 
-  Future<Object> readCollectionsFile() async {
+  Future<Map<String, dynamic>> readCollectionsFile() async {
     try {
       final file = await _localFile;
       final contents = await file.readAsString();
-      final collections = jsonDecode(contents);
+      final collections = jsonDecode(contents) as Map<String, dynamic>;
+      print('collections raw: $collections');
       return collections;
     } catch (error) {
       return {};
     }
   }
 
-  Future<File> writeCollections(Object collection) async {
+  Future<File> writeCollections(Map collection) async {
     final file = await _localFile;
 
     return file.writeAsString('$collection');
   }
-
 }
 
 class MyHomePage extends StatefulWidget {
@@ -73,19 +98,16 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
 
-  Object collectionsFile = {};
-  Object currentCollection = {};
+  Map<String, dynamic> collectionsFile = {};
+  Map<String, dynamic> currentCollection = {};
 
   @override
   void initState() {
     super.initState();
-    widget.collections.readCollectionsFile().then((value){
+    widget.collections.readCollectionsFile().then((value) {
       setState(() {
         collectionsFile = value;
-      });
-    }).then((value){
-      setState(() {
-        currentCollection = value!;
+        currentCollection = collectionsFile['collections'][0];
       });
     });
   }
@@ -93,14 +115,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
-    print('current collection: ${currentCollection}');
+    print('current collection: $currentCollection');
 
-    // This method is rerun every time setState is called
-
-    Widget page = const CollectionsPage();
+    Widget page = CollectionsPage(collections: collectionsFile['collections'],);
     switch (selectedIndex) {
       case 0:
-        page = const CollectionsPage();
+        page = CollectionsPage(collections: collectionsFile['collections'],);
     }
 
     var mainArea = ColoredBox(
@@ -116,28 +136,21 @@ class _MyHomePageState extends State<MyHomePage> {
           backgroundColor: Theme.of(context).colorScheme.primary,
           title:
               Text(widget.title, style: const TextStyle(color: Colors.white)),
+          leading: 
+            IconButton(
+                onPressed: () => setState(() => selectedIndex = 0),
+                icon: const Icon(Icons.home_outlined),
+                iconSize: 40), 
+                
         ),
         body: LayoutBuilder(builder: (context, constraints) {
           return Row(children: [
-            NavigationRail(
-              destinations: const [
-                NavigationRailDestination(
-                    icon: Icon(Icons.home), label: Text('Collections')),
-                NavigationRailDestination(
-                    icon: Icon(Icons.home), label: Text('Main Page'))
-              ],
-              selectedIndex: selectedIndex,
-              onDestinationSelected: (value) {
-                setState(() {
-                  selectedIndex = value;
-                });
-              },
-            ),
             NotificationListener<CollectionChanged>(
-                child: mainArea,
+                child: Expanded(child: mainArea),
                 onNotification: (n) {
                   setState(() {
                     // currentCollection = collectionsFile[n.val];
+                    // print (collectionsFile);
                   });
                   return true;
                 }),
