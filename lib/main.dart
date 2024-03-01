@@ -45,12 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          title:
-              Text(widget.title, style: TextStyle(color: colorScheme.onPrimary)),
-          leading: IconButton(
-              onPressed: () => setState(() => selectedIndex = 0),
-              icon: const Icon(Icons.home_outlined),
-              iconSize: 40),
+          title: Text(widget.title,
+              style: TextStyle(color: colorScheme.onPrimary)),
+          leading: IconButton.filled(
+            onPressed: () => setState(() => selectedIndex = 0),
+            icon: const Icon(Icons.space_dashboard_sharp),
+            iconSize: 34,
+            color: colorScheme.onPrimary,
+          ),
         ),
         body: Center(
             child: FutureBuilder(
@@ -60,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     return const Text('color: Colors.black,');
                   } else {
                     return CollectionsPage(
-                      collections: [snapshot.data],
+                      collections: [snapshot.data?['collections']],
                     );
                   }
                 })));

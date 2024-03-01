@@ -30,9 +30,11 @@ class CollectionsManager {
 
   Future<File> get _localFile async {
     final path = await _localPath;
-    final bool exists = await File('$path/collection.json').exists();
+    print(path);
+    final bool exists = await File('$path/collections.json').exists();
+    print(exists);
     if (exists) {
-      return File('$path/collection.json');
+      return File('$path/collections.json');
     } else {
       File file = File('$path/collections.json');
       file.writeAsString(collectionTemplate);
