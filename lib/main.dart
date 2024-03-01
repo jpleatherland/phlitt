@@ -47,23 +47,7 @@ String collectionTemplate = '''{
   ]
 }''';
 
-class CollectionsManager {}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, required this.collections});
-
-  final String title;
-
-  final CollectionsManager collections;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int selectedIndex = 0;
-
-  Future<String> get _localPath async {
+class CollectionsManager {  Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
@@ -96,6 +80,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return file.writeAsString('$collection');
   }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title, required this.collections});
+
+  final String title;
+
+  final CollectionsManager collections;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Center(
             child: FutureBuilder(
-                future: readCollectionsFile(),
+                future: widget.collections.readCollectionsFile(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Text('color: Colors.black,');
