@@ -18,9 +18,9 @@ class CollectionsPage extends StatelessWidget {
             (index) => Column(
                   children: [
                     IconButton(
-                        onPressed: () => print('hihi'),
+                        onPressed: () => CollectionChanged(collections[0][index]['collectionName']),
                         icon: const Icon(Icons.space_dashboard),
-                        iconSize: 48),
+                        iconSize: 80),
                     Text(collections[0][index]['collectionName']),
                   ],
                 )));

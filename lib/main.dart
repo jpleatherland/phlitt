@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'QAPIC',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 71, 160, 233)),
+            seedColor: const Color.fromARGB(255, 0, 100, 193)),
         useMaterial3: true,
       ),
       home: MyHomePage(title: 'QAPIC', collections: CollectionsManager()),
@@ -61,8 +61,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (!snapshot.hasData) {
                     return const Text('color: Colors.black,');
                   } else {
-                    return CollectionsPage(
-                      collections: [snapshot.data?['collections']],
+                    return Padding(
+                      padding: const EdgeInsets.all(100.0),
+                      child: CollectionsPage(
+                        collections: [snapshot.data?['collections']],
+                      ),
                     );
                   }
                 })));
