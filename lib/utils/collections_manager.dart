@@ -3,25 +3,9 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:convert';
 
+import './example_collection.dart';
+
 class CollectionsManager {  
-  
-  String collectionTemplate = '''{
-    "collections": [
-      {
-        "collectionName": "example",
-        "requestGroups": [
-          {
-            "requestGroupName": "exampleGroup",
-            "requests": [
-              {
-                "requestName": "exampleRequest"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }''';
   
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -30,9 +14,7 @@ class CollectionsManager {
 
   Future<File> get _localFile async {
     final path = await _localPath;
-    print(path);
     final bool exists = await File('$path/collections.json').exists();
-    print(exists);
     if (exists) {
       return File('$path/collections.json');
     } else {
