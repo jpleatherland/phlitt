@@ -13,7 +13,7 @@ class CollectionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(20.0),
       child: GridView.count(
           crossAxisCount: 2,
           children: List<Widget>.generate(
@@ -21,7 +21,11 @@ class CollectionsPage extends StatelessWidget {
               (index) => Column(
                     children: [
                       IconButton(
-                          onPressed: () => CollectionSelected(1,collections['collections'][index]['collectionName']).dispatch(context),
+                          onPressed: () => CollectionSelected(
+                                  1,
+                                  collections['collections'][index]
+                                      ['collectionName'])
+                              .dispatch(context),
                           icon: const Icon(Icons.space_dashboard),
                           iconSize: 80),
                       Text(collections['collections'][index]['collectionName']),

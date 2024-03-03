@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
-  final Map<String, dynamic> collections;
-  final String selectedCollection;
+  final Iterable collection;
+  final String collectionName;
 
-  const MainPage({super.key, required this.collections, required this.selectedCollection});
+  const MainPage(
+      {super.key, required this.collection, required this.collectionName});
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
+  String selectedCollection =''; 
+  Iterable collection = [];
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    selectedCollection = widget.collectionName;
+    collection = widget.collection;
+    return Column(
       children: [
-        Text('Hello'),
+        Text(selectedCollection),
+        Text(collection.toString()),
       ],
     );
   }

@@ -39,17 +39,28 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var selectedIndex = 0;
-  String selectedCollection = '';
+  String selectedCollectionName = '';
+  late Future<Map<String, dynamic>> collectionsFile;
 
-  ws(int selectedIndex, Map<String, dynamic> collectionsFile,
-      String selectedCollection) {
+  @override
+  void initState() {
+    super.initState();
+    collectionsFile = widget.collections.readCollectionsFile();
+  }
+
+  routeSelector(int selectedIndex, Map<String, dynamic> collectionsFile,
+      String selectedCollectionName) {
+    Iterable selectedCollection = [];
+    if(selectedCollectionName != ''){
+      selectedCollection = collectionsFile['collections'].where((collection)=> collection['collectionName']== selectedCollectionName);
+    }
     switch (selectedIndex) {
       case 0:
         return CollectionsPage(collections: collectionsFile);
       case 1:
         return MainPage(
-            collections: collectionsFile,
-            selectedCollection: selectedCollection);
+            collection: selectedCollection,
+            collectionName: selectedCollectionName);
       default:
         return CollectionsPage(collections: collectionsFile);
     }
@@ -64,31 +75,32 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title,
               style: TextStyle(color: colorScheme.onPrimary)),
           leading: IconButton.filled(
-            onPressed: (() => setState(() {selectedIndex = 0; selectedCollection = '';})),
+            onPressed: (() => setState(() {
+                  selectedIndex = 0;
+                  selectedCollectionName = '';
+                })),
             icon: const Icon(Icons.space_dashboard_sharp),
             iconSize: 34,
             color: colorScheme.onPrimary,
           ),
         ),
         body: Center(
-            child: 
-            FutureBuilder(
-                future: widget.collections.readCollectionsFile(),
+            child: FutureBuilder(
+                future: collectionsFile,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Text('color: Colors.black,');
                   } else {
                     return NotificationListener<CollectionSelected>(
-                        child: ws(selectedIndex, snapshot.data!, ''),
+                        child: routeSelector(selectedIndex, snapshot.data!, selectedCollectionName),
                         onNotification: (notification) {
-                            setState(() {
-                              selectedIndex = notification.index;
-                              selectedCollection = notification.val;
-                            });
-                            return true;}
-                      );
+                          setState(() {
+                            selectedIndex = notification.index;
+                            selectedCollectionName = notification.val;
+                          });
+                          return true;
+                        });
                   }
-                })
-                ));
+                })));
   }
 }
