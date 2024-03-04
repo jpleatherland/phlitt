@@ -16,18 +16,80 @@ class _MainPageState extends State<MainPage> {
   Iterable collection = [];
   List requestGroups = [];
 
-  Widget renderList(listToRender) {
+  Widget renderRequestGroups(listToRender) {
+    int lastItem = listToRender.length;
     return ListView.builder(
-      itemCount: listToRender.length,
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        itemCount: requestGroups.length + 1,
+        itemBuilder: (context, index) {
+          if (index == lastItem) {
+            return TextButton.icon(
+              label: const Text('Add Request Group'),
+              onPressed: () => _dialogBuilder(context),
+              icon: const Icon(Icons.add),
+            );
+          } else {
+            return ExpansionTile(
+              title: Text(requestGroups[index]['requestGroupName']),
+              children: [renderList(requestGroups[index]['requests'])],
+            );
+          }
+        });
+  }
+
+  Widget renderList(listToRender) {
+    int lastItem = listToRender.length;
+    return ListView.builder(
+      itemCount: listToRender.length + 1,
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       itemBuilder: (context, index) {
-        return TextButton(
-          child: Text(listToRender[index]['requestName']),
-          onPressed: () => print('Pressed'),
-        );
+        if (index == lastItem) {
+          return TextButton.icon(
+            label: const Text('Add Request'),
+            onPressed: () => print('add request'),
+            icon: const Icon(Icons.add),
+          );
+        } else {
+          return TextButton(
+            child: Text(listToRender[index]['requestName']),
+            onPressed: () => print('Pressed'),
+          );
+        }
       },
     );
+  }
+
+  Future<String?> _dialogBuilder(BuildContext context) {
+    return showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Title'),
+            content: Text('Replace with input field'),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text('Disable'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text('Enable'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -40,22 +102,13 @@ class _MainPageState extends State<MainPage> {
       children: [
         Expanded(
           flex: 1,
-          child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: requestGroups.length,
-              itemBuilder: (context, i) {
-                return ExpansionTile(
-                  title: Text(requestGroups[i]['requestGroupName']),
-                  children: [renderList(requestGroups[i]['requests'])],
-                );
-              }),
+          child: Column(children: [renderRequestGroups(requestGroups)]),
         ),
-        // NavigationRail(destinations: [
-        //   NavigationRailDestination(icon: Icon(Icons.home), label: Text('Hi')),
-        //   NavigationRailDestination(icon: Icon(Icons.home), label: Text('Hi1')),
-        // ], selectedIndex: 0),
-        Expanded(flex: 3, child: Text(selectedCollection))
+        const Expanded(
+            flex: 5,
+            child: Center(
+                child: Text('request and response here',
+                    style: TextStyle(fontSize: 50))))
       ],
     );
   }
