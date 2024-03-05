@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qapic/widgets/render_request_groups.dart' as rrq;
 
 class MainPage extends StatefulWidget {
   final Iterable collection;
@@ -15,51 +16,6 @@ class _MainPageState extends State<MainPage> {
   String selectedCollection = '';
   Iterable collection = [];
   List requestGroups = [];
-
-  Widget renderRequestGroups(listToRender) {
-    int lastItem = listToRender.length;
-    return ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: requestGroups.length + 1,
-        itemBuilder: (context, index) {
-          if (index == lastItem) {
-            return TextButton.icon(
-              label: const Text('Add Request Group'),
-              onPressed: () => _dialogBuilder(context),
-              icon: const Icon(Icons.add),
-            );
-          } else {
-            return ExpansionTile(
-              title: Text(requestGroups[index]['requestGroupName']),
-              children: [renderList(requestGroups[index]['requests'])],
-            );
-          }
-        });
-  }
-
-  Widget renderList(listToRender) {
-    int lastItem = listToRender.length;
-    return ListView.builder(
-      itemCount: listToRender.length + 1,
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        if (index == lastItem) {
-          return TextButton.icon(
-            label: const Text('Add Request'),
-            onPressed: () => print('add request'),
-            icon: const Icon(Icons.add),
-          );
-        } else {
-          return TextButton(
-            child: Text(listToRender[index]['requestName']),
-            onPressed: () => print('Pressed'),
-          );
-        }
-      },
-    );
-  }
 
   Future<String?> _dialogBuilder(BuildContext context) {
     return showDialog<String>(
@@ -102,7 +58,7 @@ class _MainPageState extends State<MainPage> {
       children: [
         Expanded(
           flex: 1,
-          child: Column(children: [renderRequestGroups(requestGroups)]),
+          child: Column(children: [rrq.RenderRequestGroups(requestGroups: requestGroups)]),
         ),
         const Expanded(
             flex: 5,
