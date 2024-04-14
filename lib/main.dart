@@ -48,11 +48,13 @@ class _MyHomePageState extends State<MyHomePage> {
     collectionsFile = widget.collections.readCollectionsFile();
   }
 
-  routeSelector(int selectedIndex, Map<String, dynamic> collectionsFile,
-      String selectedCollectionName) {
+  routeSelector(int selectedIndex, Map<String, dynamic> collectionsFile, String selectedCollectionName) {
+    
     Iterable selectedCollection = [];
-    if(selectedCollectionName != ''){
-      selectedCollection = collectionsFile['collections'].where((collection)=> collection['collectionName']== selectedCollectionName);
+
+    if (selectedCollectionName != '') {
+      selectedCollection = collectionsFile['collections'].where((collection) =>
+          collection['collectionName'] == selectedCollectionName);
     }
     switch (selectedIndex) {
       case 0:
@@ -92,7 +94,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     return const Text('color: Colors.black,');
                   } else {
                     return NotificationListener<CollectionSelected>(
-                        child: routeSelector(selectedIndex, snapshot.data!, selectedCollectionName),
+                        child: routeSelector(selectedIndex, snapshot.data!,
+                            selectedCollectionName),
                         onNotification: (notification) {
                           setState(() {
                             selectedIndex = notification.index;
