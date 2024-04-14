@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dynamic_tabbar/dynamic_tabbar.dart';
 import 'package:qapic/widgets/render_request_groups.dart' as rrq;
 
 class MainPage extends StatefulWidget {
@@ -13,11 +12,12 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage>
+    with TickerProviderStateMixin {
   String selectedCollection = '';
   Iterable collection = [];
   List requestGroups = [];
-  int openRequests = 0;
+  List openRequests = [];
 
   // Future<String?> _dialogBuilder(BuildContext context) {
   //   return showDialog<String>(
@@ -55,6 +55,15 @@ class _MainPageState extends State<MainPage> {
     selectedCollection = widget.collectionName;
     collection = widget.collection;
     requestGroups = widget.collection.toList()[0]['requestGroups'];
+
+    var tabController = TabController(length: openRequests.length, vsync: this);
+
+    void selectRequest(String requestName) {
+      if (!openRequests.contains(requestName)) {
+        setState(() => openRequests.add(requestName),);
+      }
+      tabController.index = openRequests.indexOf(requestName);
+    }
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -62,37 +71,26 @@ class _MainPageState extends State<MainPage> {
           flex: 1,
           child: Column(children: [
             rrq.RenderRequestGroups(
-                requestGroups: requestGroups,
-                parentListName: 'requestGroupName')
+              requestGroups: requestGroups,
+              parentListName: 'requestGroupName',
+              selectRequest: selectRequest,
+            )
           ]),
         ),
         Expanded(
             flex: 5,
-            child: DynamicTabBarWidget(
-              onTabControllerUpdated: (controller){},
-              dynamicTabs: <TabData>[
-              TabData(
-                index: 0,
-                title: const Tab(
-                  child: Text('Request 1'),
-                ),
-                content: const Center(child: Text('Content for request 1')),
-              ),
-              TabData(
-                index: 1,
-                title: const Tab(
-                  child: Text('Request 2'),
-                ),
-                content: const Center(child: Text('Content for request 2')),
-              ),
-               TabData(
-                index: 2,
-                title: const Tab(
-                  child: Text('Request 3'),
-                ),
-                content: const Center(child: Text('Content for request 3')),
-              ),
-            ])),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TabBar(
+                    controller: tabController,
+                    tabs: openRequests.map(
+                        (e) => Tab(text: e),
+                      ).toList()),
+                SizedBox(height: 50, child: TabBarView(controller: tabController, children: openRequests.map((e) => const Row(children: [Text("data")]),).toList())),
+              ],
+            )
+            ),
       ],
     );
   }
