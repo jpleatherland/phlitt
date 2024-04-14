@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 
+class AddToCollection extends Notification {
+  final List requestGroups;
+  AddToCollection(this.requestGroups);
+}
+
 class RenderRequestGroups extends StatelessWidget {
   final List requestGroups;
+  final String parentListName;
 
-  const RenderRequestGroups({super.key, required this.requestGroups});
-  
-  Widget renderRequestGroups(listToRender) {
+  const RenderRequestGroups(
+      {super.key, required this.requestGroups, required this.parentListName});
+
+  Widget renderList(listToRender, listName) {
     int lastItem = listToRender.length;
     return ListView.builder(
         scrollDirection: Axis.vertical,
@@ -13,44 +20,28 @@ class RenderRequestGroups extends StatelessWidget {
         itemCount: listToRender.length + 1,
         itemBuilder: (context, index) {
           if (index == lastItem) {
-            return TextButton.icon(
-              label: const Text('Add Request Group'),
-              onPressed: () => print('hi'), //_dialogBuilder(context),
+            return IconButton(
+              onPressed: () => AddToCollection(listToRender),
               icon: const Icon(Icons.add),
             );
-          } else {
+          } else if (listName == 'requestGroupName') {
             return ExpansionTile(
-              title: Text(listToRender[index]['requestGroupName']),
-              children: [renderList(listToRender[index]['requests'])],
+              title: Text(listToRender[index][listName]),
+              children: [
+                renderList(listToRender[index]['requests'], 'requestName')
+              ],
+            );
+          } else {
+            return TextButton(
+              child: Text(listToRender[index]['requestName']),
+              onPressed: () => print('Pressed'),
             );
           }
         });
   }
 
-  Widget renderList(listToRender) {
-    int lastItem = listToRender.length;
-    return ListView.builder(
-      itemCount: listToRender.length + 1,
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        if (index == lastItem) {
-          return TextButton.icon(
-            label: const Text('Add Request'),
-            onPressed: () => print('add request'),
-            icon: const Icon(Icons.add),
-          );
-        } else {
-          return TextButton(
-            child: Text(listToRender[index]['requestName']),
-            onPressed: () => print('Pressed'),
-          );
-        }
-      },
-    );
-  }
   @override
-    Widget build(BuildContext context) {
-      return renderRequestGroups(requestGroups);
-    }
+  Widget build(BuildContext context) {
+    return renderList(requestGroups, parentListName);
+  }
 }
