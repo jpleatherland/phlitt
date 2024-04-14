@@ -12,18 +12,25 @@ String collectionTemplate = '''{
               "requestHeaders": {
                 "Authorization": "{{token}}"
               }
-            }
-          ],
-          "environments": [
+            },
             {
-              "environmentName": "Example Environment",
-              "environmentParameters": {
-                "server1": "www.google.come",
-                "server2": "www.bing.com",
-                "token": "jfjnio1i0d1u3.fo023u93"
+              "requestName": "exampleRequest2",
+              "requestUrl": "{{server1}}",
+              "requestHeaders": {
+                "Authorization": "{{token}}"
               }
             }
           ]
+        }
+      ],
+      "environments": [
+        {
+          "environmentName": "Example Environment",
+          "environmentParameters": {
+            "server1": "www.google.com",
+            "server2": "www.bing.com",
+            "token": "jfjnio1i0d1u3.fo023u93"
+          }
         }
       ]
     },
@@ -35,6 +42,17 @@ String collectionTemplate = '''{
               "requests": [
                 {
                   "requestName": "exampleRequest2"
+                }
+              ]
+            },
+            {
+              "requestGroupName": "exampleGroup3",
+              "requests": [
+                {
+                  "requestName": "exampleRequest3"
+                },
+                {
+                  "requestName": "exampleRequest4"
                 }
               ]
             }

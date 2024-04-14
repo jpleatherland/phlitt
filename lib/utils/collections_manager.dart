@@ -6,7 +6,7 @@ import 'dart:convert';
 import './example_collection.dart';
 
 class CollectionsManager {  
-  
+
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
