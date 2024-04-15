@@ -13,7 +13,7 @@ class OpenSelectedRequest extends Notification {
 class RenderRequestGroups extends StatelessWidget {
   final List requestGroups;
   final String parentListName;
-  final Function(String) selectRequest;
+  final Function(Map<String, dynamic>) selectRequest;
 
   const RenderRequestGroups(
       {super.key, required this.requestGroups, required this.parentListName, required this.selectRequest});
@@ -40,7 +40,7 @@ class RenderRequestGroups extends StatelessWidget {
           } else {
             return TextButton(
               child: Text(listToRender[index]['requestName']),
-              onPressed: () => selectRequest(listToRender[index]['requestName']),
+              onPressed: () => selectRequest(listToRender[index]),
             );
           }
         });

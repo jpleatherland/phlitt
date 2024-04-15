@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qapic/widgets/render_request_groups.dart' as rrq;
+import 'package:qapic/pages/tab_data.dart';
 
 class MainPage extends StatefulWidget {
   final Iterable collection;
@@ -12,43 +13,11 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage>
-    with TickerProviderStateMixin {
+class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   String selectedCollection = '';
   Iterable collection = [];
   List requestGroups = [];
   List openRequests = [];
-
-  // Future<String?> _dialogBuilder(BuildContext context) {
-  //   return showDialog<String>(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           title: Text('Title'),
-  //           content: Text('Replace with input field'),
-  //           actions: [
-  //             TextButton(
-  //               style: TextButton.styleFrom(
-  //                 textStyle: Theme.of(context).textTheme.labelLarge,
-  //               ),
-  //               child: const Text('Disable'),
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //             ),
-  //             TextButton(
-  //               style: TextButton.styleFrom(
-  //                 textStyle: Theme.of(context).textTheme.labelLarge,
-  //               ),
-  //               child: const Text('Enable'),
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //             ),
-  //           ],
-  //         );
-  //       });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +27,16 @@ class _MainPageState extends State<MainPage>
 
     var tabController = TabController(length: openRequests.length, vsync: this);
 
-    void selectRequest(String requestName) {
-      if (!openRequests.contains(requestName)) {
-        setState(() => openRequests.add(requestName),);
+    void selectRequest(Map<String, dynamic> request) {
+      if (!openRequests.contains(request)) {
+        setState(
+          () => openRequests.add(request),
+        );
+        tabController.dispose();
       }
-      tabController.index = openRequests.indexOf(requestName);
+      tabController = TabController(length: openRequests.length, vsync: this, initialIndex: openRequests.indexOf(request));
     }
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -84,13 +57,21 @@ class _MainPageState extends State<MainPage>
               children: [
                 TabBar(
                     controller: tabController,
-                    tabs: openRequests.map(
-                        (e) => Tab(text: e),
-                      ).toList()),
-                SizedBox(height: 50, child: TabBarView(controller: tabController, children: openRequests.map((e) => const Row(children: [Text("data")]),).toList())),
+                    tabs: openRequests
+                        .map(
+                          (e) => Tab(text: e['requestName']),
+                        )
+                        .toList()),
+                Expanded(
+                    child: TabBarView(
+                        controller: tabController,
+                        children: openRequests
+                            .map(
+                              (e) => TabData(request: e),
+                            )
+                            .toList())),
               ],
-            )
-            ),
+            )),
       ],
     );
   }
