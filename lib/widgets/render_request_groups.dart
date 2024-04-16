@@ -5,12 +5,18 @@ class AddToCollection extends Notification {
   AddToCollection(this.requestGroups);
 }
 
+class OpenSelectedRequest extends Notification {
+  final String requestName;
+  OpenSelectedRequest(this.requestName);
+}
+
 class RenderRequestGroups extends StatelessWidget {
   final List requestGroups;
   final String parentListName;
+  final Function(Map<String, dynamic>) selectRequest;
 
   const RenderRequestGroups(
-      {super.key, required this.requestGroups, required this.parentListName});
+      {super.key, required this.requestGroups, required this.parentListName, required this.selectRequest});
 
   Widget renderList(listToRender, listName) {
     int lastItem = listToRender.length;
@@ -34,7 +40,7 @@ class RenderRequestGroups extends StatelessWidget {
           } else {
             return TextButton(
               child: Text(listToRender[index]['requestName']),
-              onPressed: () => print('Pressed'),
+              onPressed: () => selectRequest(listToRender[index]),
             );
           }
         });

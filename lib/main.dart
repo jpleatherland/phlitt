@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 future: collectionsFile,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return const Text('color: Colors.black,');
+                    return const Text('Loading...');
                   } else {
                     return NotificationListener<CollectionSelected>(
                         child: routeSelector(selectedIndex, snapshot.data!,
