@@ -34,7 +34,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         );
         tabController.dispose();
       }
-      tabController = TabController(length: openRequests.length, vsync: this, initialIndex: openRequests.indexOf(request));
+      tabController = TabController(
+          length: openRequests.length,
+          vsync: this,
+          initialIndex: openRequests.indexOf(request));
     }
 
     return Row(
@@ -55,21 +58,27 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TabBar(
-                    controller: tabController,
-                    tabs: openRequests
-                        .map(
-                          (e) => Tab(text: e['requestName']),
-                        )
-                        .toList()),
+                Container(
+                  padding: const EdgeInsets.all(2.0),
+                  child: TabBar(
+                      controller: tabController,
+                      tabs: openRequests
+                          .map(
+                            (e) => Tab(text: e['requestName']),
+                          )
+                          .toList()),
+                ),
                 Expanded(
-                    child: TabBarView(
-                        controller: tabController,
-                        children: openRequests
-                            .map(
-                              (e) => TabData(request: e),
-                            )
-                            .toList())),
+                  child: TabBarView(
+                      controller: tabController,
+                      children: openRequests
+                          .map(
+                            (e) => Container(
+                                padding: const EdgeInsets.all(5.0),
+                                child: TabData(request: e)),
+                          )
+                          .toList()),
+                ),
               ],
             )),
       ],

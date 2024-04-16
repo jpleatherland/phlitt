@@ -8,17 +8,41 @@ String collectionTemplate = '''{
           "requests": [
             {
               "requestName": "exampleRequest",
-              "requestUrl": "{{server1}}",
-              "requestHeaders": {
-                "Authorization": "{{token}}"
-              }
+              "requestMethod": "get",
+              "requestUrl": "{{server1}}/test",
+              "options": [
+                {
+                  "query": []
+                },
+                {
+                  "body": []
+                },
+                {
+                  "headers": []
+                },
+                {
+                  "authorisation": []
+                }
+              ]
             },
             {
               "requestName": "exampleRequest2",
+              "requestMethod": "get",
               "requestUrl": "{{server1}}",
-              "requestHeaders": {
-                "Authorization": "{{token}}"
-              }
+              "options": [
+                {
+                  "query": []
+                },
+                {
+                  "body": []
+                },
+                {
+                  "headers": []
+                },
+                {
+                  "authorisation": []
+                }
+              ]
             }
           ]
         }
@@ -35,29 +59,77 @@ String collectionTemplate = '''{
       ]
     },
     {
-          "collectionName": "example2",
-          "requestGroups": [
+      "collectionName": "example2",
+      "requestGroups": [
+        {
+          "requestGroupName": "exampleGroup2",
+          "requests": [
             {
-              "requestGroupName": "exampleGroup2",
-              "requests": [
+              "requestName": "exampleRequest2",
+              "requestMethod": "get",
+              "requestUrl": "https://jsonplaceholder.typicode.com/todos/4",
+              "options": [
                 {
-                  "requestName": "exampleRequest2"
+                  "query": []
+                },
+                {
+                  "body": []
+                },
+                {
+                  "headers": []
+                },
+                {
+                  "authorisation": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "requestGroupName": "exampleGroup3",
+          "requests": [
+            {
+              "requestName": "exampleRequest3",
+              "requestMethod": "get",
+              "requestUrl": "https://jsonplaceholder.typicode.com/users/3",
+              "options": [
+                {
+                  "query": []
+                },
+                {
+                  "body": []
+                },
+                {
+                  "headers": []
+                },
+                {
+                  "authorisation": []
                 }
               ]
             },
             {
-              "requestGroupName": "exampleGroup3",
-              "requests": [
+              "requestName": "exampleRequest4",
+              "requestMethod": "get",
+              "requestUrl": "https://jsonplaceholder.typicode.com/posts/5",
+              "options": [
                 {
-                  "requestName": "exampleRequest3"
+                  "query": []
                 },
                 {
-                  "requestName": "exampleRequest4"
+                  "body": []
+                },
+                {
+                  "headers": []
+                },
+                {
+                  "authorisation": []
                 }
               ]
             }
-          ],
-          "environments": []
+          ]
         }
+      ],
+      "environments": []
+    }
   ]
 }''';
