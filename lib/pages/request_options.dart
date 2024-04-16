@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qapic/widgets/request_body.dart';
 
 class RequestOptions extends StatefulWidget {
   final Map<String, dynamic> requestOptions;
@@ -19,6 +20,17 @@ class _RequestOptionsState extends State<RequestOptions> with TickerProviderStat
 
     var tabController = TabController(length: requestOptionHeadings.length, vsync: this);
 
+    updateRequestOptions(String requestHeading, Map<String,dynamic> newOptions){}
+
+    getOptionPage(String requestHeading) {
+      switch (requestHeading) {
+        case 'body':
+          return RequestBody(existingRequestBody: requestOptions[requestHeading], updateRequestOptions: updateRequestOptions,);
+        default:
+          return const Text('Hi');
+      }
+    }
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -37,12 +49,12 @@ class _RequestOptionsState extends State<RequestOptions> with TickerProviderStat
                           )
                           .toList()),
                 ),
-                const Expanded(
-                  child: Text('hello')
-                  // TabBarView
-                  //     controller: tabController,
-                  //     children: 
-                  //         ),
+                Expanded(
+                  child:
+                  TabBarView(
+                      controller: tabController,
+                      children: requestOptionHeadings.map((e)=>getOptionPage(e)).toList(),
+                          ),
                 ),
               ],
             )),
