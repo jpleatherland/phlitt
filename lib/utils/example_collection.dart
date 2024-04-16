@@ -10,39 +10,23 @@ String collectionTemplate = '''{
               "requestName": "exampleRequest",
               "requestMethod": "GET",
               "requestUrl": "{{server1}}/test",
-              "options": [
-                {
-                  "query": []
-                },
-                {
-                  "body": []
-                },
-                {
-                  "headers": []
-                },
-                {
-                  "authorisation": []
-                }
-              ]
+              "options": {
+                "query": {},
+                "body": {},
+                "headers": {},
+                "authorisation": {}
+              }
             },
             {
               "requestName": "exampleRequest2",
               "requestMethod": "GET",
               "requestUrl": "{{server1}}",
-              "options": [
-                {
-                  "query": []
-                },
-                {
-                  "body": []
-                },
-                {
-                  "headers": []
-                },
-                {
-                  "authorisation": []
-                }
-              ]
+              "options": {
+                "query": {},
+                "body": {},
+                "headers": {},
+                "authorisation": {}
+              }
             }
           ]
         }
@@ -68,20 +52,12 @@ String collectionTemplate = '''{
               "requestName": "exampleRequest2",
               "requestMethod": "GET",
               "requestUrl": "https://jsonplaceholder.typicode.com/todos/4",
-              "options": [
-                {
-                  "query": []
-                },
-                {
-                  "body": []
-                },
-                {
-                  "headers": []
-                },
-                {
-                  "authorisation": []
-                }
-              ]
+              "options": {
+                "query": {},
+                "body": {},
+                "headers": {},
+                "authorisation": {}
+              }
             }
           ]
         },
@@ -92,39 +68,23 @@ String collectionTemplate = '''{
               "requestName": "exampleRequest3",
               "requestMethod": "GET",
               "requestUrl": "https://jsonplaceholder.typicode.com/users/3",
-              "options": [
-                {
-                  "query": []
-                },
-                {
-                  "body": []
-                },
-                {
-                  "headers": []
-                },
-                {
-                  "authorisation": []
-                }
-              ]
+              "options": {
+                "query": {},
+                "body": {},
+                "headers": {},
+                "authorisation": {}
+              }
             },
             {
               "requestName": "exampleRequest4",
               "requestMethod": "GET",
               "requestUrl": "https://jsonplaceholder.typicode.com/posts/5",
-              "options": [
-                {
-                  "query": []
-                },
-                {
-                  "body": []
-                },
-                {
-                  "headers": []
-                },
-                {
-                  "authorisation": []
-                }
-              ]
+              "options": {
+                "query": {},
+                "body": {},
+                "headers": {},
+                "authorisation": {}
+              }
             }
           ]
         }

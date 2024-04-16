@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:qapic/utils/requests_manager.dart';
+import 'package:qapic/pages/request_options.dart';
 
 class TabData extends StatefulWidget {
   final Map<String, dynamic> request;
@@ -76,7 +77,7 @@ class _TabDataState extends State<TabData> {
           // mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Expanded(child: Text('options here')),
+            Expanded(child: RequestOptions(requestOptions:updatedRequest['options'])),
             Expanded(
                 child: Column(
               children: [
