@@ -15,7 +15,7 @@ class TabData extends StatefulWidget {
 class _TabDataState extends State<TabData> {
   Map<String, dynamic> updatedRequest = {};
   RequestsManager rm = RequestsManager();
-  String responseData = "";
+  Map<String, dynamic> responseData = {'statusCode': 0, 'body': ''};
 
   @override
   void initState() {
@@ -30,28 +30,45 @@ class _TabDataState extends State<TabData> {
 
     void updateResponse(Map<String, dynamic> response) {
       const encoder = JsonEncoder.withIndent("    ");
-      String prettyResponse = encoder.convert(response);
+      String prettyResponse = encoder.convert(response['body']);
       setState(
-        () => responseData = prettyResponse,
+        () => responseData = {
+          'statusCode': response['statusCode'],
+          'body': prettyResponse
+        },
       );
     }
 
     void updateRequest(key, value) {
       updatedRequest[key] = value;
-      rm.getRequest(updatedRequest, updateResponse);
+      rm.submitRequest(updatedRequest, updateResponse);
     }
 
     return Column(mainAxisSize: MainAxisSize.min, children: [
       Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 5.0),
+            child: DropdownMenu<String>(
+                label: const Text('Method'),
+                initialSelection: updatedRequest['requestMethod'],
+                dropdownMenuEntries:
+                    <String>['GET', 'POST', 'PUT', 'DELETE'].map((String value) {
+                  return DropdownMenuEntry<String>(
+                    value: value,
+                    label: value,
+                  );
+                }).toList(),
+                onSelected: (value) => setState(() => updatedRequest['requestMethod'] = value)),
+          ),
           Expanded(
               child: TextField(
                   controller: urlController,
                   onSubmitted: (value) => updateRequest('requestUrl', value))),
           IconButton(
               icon: const Icon(Icons.send),
-              onPressed: () => rm.getRequest(updatedRequest, updateResponse))
+              onPressed: () => rm.submitRequest(updatedRequest, updateResponse))
         ],
       ),
       Expanded(
@@ -61,10 +78,15 @@ class _TabDataState extends State<TabData> {
           children: [
             const Expanded(child: Text('options here')),
             Expanded(
-                child: Text(
-                  responseData.toString(),
+                child: Column(
+              children: [
+                Text(responseData['statusCode'].toString()),
+                Text(
+                  responseData['body'],
                   textAlign: TextAlign.left,
-                )),
+                ),
+              ],
+            )),
           ],
         ),
       )

@@ -8,7 +8,7 @@ String collectionTemplate = '''{
           "requests": [
             {
               "requestName": "exampleRequest",
-              "requestMethod": "get",
+              "requestMethod": "GET",
               "requestUrl": "{{server1}}/test",
               "options": [
                 {
@@ -27,7 +27,7 @@ String collectionTemplate = '''{
             },
             {
               "requestName": "exampleRequest2",
-              "requestMethod": "get",
+              "requestMethod": "GET",
               "requestUrl": "{{server1}}",
               "options": [
                 {
@@ -66,7 +66,7 @@ String collectionTemplate = '''{
           "requests": [
             {
               "requestName": "exampleRequest2",
-              "requestMethod": "get",
+              "requestMethod": "GET",
               "requestUrl": "https://jsonplaceholder.typicode.com/todos/4",
               "options": [
                 {
@@ -90,7 +90,7 @@ String collectionTemplate = '''{
           "requests": [
             {
               "requestName": "exampleRequest3",
-              "requestMethod": "get",
+              "requestMethod": "GET",
               "requestUrl": "https://jsonplaceholder.typicode.com/users/3",
               "options": [
                 {
@@ -109,7 +109,7 @@ String collectionTemplate = '''{
             },
             {
               "requestName": "exampleRequest4",
-              "requestMethod": "get",
+              "requestMethod": "GET",
               "requestUrl": "https://jsonplaceholder.typicode.com/posts/5",
               "options": [
                 {

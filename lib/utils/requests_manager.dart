@@ -1,19 +1,55 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 
 class RequestsManager {
-
-  void getRequest(Map<String, dynamic> request, Function updateResponse) async {
+  void submitRequest(Map<String, dynamic> request, Function updateResponse) {
     Uri requestUrl = Uri.parse(request['requestUrl']);
+    switch (request['requestMethod']) {
+      case 'GET':
+        getRequest(requestUrl, request, updateResponse);
+        break;
+      case 'POST':
+        postRequest(requestUrl, request, updateResponse);
+        break;
+      case 'PUT':
+        putRequest(requestUrl, request, updateResponse);
+        break;
+      case 'DELETE':
+        deleteRequest(requestUrl, request, updateResponse);
+      default:
+        break;
+    }
+  }
+
+  void getRequest(Uri requestUrl, Map<String, dynamic> request, Function updateResponse) async {
     http.Response response = await http.get(requestUrl);
-    updateResponse(json.decode(response.body));
+    updateResponse({
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body)
+    });
   }
 
-  void postRequest(Map<String, dynamic> request, Function updateResponse) async {
-    Uri requestUrl = Uri.parse(request['requestUrl']);
+  void postRequest(Uri requestUrl, Map<String, dynamic> request, Function updateResponse) async {
     http.Response response = await http.post(requestUrl, body: request['body']);
-    updateResponse(json.decode(response.body));
+    updateResponse({
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body)
+    });
   }
 
+  void putRequest(Uri requestUrl, Map<String, dynamic> request, Function updateResponse) async {
+    http.Response response = await http.put(requestUrl, body: request['body']);
+    updateResponse({
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body)
+    });
+  }
+
+  void deleteRequest(Uri requestUrl, Map<String, dynamic> request, Function updateResponse) async {
+    http.Response response = await http.delete(requestUrl);
+    updateResponse({
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body)
+    });
+  }
 }
