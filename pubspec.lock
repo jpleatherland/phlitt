@@ -70,6 +70,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_datetime_picker_bdaya:
+    dependency: transitive
+    description:
+      name: flutter_datetime_picker_bdaya
+      sha256: "6cb42a7d659cb9a10afa0a390b81677e15fd2f7e340e7eaffabf770e6b6709c0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.2"
+  flutter_editable_table:
+    dependency: "direct main"
+    description:
+      name: flutter_editable_table
+      sha256: "5fcca566e5e177c08db64f20a5af28317bae24df584d85013b443582f6450e8b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -99,6 +115,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.18.1"
   leak_tracker:
     dependency: transitive
     description:

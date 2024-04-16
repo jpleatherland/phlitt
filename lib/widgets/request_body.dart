@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_editable_table/flutter_editable_table.dart';
 
 class RequestBody extends StatelessWidget {
   final Map<String, dynamic> existingRequestBody;
