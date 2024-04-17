@@ -1,15 +1,5 @@
 import 'package:flutter/material.dart';
 
-class AddToCollection extends Notification {
-  final List requestGroups;
-  AddToCollection(this.requestGroups);
-}
-
-class OpenSelectedRequest extends Notification {
-  final String requestName;
-  OpenSelectedRequest(this.requestName);
-}
-
 class RenderRequestGroups extends StatelessWidget {
   final List requestGroups;
   final String parentListName;
@@ -27,7 +17,7 @@ class RenderRequestGroups extends StatelessWidget {
         itemBuilder: (context, index) {
           if (index == lastItem) {
             return IconButton(
-              onPressed: () => AddToCollection(listToRender),
+              onPressed: () => print('add to collection'),
               icon: const Icon(Icons.add),
             );
           } else if (listName == 'requestGroupName') {

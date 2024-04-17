@@ -21,23 +21,33 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var tabController = TabController(length: openRequests.length, vsync: this);
+
+    void afterBuild() {
+      tabController.dispose();
+      tabController = TabController(
+          length: openRequests.length,
+          vsync: this,
+          initialIndex: openRequests.indexOf(openRequests.length));
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
     selectedCollection = widget.collectionName;
     collection = widget.collection;
     requestGroups = widget.collection.toList()[0]['requestGroups'];
 
-    var tabController = TabController(length: openRequests.length, vsync: this);
-
     void selectRequest(Map<String, dynamic> request) {
-      if (!openRequests.contains(request)) {
+      if (!openRequests.contains(request) && mounted) {
         setState(
           () => openRequests.add(request),
         );
-        tabController.dispose();
+        // openRequests.add(request);
+        // tabController.dispose();
       }
-      tabController = TabController(
-          length: openRequests.length,
-          vsync: this,
-          initialIndex: openRequests.indexOf(request));
+      // tabController = TabController(
+      //     length: openRequests.length,
+      //     vsync: this,
+      //     initialIndex: openRequests.indexOf(request));
     }
 
     return Row(

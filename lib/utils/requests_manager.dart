@@ -9,7 +9,7 @@ class RequestsManager {
         getRequest(requestUrl, request, updateResponse);
         break;
       case 'POST':
-        postRequest(requestUrl, request, updateResponse);
+        postRequest(requestUrl, request['options']['body'], updateResponse);
         break;
       case 'PUT':
         putRequest(requestUrl, request, updateResponse);
@@ -29,8 +29,8 @@ class RequestsManager {
     });
   }
 
-  void postRequest(Uri requestUrl, Map<String, dynamic> request, Function updateResponse) async {
-    http.Response response = await http.post(requestUrl, body: request['body']);
+  void postRequest(Uri requestUrl, String requestBody, Function updateResponse) async {
+    http.Response response = await http.post(requestUrl, body: requestBody, headers: {'Content-type':'application/json; charset=UTF-8'});
     updateResponse({
       'statusCode': response.statusCode,
       'body': json.decode(response.body)

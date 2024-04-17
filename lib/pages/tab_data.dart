@@ -25,24 +25,39 @@ class _TabDataState extends State<TabData> {
   }
 
   @override
+  void dispose(){
+    super.dispose();
+    requestMethodController.dispose();
+  }
+
+  final TextEditingController requestMethodController = TextEditingController();
+
+
+  @override
   Widget build(BuildContext context) {
     TextEditingController urlController =
         TextEditingController(text: widget.request['requestUrl']);
 
+
+
     void updateResponse(Map<String, dynamic> response) {
       const encoder = JsonEncoder.withIndent("    ");
       String prettyResponse = encoder.convert(response['body']);
-      setState(
-        () => responseData = {
-          'statusCode': response['statusCode'],
-          'body': prettyResponse
-        },
-      );
+      if (mounted) {
+        setState(
+          () => responseData = {
+            'statusCode': response['statusCode'],
+            'body': prettyResponse
+          },
+        );
+      }
     }
 
-    void updateRequest(key, value) {
+    void updateRequest(key, value, send) {
       updatedRequest[key] = value;
-      rm.submitRequest(updatedRequest, updateResponse);
+      if (send) {
+        rm.submitRequest(updatedRequest, updateResponse);
+      }
     }
 
     return Column(mainAxisSize: MainAxisSize.min, children: [
@@ -52,21 +67,26 @@ class _TabDataState extends State<TabData> {
           Padding(
             padding: const EdgeInsets.only(right: 5.0),
             child: DropdownMenu<String>(
+                controller:requestMethodController,
                 label: const Text('Method'),
-                initialSelection: updatedRequest['requestMethod'],
-                dropdownMenuEntries:
-                    <String>['GET', 'POST', 'PUT', 'DELETE'].map((String value) {
+                // initialSelection: updatedRequest['requestMethod'],
+                dropdownMenuEntries: <String>['GET', 'POST', 'PUT', 'DELETE']
+                    .map((String value) {
                   return DropdownMenuEntry<String>(
                     value: value,
                     label: value,
                   );
                 }).toList(),
-                onSelected: (value) => setState(() => updatedRequest['requestMethod'] = value)),
+                // onSelected: (value) =>
+                //     updateRequest('requestMethod', value, false)
+                    ),
           ),
           Expanded(
               child: TextField(
-                  controller: urlController,
-                  onSubmitted: (value) => updateRequest('requestUrl', value))),
+            controller: urlController,
+            onSubmitted: (value) => updateRequest('requestUrl', value, true),
+            onChanged: (value) => updateRequest('requestUrl', value, false),
+          )),
           IconButton(
               icon: const Icon(Icons.send),
               onPressed: () => rm.submitRequest(updatedRequest, updateResponse))
@@ -76,14 +96,24 @@ class _TabDataState extends State<TabData> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: RequestOptions(requestOptions:updatedRequest['options'])),
+            Expanded(
+                child:
+                    RequestOptions(requestOptions: updatedRequest['options'])),
             Expanded(
                 child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(responseData['statusCode'].toString()),
                 Text(
-                  responseData['body'],
-                  textAlign: TextAlign.left,
+                  'Status Code: ${responseData['statusCode']}',
+                  textAlign: TextAlign.right,
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      responseData['body'],
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
                 ),
               ],
             )),

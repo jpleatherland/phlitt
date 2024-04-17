@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_editable_table/flutter_editable_table.dart';
 
 class RequestBody extends StatelessWidget {
-  final Map<String, dynamic> existingRequestBody;
+  final String existingRequestBody;
   final Function updateRequestOptions;
-  RequestBody(
+  const RequestBody(
       {super.key,
       required this.updateRequestOptions,
       required this.existingRequestBody});
 
-  final TextEditingController bodyController = TextEditingController();
-
   Widget requestBody() {
+    final TextEditingController bodyController =
+        TextEditingController(text: existingRequestBody);
+
     //put a data table in here
-    return Text(existingRequestBody.toString());
+    return TextField(
+      controller: bodyController,
+      maxLines: null,
+      onChanged: (value) => updateRequestOptions({'body':bodyController.text}),
+    );
   }
 
   @override
