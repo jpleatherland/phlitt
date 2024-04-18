@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qapic/widgets/request_body.dart';
+import 'package:qapic/widgets/request_auth.dart';
 
 class RequestOptions extends StatelessWidget {
   final Map<String, dynamic> requestOptions;
@@ -20,8 +21,10 @@ class RequestOptions extends StatelessWidget {
       switch (requestHeading) {
         case 'body':
           return RequestBody(existingRequestBody: requestOptions[requestHeading].toString(), updateRequestOptions: updateRequestOptions,);
+        case 'auth':
+          return RequestAuth(authType: requestOptions[requestHeading]['authType'], authValue: requestOptions[requestHeading]['authValue'], onUpdated: updateRequestOptions);
         default:
-          return const Text('Hi');
+          return Text('$requestHeading to be implemented');
       }
     }
 

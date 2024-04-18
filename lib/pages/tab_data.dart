@@ -25,20 +25,17 @@ class _TabDataState extends State<TabData> {
   }
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     requestMethodController.dispose();
   }
 
   final TextEditingController requestMethodController = TextEditingController();
 
-
   @override
   Widget build(BuildContext context) {
     TextEditingController urlController =
         TextEditingController(text: widget.request['requestUrl']);
-
-
 
     void updateResponse(Map<String, dynamic> response) {
       const encoder = JsonEncoder.withIndent("    ");
@@ -67,9 +64,9 @@ class _TabDataState extends State<TabData> {
           Padding(
             padding: const EdgeInsets.only(right: 5.0),
             child: DropdownMenu<String>(
-                controller:requestMethodController,
+                controller: requestMethodController,
                 label: const Text('Method'),
-                // initialSelection: updatedRequest['requestMethod'],
+                initialSelection: updatedRequest['requestMethod'],
                 dropdownMenuEntries: <String>['GET', 'POST', 'PUT', 'DELETE']
                     .map((String value) {
                   return DropdownMenuEntry<String>(
@@ -77,9 +74,8 @@ class _TabDataState extends State<TabData> {
                     label: value,
                   );
                 }).toList(),
-                // onSelected: (value) =>
-                //     updateRequest('requestMethod', value, false)
-                    ),
+                onSelected: (value) =>
+                    updateRequest('requestMethod', value, false)),
           ),
           Expanded(
               child: TextField(

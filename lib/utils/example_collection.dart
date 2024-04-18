@@ -14,7 +14,10 @@ String collectionTemplate = '''{
                 "query": {},
                 "body": {},
                 "headers": {},
-                "authorisation": {}
+                "auth": {
+                  "authType":"",
+                  "authValue":""
+                }
               }
             },
             {
@@ -25,7 +28,10 @@ String collectionTemplate = '''{
                 "query": {},
                 "body": {},
                 "headers": {},
-                "authorisation": {}
+                "auth": {
+                  "authType":"",
+                  "authValue":""
+                }
               }
             }
           ]
@@ -56,7 +62,10 @@ String collectionTemplate = '''{
                 "query": {},
                 "body": {},
                 "headers": {},
-                "authorisation": {}
+                "auth": {
+                  "authType":"",
+                  "authValue":""
+                }
               }
             }
           ]
@@ -72,7 +81,10 @@ String collectionTemplate = '''{
                 "query": {},
                 "body": {},
                 "headers": {},
-                "authorisation": {}
+                "auth": {
+                  "authType":"",
+                  "authValue":""
+                }
               }
             },
             {
@@ -83,7 +95,10 @@ String collectionTemplate = '''{
                 "query": {},
                 "body": {},
                 "headers": {},
-                "authorisation": {}
+                "auth": {
+                  "authType":"",
+                  "authValue":""
+                }
               }
             }
           ]
