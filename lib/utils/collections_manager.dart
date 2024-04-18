@@ -3,6 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:qapic/model/collections_model.dart';
 import './example_collection.dart';
 
 class CollectionsManager {  
@@ -24,18 +25,19 @@ class CollectionsManager {
     }
   }
 
-  Future<Map<String, dynamic>> readCollectionsFile() async {
+  Future<CollectionGroup> readCollectionsFile() async {
     try {
       final file = await _localFile;
       final contents = await file.readAsString();
       final collections = jsonDecode(contents) as Map<String, dynamic>;
-      return collections;
+      final collectionToReturn = CollectionGroup.fromJson(collections);
+      return collectionToReturn;
     } catch (error) {
-      return {};
+      throw Exception(error);
     }
   }
 
-  Future<File> writeCollections(Map collection) async {
+  Future<File> writeCollections(Collection collection) async {
     final file = await _localFile;
 
     return file.writeAsString('$collection');

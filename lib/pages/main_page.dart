@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:qapic/model/collections_model.dart';
 import 'package:qapic/widgets/render_request_groups.dart' as rrq;
 import 'package:qapic/pages/tab_data.dart';
 
 class MainPage extends StatefulWidget {
-  final Iterable collection;
+  final Collection collection;
   final String collectionName;
 
   const MainPage(
@@ -15,12 +16,13 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   String selectedCollection = '';
-  Iterable collection = [];
-  List requestGroups = [];
-  List openRequests = [];
+
+  List<dynamic> openRequests = [];
 
   @override
   Widget build(BuildContext context) {
+    Collection collection = widget.collection;
+    List<RequestGroup> requestGroups = collection.requestGroups;
     var tabController = TabController(length: openRequests.length, vsync: this);
 
     void afterBuild() {
@@ -33,8 +35,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
     WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
     selectedCollection = widget.collectionName;
-    collection = widget.collection;
-    requestGroups = widget.collection.toList()[0]['requestGroups'];
 
     void selectRequest(Map<String, dynamic> request) {
       if (!openRequests.contains(request) && mounted) {
@@ -74,7 +74,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       controller: tabController,
                       tabs: openRequests
                           .map(
-                            (e) => Tab(text: e['requestName']),
+                            (e) => Tab(text: e.requestName as String),
                           )
                           .toList()),
                 ),
@@ -85,7 +85,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           .map(
                             (e) => Container(
                                 padding: const EdgeInsets.all(5.0),
-                                child: TabData(request: e)),
+                                child: TabData(request: e as Map<String, dynamic>)),
                           )
                           .toList()),
                 ),

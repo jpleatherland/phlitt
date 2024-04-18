@@ -1,3 +1,15 @@
+class CollectionGroup {
+  CollectionGroup({ required this.collections });
+  final List<Collection> collections;
+
+  factory CollectionGroup.fromJson(Map<String, dynamic> data) {
+    final collections = data['collections'].forEach((collection) {
+      Collection.toCollectionGroup(collection as Map<String, dynamic>);
+    }) as List<Collection>;
+  
+    return CollectionGroup(collections: collections);
+  }
+}
 class Collection {
   Collection(
       {required this.collectionName,
@@ -7,14 +19,21 @@ class Collection {
   final List<RequestGroup> requestGroups;
   final List<Environment> environments;
 
-  factory Collection.fromJson(Map<String, dynamic> data) {
-    final collectionName = data['collectionName'] as String;
-    final requestGroups = data['requestGroups'] as List<RequestGroup>;
-    final environments = data['environments'] as List<Environment>;
+  factory Collection.fromCollectionGroup(CollectionGroup data, String collectionToSelect) {
+    final collectionName = data.collections.firstWhere((e) => e.collectionName == collectionToSelect).collectionName;
+    final requestGroups = data.collections.firstWhere((e) => e.collectionName == collectionToSelect).requestGroups;
+    final environments = data.collections.firstWhere((e) => e.collectionName == collectionToSelect).environments;
     return Collection(
         collectionName: collectionName,
         requestGroups: requestGroups,
         environments: environments);
+  }
+
+  factory Collection.toCollectionGroup(Map<String, dynamic> data) {
+    final collectionName = data['collectionName'] as String;
+    final requestGroups = data['requestGroups'].forEach((requestGroup) => RequestGroup.fromJson(requestGroup as Map<String, dynamic>)) as List<RequestGroup>;
+    final environments = data['environments'].forEach((environment) => Environment.fromJson) as List<Environment>;
+    return Collection(collectionName: collectionName, requestGroups: requestGroups, environments: environments);
   }
 }
 
@@ -25,7 +44,7 @@ class RequestGroup {
 
   factory RequestGroup.fromJson(Map<String, dynamic> data) {
     final requestGroupName = data['requestGroupName'] as String;
-    final requests = data['requests'] as List<Request>;
+    final requests = data['requests'].forEach((request) => Request.fromJson(request as Map<String, dynamic>)) as List<Request>;
     return RequestGroup(requestGroupName: requestGroupName, requests: requests);
   }
 }
@@ -45,7 +64,7 @@ class Request {
     final String requestName = data['requestName'] as String;
     final String requestMethod = data['requestMethod'] as String;
     final String requestUrl = data['requestUrl'] as String;
-    final RequestOptions options = data['options'] as RequestOptions;
+    final RequestOptions options = RequestOptions.fromJson(data['options'] as Map<String, dynamic>);
     return Request(
         requestName: requestName,
         requestMethod: requestMethod,
@@ -84,10 +103,10 @@ class RequestOptions {
   factory RequestOptions.fromJson(Map<String, dynamic> data) {
     final Map<String, dynamic> requestQuery =
         data['query'] as Map<String, dynamic>;
-    final RequestBody requestBody = data['body'] as RequestBody;
+    final RequestBody requestBody = RequestBody.fromJson(data['body'] as Map<String, dynamic>);
     final Map<String, dynamic> requestHeaders =
         data['headers'] as Map<String, dynamic>;
-    final Auth auth = data['auth'] as Auth;
+    final Auth auth = Auth.fromJson(data['auth'] as Map<String, dynamic>);
     return RequestOptions(
         requestQuery: requestQuery,
         requestBody: requestBody,
@@ -98,25 +117,25 @@ class RequestOptions {
 
 class RequestBody {
   RequestBody({required this.bodyType, required this.bodyValue});
-  final String bodyType;
-  final Map<String, dynamic> bodyValue;
+  final String? bodyType;
+  final Map<String, dynamic>? bodyValue;
 
   factory RequestBody.fromJson(Map<String, dynamic> data) {
-    final String bodyType = data['bodyType'] as String;
-    final Map<String, dynamic> bodyValue =
-        data['bodyValue'] as Map<String, dynamic>;
+    final String? bodyType = data['bodyType'] as String?;
+    final Map<String, dynamic>? bodyValue =
+        data['bodyValue'] as Map<String, dynamic>?;
     return RequestBody(bodyType: bodyType, bodyValue: bodyValue);
   }
 }
 
 class Auth {
   Auth({required this.authType, required this.authValue});
-  final String authType;
-  final String authValue;
+  final String? authType;
+  final String? authValue;
 
-  factory Auth.fromJson(Map<String, String> data) {
-    final String authType = data['authType'] as String;
-    final String authValue = data['authValue'] as String;
+  factory Auth.fromJson(Map<String, dynamic> data) {
+    final String? authType = data['authType'] as String?;
+    final String? authValue = data['authValue'] as String?;
     return Auth(authType: authType, authValue: authValue);
   }
 }

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:qapic/model/collections_model.dart';
 
 class RenderRequestGroups extends StatelessWidget {
-  final List requestGroups;
+  final List<RequestGroup> requestGroups;
   final String parentListName;
   final Function(Map<String, dynamic>) selectRequest;
 
   const RenderRequestGroups(
       {super.key, required this.requestGroups, required this.parentListName, required this.selectRequest});
 
-  Widget renderList(listToRender, listName) {
+  Widget renderList(List<dynamic> listToRender, listName) {
     int lastItem = listToRender.length;
     return ListView.builder(
         scrollDirection: Axis.vertical,
@@ -22,15 +23,15 @@ class RenderRequestGroups extends StatelessWidget {
             );
           } else if (listName == 'requestGroupName') {
             return ExpansionTile(
-              title: Text(listToRender[index][listName]),
+              title: Text(listToRender[index][listName] as String),
               children: [
-                renderList(listToRender[index]['requests'], 'requestName')
+                renderList(listToRender[index]['requests'] as List<dynamic>, 'requestName')
               ],
             );
           } else {
             return TextButton(
-              child: Text(listToRender[index]['requestName']),
-              onPressed: () => selectRequest(listToRender[index]),
+              child: Text(listToRender[index]['requestName'] as String),
+              onPressed: () => selectRequest(listToRender[index] as Map<String, dynamic>),
             );
           }
         });
@@ -38,6 +39,6 @@ class RenderRequestGroups extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return renderList(requestGroups, parentListName);
+    return renderList(requestGroups as List<dynamic>, parentListName);
   }
 }

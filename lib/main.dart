@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:qapic/model/collections_model.dart';
 
 import 'pages/collections_overview.dart';
 import 'pages/main_page.dart';
@@ -40,7 +43,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var selectedIndex = 0;
   String selectedCollectionName = '';
-  late Future<Map<String, dynamic>> collectionsFile;
+  late Future<CollectionGroup> collectionsFile;
 
   @override
   void initState() {
@@ -48,23 +51,22 @@ class _MyHomePageState extends State<MyHomePage> {
     collectionsFile = widget.collections.readCollectionsFile();
   }
 
-  routeSelector(int selectedIndex, Map<String, dynamic> collectionsFile, String selectedCollectionName) {
+  Widget routeSelector(int selectedIndex, CollectionGroup collectionsFile, String selectedCollectionName) {
     
-    Iterable selectedCollection = [];
-
-    if (selectedCollectionName != '') {
-      selectedCollection = collectionsFile['collections'].where((collection) =>
-          collection['collectionName'] == selectedCollectionName);
+    late Collection selectedCollection;
+    if(selectedCollectionName != ""){
+      selectedCollection = Collection.fromCollectionGroup(collectionsFile, selectedCollectionName);
     }
+
     switch (selectedIndex) {
       case 0:
-        return CollectionsPage(collections: collectionsFile);
+        return CollectionsPage(collectionGroup: collectionsFile);
       case 1:
         return MainPage(
             collection: selectedCollection,
             collectionName: selectedCollectionName);
       default:
-        return CollectionsPage(collections: collectionsFile);
+        return CollectionsPage(collectionGroup: collectionsFile);
     }
   }
 
