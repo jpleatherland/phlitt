@@ -56,9 +56,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         Expanded(
           flex: 1,
           child: Column(children: [
-            rrq.RenderRequestGroups(
-              requestGroups: requestGroups,
-              parentListName: 'requestGroupName',
+            rrq.RenderCollectionRequestGroups(
+              collection: collection,
               selectRequest: selectRequest,
             )
           ]),
@@ -78,16 +77,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           )
                           .toList()),
                 ),
-                Expanded(
-                  child: TabBarView(
-                      controller: tabController,
-                      children: openRequests
-                          .map(
-                            (e) => Container(
-                                padding: const EdgeInsets.all(5.0),
-                                child: TabData(request: e as Map<String, dynamic>)),
-                          )
-                          .toList()),
+                Expanded( child: Text('Hi')
+                  // child: TabBarView(
+                  //     controller: tabController,
+                  //     children: openRequests
+                  //         .map(
+                  //           (e) => Container(
+                  //               padding: const EdgeInsets.all(5.0),
+                  //               child: TabData(request: e as Map<String, dynamic>)),
+                  //         )
+                  //         .toList()),
                 ),
               ],
             )),

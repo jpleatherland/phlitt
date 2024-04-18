@@ -51,11 +51,12 @@ class _MyHomePageState extends State<MyHomePage> {
     collectionsFile = widget.collections.readCollectionsFile();
   }
 
-  Widget routeSelector(int selectedIndex, CollectionGroup collectionsFile, String selectedCollectionName) {
-    
+  Widget routeSelector(int selectedIndex, CollectionGroup collectionsFile,
+      String selectedCollectionName) {
     late Collection selectedCollection;
-    if(selectedCollectionName != ""){
-      selectedCollection = Collection.fromCollectionGroup(collectionsFile, selectedCollectionName);
+    if (selectedCollectionName != "") {
+      selectedCollection = Collection.fromCollectionGroup(
+          collectionsFile, selectedCollectionName);
     }
 
     switch (selectedIndex) {
