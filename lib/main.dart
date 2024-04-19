@@ -43,36 +43,34 @@ class _MyHomePageState extends State<MyHomePage> {
   String selectedCollectionName = '';
   late Future<CollectionGroup> collectionsFile;
 
-
   @override
   void initState() {
     super.initState();
-    // collectionsFile = widget.collections.readCollectionsFile();
+    collectionsFile = widget.collections.readCollectionsFile();
   }
 
-  Widget routeSelector(int selectedIndex, CollectionGroup collectionsFile,
-      String selectedCollectionName) {
-    late Collection selectedCollection;
-    if (selectedCollectionName != "") {
-      selectedCollection = Collection.fromCollectionGroup(
-          collectionsFile, selectedCollectionName);
-    }
+  // Widget routeSelector(int selectedIndex, CollectionGroup collectionsFile,
+  //     String selectedCollectionName) {
+  //   late Collection selectedCollection;
+  //   if (selectedCollectionName != "") {
+  //     selectedCollection = Collection.fromCollectionGroup(
+  //         collectionsFile, selectedCollectionName);
+  //   }
 
-    switch (selectedIndex) {
-      case 0:
-        return CollectionsPage(collectionGroup: collectionsFile);
-      case 1:
-        return MainPage(
-            collection: selectedCollection,
-            collectionName: selectedCollectionName);
-      default:
-        return CollectionsPage(collectionGroup: collectionsFile);
-    }
-  }
+  //   switch (selectedIndex) {
+  //     case 0:
+  //       return CollectionsPage(collectionGroup: collectionsFile);
+  //     case 1:
+  //       return MainPage(
+  //           collection: selectedCollection,
+  //           collectionName: selectedCollectionName);
+  //     default:
+  //       return CollectionsPage(collectionGroup: collectionsFile);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    CollectionGroup collectionGroups = widget.collections.getCollectionGroups();
     var colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
         appBar: AppBar(
@@ -91,22 +89,21 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: [
             IconButton(
                 onPressed: () =>
-                    widget.collections.writeCollections(collectionGroups),
+                    widget.collections.writeCollections(collectionsFile as CollectionGroup),
                 icon: const Icon(Icons.save),
                 iconSize: 37)
           ],
         ),
         body: Center(
-          child:Text(collectionGroups.toString())));}
-          // child: FutureBuilder(
-          //     future: collectionsFile,
-          //     builder: (context, snapshot) {
-          //       if (!snapshot.hasData) {
-          //         return const Text('Loading...');
-          //       } else {
-                  
+          child: FutureBuilder(
+              future: collectionsFile,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Text('Loading...');
+                } else {
+                  return CollectionsPage(collectionGroup: snapshot.data!);
                   // return NotificationListener<CollectionSelected>(
-                  //     child: routeSelector(selectedIndex, collectionGroups,
+                  //     child: routeSelector(selectedIndex, snapshot.data!,
                   //         selectedCollectionName),
                   //     onNotification: (notification) {
                   //       setState(() {
@@ -115,7 +112,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   //       });
                   //       return true;
                   //     });
-                // }
-        //       }),
-        // ));
+                }
+              }),
+        ));
   }
+}

@@ -5,10 +5,10 @@ import 'package:qapic/pages/tab_data.dart';
 
 class MainPage extends StatefulWidget {
   final Collection collection;
-  final String collectionName;
+  final Function writeback;
 
   const MainPage(
-      {super.key, required this.collection, required this.collectionName});
+      {super.key, required this.collection, required this.writeback});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -35,48 +35,55 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           initialIndex: openRequests.indexOf(request));
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Expanded(
-          flex: 1,
-          child: Column(children: [
-            RenderCollectionRequestGroups(
-              collection: collection,
-              selectRequest: selectRequest,
-            )
-          ]),
-        ),
-        Expanded(
-            flex: 5,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(2.0),
-                  child: TabBar(
-                      controller: tabController,
-                      tabs: openRequests
-                          .map(
-                            (e) => Tab(text: e.requestName),
-                          )
-                          .toList()),
-                ),
-                Expanded(
-                  child: TabBarView(
-                      controller: tabController,
-                      children: openRequests
-                          .map(
-                            (e) => Container(
-                                padding: const EdgeInsets.all(5.0),
-                                child: TabData(
-                                    request: e)),
-                          )
-                          .toList()),
-                ),
-              ],
-            )),
-      ],
+    var colorScheme = Theme.of(context).colorScheme;
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: const Text('AHHHHH')
+      ),
+      body: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            flex: 1,
+            child: Column(children: [
+              RenderCollectionRequestGroups(
+                collection: collection,
+                selectRequest: selectRequest,
+              )
+            ]),
+          ),
+          Expanded(
+              flex: 5,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(2.0),
+                    child: TabBar(
+                        controller: tabController,
+                        tabs: openRequests
+                            .map(
+                              (e) => Tab(text: e.requestName),
+                            )
+                            .toList()),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                        controller: tabController,
+                        children: openRequests
+                            .map(
+                              (e) => Container(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: TabData(
+                                      request: e)),
+                            )
+                            .toList()),
+                  ),
+                ],
+              )),
+        ],
+      ),
     );
   }
 }

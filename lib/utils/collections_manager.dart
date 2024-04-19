@@ -35,13 +35,7 @@ class CollectionsManager {
     } catch (error) {
       throw Exception(error);
     }
-  }
-
-  CollectionGroup getCollectionGroups() {
-    CollectionGroup thingToReturn = readCollectionsFile();
-    
-    return thingToReturn;
-  }
+  } 
 
   Future<void> writeCollections(CollectionGroup collection) async {
     final file = await _localFile;
