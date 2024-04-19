@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:qapic/model/collections_model.dart';
 
-class RequestAuth extends StatelessWidget {
-  final String authType;
-  final String authValue;
+class RenderRequestAuth extends StatelessWidget {
+  final Auth auth;
   final Function onUpdated;
   final List<String> authTypeOptions = ['Basic Auth', 'Bearer Token', 'No Auth'];
 
-  RequestAuth({super.key, required this.authType, required this.authValue, required this.onUpdated});
+  RenderRequestAuth({super.key, required this.auth, required this.onUpdated});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         DropdownMenu(
-          initialSelection: authType,
+          initialSelection: auth.authType,
           dropdownMenuEntries: authTypeOptions.map((e) => DropdownMenuEntry(value: e, label: e)).toList(),
           onSelected: (value) => onUpdated({'auth':{ 'authType': value }}),)
       ],

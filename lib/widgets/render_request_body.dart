@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:qapic/model/collections_model.dart';
 
-class RequestBody extends StatelessWidget {
-  final String existingRequestBody;
+class RenderRequestBody extends StatelessWidget {
+  final RequestBody existingRequestBody;
   final Function updateRequestOptions;
-  const RequestBody(
+  const RenderRequestBody(
       {super.key,
       required this.updateRequestOptions,
       required this.existingRequestBody});
 
-  Widget requestBody() {
+  Widget renderRequestBody() {
     final TextEditingController bodyController =
-        TextEditingController(text: existingRequestBody);
+        TextEditingController(text: existingRequestBody.bodyValue['body'] as String);
 
     //put a data table in here
     return TextField(
@@ -22,6 +23,6 @@ class RequestBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return requestBody();
+    return renderRequestBody();
   }
 }

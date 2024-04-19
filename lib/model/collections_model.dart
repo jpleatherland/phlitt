@@ -153,6 +153,15 @@ class RequestOptions {
         requestHeaders: requestHeaders,
         auth: auth);
   }
+
+  Map<String, dynamic> toJson(){
+    return {
+      'requestQuery': requestQuery,
+      'requestBody': requestBody,
+      'requestHeaders': requestHeaders,
+      'auth': auth
+    };
+  }
 }
 
 class RequestBody {

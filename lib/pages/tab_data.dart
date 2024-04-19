@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:qapic/utils/requests_manager.dart';
-import 'package:qapic/pages/request_options.dart';
+import 'package:qapic/pages/request_options_page.dart';
 import 'package:qapic/model/collections_model.dart';
 
 class TabData extends StatefulWidget {
@@ -50,10 +50,14 @@ class _TabDataState extends State<TabData> {
     }
 
     void updateRequest(String key, dynamic value, bool send) {
-      setState(() {
-        updatedRequest.requestMethod = value as String;
-      });
-      requestToUpdate.get(key) = value;
+      switch (key) {
+        case 'requestMethod':
+          updatedRequest.requestMethod = value as String;
+          break;
+        case 'requestUrl':
+          updatedRequest.requestUrl = value as String;
+        default:
+      }
       if (send) {
         rm.submitRequest(updatedRequest, updateResponse);
       }
@@ -82,7 +86,7 @@ class _TabDataState extends State<TabData> {
           Expanded(
               child: TextField(
             controller: urlController,
-            onSubmitted: (value) => updateRequest('requestUrl', value, true),
+            onSubmitted: (value) => updatedRequest.requestName = value,
             onChanged: (value) => updateRequest('requestUrl', value, false),
           )),
           IconButton(
@@ -96,7 +100,7 @@ class _TabDataState extends State<TabData> {
           children: [
             Expanded(
                 child:
-                    RequestOptions(requestOptions: updatedRequest['options'])),
+                    RenderRequestOptions(requestOptions: updatedRequest.options)),
             Expanded(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -108,7 +112,7 @@ class _TabDataState extends State<TabData> {
                 Expanded(
                   child: SingleChildScrollView(
                     child: Text(
-                      responseData['body'],
+                      responseData['body'] as String,
                       textAlign: TextAlign.left,
                     ),
                   ),

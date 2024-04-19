@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:qapic/widgets/request_body.dart';
-import 'package:qapic/widgets/request_auth.dart';
+import 'package:qapic/widgets/render_request_body.dart';
+import 'package:qapic/widgets/render_request_auth.dart';
+import 'package:qapic/model/collections_model.dart';
 
-class RequestOptions extends StatelessWidget {
-  final Map<String, dynamic> requestOptions;
+class RenderRequestOptions extends StatelessWidget {
+  final RequestOptions requestOptions;
 
-  const RequestOptions(
+  const RenderRequestOptions(
       {super.key, required this.requestOptions});
 
    @override
   Widget build(BuildContext context) {
-    List<String> requestOptionHeadings = requestOptions.keys.toList();
+    List<String> requestOptionHeadings = requestOptions.toJson().keys.toList();
 
     updateRequestOptions(Map<String,dynamic> newOptions){
-      String requestHeader = newOptions.keys.first;
-      requestOptions[requestHeader] = newOptions[requestHeader];
+      // String requestHeader = newOptions.keys.first;
+      // requestOptions
+      print('new options $newOptions');
+
     }
 
-    getOptionPage(String requestHeading) {
+    Widget getOptionPage(String requestHeading) {
       switch (requestHeading) {
-        case 'body':
-          return RequestBody(existingRequestBody: requestOptions[requestHeading].toString(), updateRequestOptions: updateRequestOptions,);
+        case 'requestBody':
+          return RenderRequestBody(existingRequestBody: requestOptions.requestBody, updateRequestOptions: updateRequestOptions,);
         case 'auth':
-          return RequestAuth(authType: requestOptions[requestHeading]['authType'] as String, authValue: requestOptions[requestHeading]['authValue'] as String, onUpdated: updateRequestOptions);
+          return RenderRequestAuth(auth: requestOptions.auth, onUpdated: updateRequestOptions);
         default:
           return Text('$requestHeading to be implemented');
       }
@@ -50,7 +53,7 @@ class RequestOptions extends StatelessWidget {
                   Expanded(
                     child:
                     TabBarView(
-                        children: requestOptionHeadings.map((e)=>getOptionPage(e)).toList(),
+                        children: requestOptions.toJson().keys.map<Widget>((key) => getOptionPage(key)).toList()
                             ),
                   ),
                 ],
