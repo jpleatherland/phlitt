@@ -22,7 +22,7 @@ class RequestOptions extends StatelessWidget {
         case 'body':
           return RequestBody(existingRequestBody: requestOptions[requestHeading].toString(), updateRequestOptions: updateRequestOptions,);
         case 'auth':
-          return RequestAuth(authType: requestOptions[requestHeading]['authType'], authValue: requestOptions[requestHeading]['authValue'], onUpdated: updateRequestOptions);
+          return RequestAuth(authType: requestOptions[requestHeading]['authType'] as String, authValue: requestOptions[requestHeading]['authValue'] as String, onUpdated: updateRequestOptions);
         default:
           return Text('$requestHeading to be implemented');
       }

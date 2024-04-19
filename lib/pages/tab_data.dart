@@ -1,12 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:qapic/utils/requests_manager.dart';
 import 'package:qapic/pages/request_options.dart';
+import 'package:qapic/model/collections_model.dart';
 
 class TabData extends StatefulWidget {
-  final Map<String, dynamic> request;
-
+  final Request request;
   const TabData({super.key, required this.request});
 
   @override
@@ -14,10 +13,10 @@ class TabData extends StatefulWidget {
 }
 
 class _TabDataState extends State<TabData> {
-  Map<String, dynamic> updatedRequest = {};
+
   RequestsManager rm = RequestsManager();
   Map<String, dynamic> responseData = {'statusCode': 0, 'body': ''};
-
+  late Request updatedRequest;
   @override
   void initState() {
     super.initState();
@@ -35,7 +34,7 @@ class _TabDataState extends State<TabData> {
   @override
   Widget build(BuildContext context) {
     TextEditingController urlController =
-        TextEditingController(text: widget.request['requestUrl']);
+        TextEditingController(text: updatedRequest.requestUrl);
 
     void updateResponse(Map<String, dynamic> response) {
       const encoder = JsonEncoder.withIndent("    ");
@@ -50,15 +49,18 @@ class _TabDataState extends State<TabData> {
       }
     }
 
-    void updateRequest(key, value, send) {
-      updatedRequest[key] = value;
+    void updateRequest(String key, dynamic value, bool send) {
+      setState(() {
+        updatedRequest.requestMethod = value as String;
+      });
+      requestToUpdate.get(key) = value;
       if (send) {
         rm.submitRequest(updatedRequest, updateResponse);
       }
     }
 
     return Column(mainAxisSize: MainAxisSize.min, children: [
-      Row(
+    Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
@@ -66,7 +68,7 @@ class _TabDataState extends State<TabData> {
             child: DropdownMenu<String>(
                 controller: requestMethodController,
                 label: const Text('Method'),
-                initialSelection: updatedRequest['requestMethod'],
+                initialSelection: updatedRequest.requestMethod,
                 dropdownMenuEntries: <String>['GET', 'POST', 'PUT', 'DELETE']
                     .map((String value) {
                   return DropdownMenuEntry<String>(

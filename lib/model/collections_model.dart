@@ -3,8 +3,10 @@ class CollectionGroup {
   final List<Collection> collections;
 
   factory CollectionGroup.fromJson(Map<String, dynamic> data) {
-    final collections = data['collections'].map<Collection>((collection) =>
-      Collection.toCollectionGroup(collection as Map<String, dynamic>)).toList() as List<Collection>;
+    List<Collection> collections = data['collections']
+        .map<Collection>((collection) =>
+            Collection.toCollectionGroup(collection as Map<String, dynamic>))
+        .toList() as List<Collection>;
     return CollectionGroup(collections: collections);
   }
 }
@@ -14,19 +16,19 @@ class Collection {
       {required this.collectionName,
       required this.requestGroups,
       required this.environments});
-  final String collectionName;
-  final List<RequestGroup> requestGroups;
-  final List<Environment> environments;
+  String collectionName;
+  List<RequestGroup> requestGroups;
+  List<Environment> environments;
 
   factory Collection.fromCollectionGroup(
       CollectionGroup data, String collectionToSelect) {
-    final collectionName = data.collections
+    String collectionName = data.collections
         .firstWhere((e) => e.collectionName == collectionToSelect)
         .collectionName;
-    final requestGroups = data.collections
+    List<RequestGroup> requestGroups = data.collections
         .firstWhere((e) => e.collectionName == collectionToSelect)
         .requestGroups;
-    final environments = data.collections
+    List<Environment> environments = data.collections
         .firstWhere((e) => e.collectionName == collectionToSelect)
         .environments;
     return Collection(
@@ -36,12 +38,15 @@ class Collection {
   }
 
   factory Collection.toCollectionGroup(Map<String, dynamic> data) {
-    final collectionName = data['collectionName'] as String;
-    final requestGroups = data['requestGroups'].map<RequestGroup>((requestGroup) =>
-            RequestGroup.fromJson(requestGroup as Map<String, dynamic>)).toList()
-        as List<RequestGroup>;
+    String collectionName = data['collectionName'] as String;
+    List<RequestGroup> requestGroups = data['requestGroups']
+        .map<RequestGroup>((requestGroup) =>
+            RequestGroup.fromJson(requestGroup as Map<String, dynamic>))
+        .toList() as List<RequestGroup>;
     final environments = data['environments']
-        .map<Environment>((environment) => Environment.fromJson(environment as Map<String, dynamic>)).toList() as List<Environment>;
+        .map<Environment>((environment) =>
+            Environment.fromJson(environment as Map<String, dynamic>))
+        .toList() as List<Environment>;
     return Collection(
         collectionName: collectionName,
         requestGroups: requestGroups,
@@ -51,13 +56,15 @@ class Collection {
 
 class RequestGroup {
   RequestGroup({required this.requestGroupName, required this.requests});
-  final String requestGroupName;
-  final List<Request> requests;
+  String requestGroupName;
+  List<Request> requests;
 
   factory RequestGroup.fromJson(Map<String, dynamic> data) {
-    final requestGroupName = data['requestGroupName'] as String;
-    final requests = data['requests']
-        .map<Request>((request) => Request.fromJson(request as Map<String, dynamic>)).toList() as List<Request>;
+    String requestGroupName = data['requestGroupName'] as String;
+    List<Request> requests = data['requests']
+        .map<Request>(
+            (request) => Request.fromJson(request as Map<String, dynamic>))
+        .toList() as List<Request>;
     return RequestGroup(requestGroupName: requestGroupName, requests: requests);
   }
 }
@@ -68,16 +75,16 @@ class Request {
       required this.requestMethod,
       required this.requestUrl,
       required this.options});
-  final String requestName;
-  final String requestMethod;
-  final String requestUrl;
-  final RequestOptions options;
+  String requestName;
+  String requestMethod;
+  String requestUrl;
+  RequestOptions options;
 
   factory Request.fromJson(Map<String, dynamic> data) {
-    final String requestName = data['requestName'] as String;
-    final String requestMethod = data['requestMethod'] as String;
-    final String requestUrl = data['requestUrl'] as String;
-    final RequestOptions options =
+    String requestName = data['requestName'] as String;
+    String requestMethod = data['requestMethod'] as String;
+    String requestUrl = data['requestUrl'] as String;
+    RequestOptions options =
         RequestOptions.fromJson(data['options'] as Map<String, dynamic>);
     return Request(
         requestName: requestName,
@@ -85,17 +92,35 @@ class Request {
         requestUrl: requestUrl,
         options: options);
   }
+
+  Map<String, dynamic> _toMap() {
+    return {
+      'requestName': requestName,
+      'requestMethod': requestMethod,
+      'requestUrl': requestUrl,
+      'options': options
+    };
+  }
+
+  dynamic get(String propertyName){
+    var mapRep = _toMap();
+    if (mapRep.containsKey(propertyName)) {
+      return mapRep[propertyName];
+    }
+    throw ArgumentError('property not found');
+  }
+
 }
 
 class Environment {
   Environment(
       {required this.environmentName, required this.environmentParameters});
-  final String environmentName;
-  final Map<String, dynamic> environmentParameters;
+  String environmentName;
+  Map<String, dynamic> environmentParameters;
 
   factory Environment.fromJson(Map<String, dynamic> data) {
-    final environmentName = data['environmentName'] as String?;
-    final environmentParameters =
+    String? environmentName = data['environmentName'] as String?;
+    Map<String, dynamic>? environmentParameters =
         data['environmentParameters'] as Map<String, dynamic>?;
     return Environment(
         environmentName: environmentName ?? '',
@@ -109,19 +134,19 @@ class RequestOptions {
       required this.requestBody,
       required this.requestHeaders,
       required this.auth});
-  final Map<String, dynamic> requestQuery;
-  final RequestBody requestBody;
-  final Map<String, dynamic> requestHeaders;
-  final Auth auth;
+  Map<String, dynamic> requestQuery;
+   RequestBody requestBody;
+   Map<String, dynamic> requestHeaders;
+   Auth auth;
 
   factory RequestOptions.fromJson(Map<String, dynamic> data) {
-    final Map<String, dynamic> requestQuery =
+    Map<String, dynamic> requestQuery =
         data['query'] as Map<String, dynamic>;
-    final RequestBody requestBody =
+    RequestBody requestBody =
         RequestBody.fromJson(data['body'] as Map<String, dynamic>);
-    final Map<String, dynamic> requestHeaders =
+    Map<String, dynamic> requestHeaders =
         data['headers'] as Map<String, dynamic>;
-    final Auth auth = Auth.fromJson(data['auth'] as Map<String, dynamic>);
+    Auth auth = Auth.fromJson(data['auth'] as Map<String, dynamic>);
     return RequestOptions(
         requestQuery: requestQuery,
         requestBody: requestBody,
@@ -132,12 +157,12 @@ class RequestOptions {
 
 class RequestBody {
   RequestBody({required this.bodyType, required this.bodyValue});
-  final String bodyType;
-  final Map<String, dynamic> bodyValue;
+  String bodyType;
+  Map<String, dynamic> bodyValue;
 
   factory RequestBody.fromJson(Map<String, dynamic> data) {
-    final bodyType = data['bodyType'] as String?;
-    final bodyValue = data['bodyValue'] as Map<String, dynamic>?;
+    String? bodyType = data['bodyType'] as String?;
+    Map<String, dynamic>? bodyValue = data['bodyValue'] as Map<String, dynamic>?;
     return RequestBody(
         bodyType: bodyType ?? 'json', bodyValue: bodyValue ?? {"body": ""});
   }
@@ -145,12 +170,12 @@ class RequestBody {
 
 class Auth {
   Auth({required this.authType, required this.authValue});
-  final String authType;
-  final String authValue;
+  String authType;
+  String authValue;
 
   factory Auth.fromJson(Map<String, dynamic> data) {
-    final authType = data['authType'] as String?;
-    final authValue = data['authValue'] as String?;
+    String? authType = data['authType'] as String?;
+    String? authValue = data['authValue'] as String?;
     return Auth(authType: authType ?? '', authValue: authValue ?? '');
   }
 }
