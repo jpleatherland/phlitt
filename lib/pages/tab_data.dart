@@ -86,7 +86,7 @@ class _TabDataState extends State<TabData> {
           Expanded(
               child: TextField(
             controller: urlController,
-            onSubmitted: (value) => updatedRequest.requestName = value,
+            onSubmitted: (value) => updateRequest('requestUrl', value, true),
             onChanged: (value) => updateRequest('requestUrl', value, false),
           )),
           IconButton(

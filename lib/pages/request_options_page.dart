@@ -13,19 +13,21 @@ class RenderRequestOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> requestOptionHeadings = requestOptions.toJson().keys.toList();
 
-    updateRequestOptions(Map<String,dynamic> newOptions){
+    updateRequestOptions(RequestOptions newOptions){
       // String requestHeader = newOptions.keys.first;
       // requestOptions
+      var toPrint = requestOptions.requestBody.bodyValue['body'];
       print('new options $newOptions');
+      print('requestOptions {$toPrint}');
 
     }
 
     Widget getOptionPage(String requestHeading) {
       switch (requestHeading) {
         case 'requestBody':
-          return RenderRequestBody(existingRequestBody: requestOptions.requestBody, updateRequestOptions: updateRequestOptions,);
+          return RenderRequestBody(existingRequestOptions: requestOptions, updateRequestOptions: updateRequestOptions,);
         case 'auth':
-          return RenderRequestAuth(auth: requestOptions.auth, onUpdated: updateRequestOptions);
+          return RenderRequestAuth(requestOptions: requestOptions, onUpdated: updateRequestOptions);
         default:
           return Text('$requestHeading to be implemented');
       }

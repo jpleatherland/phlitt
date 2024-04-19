@@ -37,9 +37,22 @@ class CollectionsManager {
     }
   }
 
-  Future<File> writeCollections(Collection collection) async {
-    final file = await _localFile;
+  CollectionGroup getCollectionGroups() {
+    CollectionGroup thingToReturn = readCollectionsFile();
+    
+    return thingToReturn;
+  }
 
-    return file.writeAsString('$collection');
+  Future<void> writeCollections(CollectionGroup collection) async {
+    final file = await _localFile;
+    final contents = jsonEncode(collection.toJson(collection));
+    final firstRead = await file.readAsString();
+    print(firstRead.toString());
+
+    await file.writeAsString(contents);
+    final secondRead = await file.readAsString();
+    print(secondRead.toString());
+    print('done');
+
   }
 }

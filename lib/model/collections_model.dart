@@ -9,6 +9,12 @@ class CollectionGroup {
         .toList() as List<Collection>;
     return CollectionGroup(collections: collections);
   }
+
+  Map<String, dynamic> toJson(CollectionGroup collectionGroup){
+    return {
+      'collections': collectionGroup.collections.map((e) => e.toJson(),),
+    };
+  }
 }
 
 class Collection {
@@ -52,6 +58,14 @@ class Collection {
         requestGroups: requestGroups,
         environments: environments);
   }
+
+  Map<String, dynamic> toJson() {
+    return{
+      'collectionName': collectionName,
+      'requestGroups': requestGroups.map((e) => e.toJson()),
+      'environments': environments.map((e) => e.toJson())
+    };
+  }
 }
 
 class RequestGroup {
@@ -66,6 +80,13 @@ class RequestGroup {
             (request) => Request.fromJson(request as Map<String, dynamic>))
         .toList() as List<Request>;
     return RequestGroup(requestGroupName: requestGroupName, requests: requests);
+  }
+
+  Map<String, dynamic> toJson(){
+    return{
+      'requestGroupName': requestGroupName,
+      'requests': requests.map((e) => e._toMap())
+    };
   }
 }
 
@@ -98,7 +119,7 @@ class Request {
       'requestName': requestName,
       'requestMethod': requestMethod,
       'requestUrl': requestUrl,
-      'options': options
+      'options': options.toJson()
     };
   }
 
@@ -125,6 +146,13 @@ class Environment {
     return Environment(
         environmentName: environmentName ?? '',
         environmentParameters: environmentParameters ?? {});
+  }
+
+  Map<String, dynamic> toJson(){
+    return{
+      'environmentName': environmentName,
+      'environmentParameters': environmentParameters
+    };
   }
 }
 
@@ -186,5 +214,11 @@ class Auth {
     String? authType = data['authType'] as String?;
     String? authValue = data['authValue'] as String?;
     return Auth(authType: authType ?? '', authValue: authValue ?? '');
+  }
+
+  Map<String, dynamic> toJson(){
+    return{'authType': authType,
+    'authValue': authValue
+    };
   }
 }
