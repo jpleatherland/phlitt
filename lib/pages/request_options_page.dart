@@ -16,10 +16,7 @@ class RenderRequestOptions extends StatelessWidget {
     updateRequestOptions(RequestOptions newOptions){
       // String requestHeader = newOptions.keys.first;
       // requestOptions
-      var toPrint = requestOptions.requestBody.bodyValue['body'];
-      print('new options $newOptions');
-      print('requestOptions {$toPrint}');
-
+      //var toPrint = requestOptions.requestBody.bodyValue['body'];
     }
 
     Widget getOptionPage(String requestHeading) {

@@ -11,12 +11,12 @@ String collectionTemplate = '''{
                             "requestMethod": "GET",
                             "requestUrl": "{{server1}}/test",
                             "options": {
-                                "query": {},
-                                "body": {
+                                "requestQuery": {},
+                                "requestBody": {
                                     "bodyType": "",
                                     "bodyValue": {}
                                 },
-                                "headers": {},
+                                "requestHeaders": {},
                                 "auth": {
                                     "authType": "",
                                     "authValue": ""
@@ -28,12 +28,12 @@ String collectionTemplate = '''{
                             "requestMethod": "GET",
                             "requestUrl": "{{server1}}",
                             "options": {
-                                "query": {},
-                                "body": {
+                                "requestQuery": {},
+                                "requestBody": {
                                     "bodyType": "",
                                     "bodyValue": {}
                                 },
-                                "headers": {},
+                                "requestHeaders": {},
                                 "auth": {
                                     "authType": "",
                                     "authValue": ""
@@ -65,12 +65,12 @@ String collectionTemplate = '''{
                             "requestMethod": "GET",
                             "requestUrl": "https://jsonplaceholder.typicode.com/todos/4",
                             "options": {
-                                "query": {},
-                                "body": {
+                                "requestQuery": {},
+                                "requestBody": {
                                     "bodyType": "",
                                     "bodyValue": {}
                                 },
-                                "headers": {},
+                                "requestHeaders": {},
                                 "auth": {
                                     "authType": "",
                                     "authValue": ""
@@ -87,12 +87,12 @@ String collectionTemplate = '''{
                             "requestMethod": "GET",
                             "requestUrl": "https://jsonplaceholder.typicode.com/users/3",
                             "options": {
-                                "query": {},
-                                "body": {
+                                "requestQuery": {},
+                                "requestBody": {
                                     "bodyType": "",
                                     "bodyValue": {}
                                 },
-                                "headers": {},
+                                "requestHeaders": {},
                                 "auth": {
                                     "authType": "",
                                     "authValue": ""
@@ -104,12 +104,12 @@ String collectionTemplate = '''{
                             "requestMethod": "GET",
                             "requestUrl": "https://jsonplaceholder.typicode.com/posts/5",
                             "options": {
-                                "query": {},
-                                "body": {
+                                "requestQuery": {},
+                                "requestBody": {
                                     "bodyType": "",
                                     "bodyValue": {}
                                 },
-                                "headers": {},
+                                "requestHeaders": {},
                                 "auth": {
                                     "authType": "",
                                     "authValue": ""

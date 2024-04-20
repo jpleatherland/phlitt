@@ -11,10 +11,10 @@ class RenderRequestBody extends StatelessWidget {
 
   Widget renderRequestBody() {
     final TextEditingController bodyController =
-        TextEditingController(text: existingRequestOptions.requestBody.bodyValue['body'] as String);
+        TextEditingController(text: existingRequestOptions.requestBody.bodyValue?['body'] as String?);
 
     void doAThing(value) {
-      existingRequestOptions.requestBody.bodyValue['body'] = value as String;
+      existingRequestOptions.requestBody.bodyValue?['body'] = value as String?;
       updateRequestOptions(existingRequestOptions);
     }
 
