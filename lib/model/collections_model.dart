@@ -166,14 +166,14 @@ class RequestOptions {
       required this.requestHeaders,
       required this.auth});
   Map<String, dynamic>? requestQuery;
-  List<RequestBody> requestBody;
+  RequestBody requestBody;
   Map<String, dynamic>? requestHeaders;
   Auth auth;
 
   factory RequestOptions.fromJson(Map<String, dynamic> data) {
     Map<String, dynamic>? requestQuery = data['requestQuery'] as Map<String, dynamic>?;
-    List<RequestBody> requestBody =
-        data['requestBody'].map<String, String>((e) => RequestBody.fromJson(e as Map<String, String>)).toList() as List<RequestBody>;
+    RequestBody requestBody =
+        RequestBody.fromJson(data['requestBody'] as Map<String, dynamic>);
     Map<String, dynamic>? requestHeaders =
         data['requestHeaders'] as Map<String, dynamic>?;
     Auth auth = Auth.fromJson(data['auth'] as Map<String, dynamic>);
@@ -187,7 +187,7 @@ class RequestOptions {
   Map<String, dynamic> toJson() {
     return {
       'requestQuery': requestQuery,
-      'requestBody': requestBody.map((e) => RequestBody.fromJson(e as Map<String, String>),).toList(),
+      'requestBody': requestBody.toJson(),
       'requestHeaders': requestHeaders,
       'auth': auth
     };
@@ -197,14 +197,14 @@ class RequestOptions {
 class RequestBody {
   RequestBody({required this.bodyType, required this.bodyValue});
   String? bodyType;
-  String? bodyValue;
+  Map<String, dynamic> bodyValue;
 
   factory RequestBody.fromJson(Map<String, dynamic> data) {
     String? bodyType = data['bodyType'] as String?;
-    String? bodyValue =
-        data['bodyValue'] as String?;
+    Map<String, dynamic>? bodyValue =
+        data['bodyValue'] as Map<String, dynamic>?;
     return RequestBody(
-        bodyType: bodyType ?? "", bodyValue: bodyValue ?? "");
+        bodyType: bodyType ?? "", bodyValue: bodyValue ?? {});
   }
 
   Map<String, dynamic> toJson() {
