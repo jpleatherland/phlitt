@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:qapic/widgets/render_request_body.dart';
 import 'package:qapic/widgets/render_request_auth.dart';
+import 'package:qapic/widgets/render_request_query.dart';
 import 'package:qapic/model/collections_model.dart';
 
 class RenderRequestOptions extends StatelessWidget {
   final RequestOptions requestOptions;
 
-  const RenderRequestOptions(
-      {super.key, required this.requestOptions});
+  const RenderRequestOptions({super.key, required this.requestOptions});
 
-   @override
+  @override
   Widget build(BuildContext context) {
     List<String> requestOptionHeadings = requestOptions.toJson().keys.toList();
 
-    updateRequestOptions(RequestOptions newOptions){
+    updateRequestOptions(RequestOptions newOptions) {
       // String requestHeader = newOptions.keys.first;
       // requestOptions
       //var toPrint = requestOptions.requestBody.bodyValue['body'];
@@ -22,9 +22,17 @@ class RenderRequestOptions extends StatelessWidget {
     Widget getOptionPage(String requestHeading) {
       switch (requestHeading) {
         case 'requestBody':
-          return RenderRequestBody(existingRequestOptions: requestOptions, updateRequestOptions: updateRequestOptions,);
+          return RenderRequestBody(
+            existingRequestOptions: requestOptions,
+            updateRequestOptions: updateRequestOptions,
+          );
         case 'auth':
-          return RenderRequestAuth(requestOptions: requestOptions, onUpdated: updateRequestOptions);
+          return RenderRequestAuth(
+              requestOptions: requestOptions, onUpdated: updateRequestOptions);
+        case 'requestQuery':
+          return RenderRequestQuery(
+            requestQuery: requestOptions.requestQuery, context: context,
+          );
         default:
           return Text('$requestHeading to be implemented');
       }
@@ -45,15 +53,19 @@ class RenderRequestOptions extends StatelessWidget {
                     child: TabBar(
                         tabs: requestOptionHeadings
                             .map(
-                              (e) => Tab(text: e.replaceRange(0,1,e[0].toUpperCase())),
+                              (e) => Tab(
+                                  text:
+                                      e.replaceRange(0, 1, e[0].toUpperCase())),
                             )
                             .toList()),
                   ),
                   Expanded(
-                    child:
-                    TabBarView(
-                        children: requestOptions.toJson().keys.map<Widget>((key) => getOptionPage(key)).toList()
-                            ),
+                    child: TabBarView(
+                        children: requestOptions
+                            .toJson()
+                            .keys
+                            .map<Widget>((key) => getOptionPage(key))
+                            .toList()),
                   ),
                 ],
               ),

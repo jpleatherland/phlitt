@@ -13,13 +13,12 @@ class CollectionsPage extends StatelessWidget with CollectionsManager {
   final CollectionGroup collectionGroups;
   const CollectionsPage({super.key, required this.collectionGroups});
 
-  writeBack(){
+  writeBack() {
     writeCollections(collectionGroups);
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: GridView.count(
@@ -34,10 +33,12 @@ class CollectionsPage extends StatelessWidget with CollectionsManager {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => MainPage(
-                                    collection:
-                                        collectionGroups.collections[index],
-                                    writeback: writeBack,),
-                              ))),
+                                  collection:
+                                      collectionGroups.collections[index],
+                                  writeback: writeBack,
+                                ),
+                              )),
+                          iconSize: 100,),
                       Text(collectionGroups.collections[index].collectionName),
                     ],
                   ))),

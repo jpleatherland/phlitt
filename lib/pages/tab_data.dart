@@ -13,7 +13,6 @@ class TabData extends StatefulWidget {
 }
 
 class _TabDataState extends State<TabData> {
-
   RequestsManager rm = RequestsManager();
   Map<String, dynamic> responseData = {'statusCode': 0, 'body': ''};
   late Request updatedRequest;
@@ -64,7 +63,7 @@ class _TabDataState extends State<TabData> {
     }
 
     return Column(mainAxisSize: MainAxisSize.min, children: [
-    Row(
+      Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
@@ -99,8 +98,8 @@ class _TabDataState extends State<TabData> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-                child:
-                    RenderRequestOptions(requestOptions: updatedRequest.options)),
+                child: RenderRequestOptions(
+                    requestOptions: updatedRequest.options)),
             Expanded(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

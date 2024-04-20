@@ -6,8 +6,7 @@ import 'dart:convert';
 import 'package:qapic/model/collections_model.dart';
 import './example_collection.dart';
 
-mixin class CollectionsManager {  
-
+mixin class CollectionsManager {
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
@@ -35,19 +34,13 @@ mixin class CollectionsManager {
     } catch (error) {
       throw Exception(error);
     }
-  } 
+  }
 
   Future<void> writeCollections(CollectionGroup collection) async {
     final file = await _localFile;
     final dataToEncode = collection.toJson(collection);
     final contents = jsonEncode(dataToEncode);
-    final firstRead = await file.readAsString();
-    print(firstRead.toString());
 
-    await file.writeAsString(contents);
-    final secondRead = await file.readAsString();
-    print(secondRead.toString());
-    print('done');
-
+    file.writeAsString(contents);
   }
 }

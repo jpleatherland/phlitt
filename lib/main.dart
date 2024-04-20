@@ -16,10 +16,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'QAPIC',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 0, 100, 193)),
         useMaterial3: true,
+        fontFamily: 'NotoSans',
       ),
       home: MyHomePage(title: 'QAPIC', collections: CollectionsManager()),
     );
@@ -28,9 +30,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title, required this.collections});
-
   final String title;
-
   final CollectionsManager collections;
 
   @override

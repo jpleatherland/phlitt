@@ -165,20 +165,21 @@ class RequestOptions {
       required this.requestBody,
       required this.requestHeaders,
       required this.auth});
-  Map<String, dynamic>? requestQuery;
+  RequestQuery requestQuery;
   RequestBody requestBody;
   Map<String, dynamic>? requestHeaders;
   Auth auth;
 
   factory RequestOptions.fromJson(Map<String, dynamic> data) {
-    Map<String, dynamic>? requestQuery = data['requestQuery'] as Map<String, dynamic>?;
+    RequestQuery requestQuery =
+        RequestQuery.fromJson(data['requestQuery'] as Map<String, dynamic>);
     RequestBody requestBody =
         RequestBody.fromJson(data['requestBody'] as Map<String, dynamic>);
     Map<String, dynamic>? requestHeaders =
         data['requestHeaders'] as Map<String, dynamic>?;
     Auth auth = Auth.fromJson(data['auth'] as Map<String, dynamic>);
     return RequestOptions(
-        requestQuery: requestQuery ?? {},
+        requestQuery: requestQuery,
         requestBody: requestBody,
         requestHeaders: requestHeaders,
         auth: auth);
@@ -186,7 +187,7 @@ class RequestOptions {
 
   Map<String, dynamic> toJson() {
     return {
-      'requestQuery': requestQuery,
+      'requestQuery': requestQuery.toJson(),
       'requestBody': requestBody.toJson(),
       'requestHeaders': requestHeaders,
       'auth': auth
@@ -194,17 +195,32 @@ class RequestOptions {
   }
 }
 
+class RequestQuery {
+  RequestQuery({required this.queryParams, required this.pathVariables});
+  Map<String, dynamic> queryParams;
+  Map<String, dynamic> pathVariables;
+
+  factory RequestQuery.fromJson(Map<String, dynamic> data) {
+    Map<String, dynamic>? queryParams = data['queryParams'] as Map<String, dynamic>?;
+    Map<String, dynamic>? pathVariables = data['pathVariables'] as Map<String, dynamic>?;
+    return RequestQuery(queryParams: queryParams ?? {"":""}, pathVariables: pathVariables ?? {"":""});
+  }
+
+  Map<String, dynamic> toJson(){
+    return{'queryParams': queryParams, 'pathVariables': pathVariables};
+  }
+}
+
 class RequestBody {
   RequestBody({required this.bodyType, required this.bodyValue});
-  String? bodyType;
+  String bodyType;
   Map<String, dynamic> bodyValue;
 
   factory RequestBody.fromJson(Map<String, dynamic> data) {
     String? bodyType = data['bodyType'] as String?;
     Map<String, dynamic>? bodyValue =
         data['bodyValue'] as Map<String, dynamic>?;
-    return RequestBody(
-        bodyType: bodyType ?? "", bodyValue: bodyValue ?? {});
+    return RequestBody(bodyType: bodyType ?? "", bodyValue: bodyValue ?? {});
   }
 
   Map<String, dynamic> toJson() {
