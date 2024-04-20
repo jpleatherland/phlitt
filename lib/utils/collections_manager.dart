@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:qapic/model/collections_model.dart';
 import './example_collection.dart';
 
-class CollectionsManager {  
+mixin class CollectionsManager {  
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -39,7 +39,8 @@ class CollectionsManager {
 
   Future<void> writeCollections(CollectionGroup collection) async {
     final file = await _localFile;
-    final contents = jsonEncode(collection.toJson(collection));
+    final dataToEncode = collection.toJson(collection);
+    final contents = jsonEncode(dataToEncode);
     final firstRead = await file.readAsString();
     print(firstRead.toString());
 

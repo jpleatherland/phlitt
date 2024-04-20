@@ -19,7 +19,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    Function writeback = widget.writeback;
     Collection collection = widget.collection;
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
+
     var tabController = TabController(length: openRequests.length, vsync: this);
 
     void selectRequest(Request request) {
@@ -35,11 +38,19 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           initialIndex: openRequests.indexOf(request));
     }
 
-    var colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text('AHHHHH')
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          title: Text(collection.collectionName,
+              style: TextStyle(color: colorScheme.onPrimary)),
+        actions:[
+            IconButton(
+                onPressed: () =>
+                    writeback(),
+                icon: const Icon(Icons.save),
+                iconSize: 37)
+          ]
       ),
       body: Row(
         mainAxisSize: MainAxisSize.min,

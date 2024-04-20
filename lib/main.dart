@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:qapic/model/collections_model.dart';
 
 import 'pages/collections_overview.dart';
-import 'pages/main_page.dart';
 
 import 'utils/collections_manager.dart';
 
@@ -49,26 +48,6 @@ class _MyHomePageState extends State<MyHomePage> {
     collectionsFile = widget.collections.readCollectionsFile();
   }
 
-  // Widget routeSelector(int selectedIndex, CollectionGroup collectionsFile,
-  //     String selectedCollectionName) {
-  //   late Collection selectedCollection;
-  //   if (selectedCollectionName != "") {
-  //     selectedCollection = Collection.fromCollectionGroup(
-  //         collectionsFile, selectedCollectionName);
-  //   }
-
-  //   switch (selectedIndex) {
-  //     case 0:
-  //       return CollectionsPage(collectionGroup: collectionsFile);
-  //     case 1:
-  //       return MainPage(
-  //           collection: selectedCollection,
-  //           collectionName: selectedCollectionName);
-  //     default:
-  //       return CollectionsPage(collectionGroup: collectionsFile);
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
@@ -86,13 +65,6 @@ class _MyHomePageState extends State<MyHomePage> {
             iconSize: 34,
             color: colorScheme.onPrimary,
           ),
-          actions: [
-            IconButton(
-                onPressed: () =>
-                    widget.collections.writeCollections(collectionsFile as CollectionGroup),
-                icon: const Icon(Icons.save),
-                iconSize: 37)
-          ],
         ),
         body: Center(
           child: FutureBuilder(
@@ -101,17 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (!snapshot.hasData) {
                   return const Text('Loading...');
                 } else {
-                  return CollectionsPage(collectionGroup: snapshot.data!);
-                  // return NotificationListener<CollectionSelected>(
-                  //     child: routeSelector(selectedIndex, snapshot.data!,
-                  //         selectedCollectionName),
-                  //     onNotification: (notification) {
-                  //       setState(() {
-                  //         selectedIndex = notification.index;
-                  //         selectedCollectionName = notification.val;
-                  //       });
-                  //       return true;
-                  //     });
+                  return CollectionsPage(collectionGroups: snapshot.data!);
                 }
               }),
         ));

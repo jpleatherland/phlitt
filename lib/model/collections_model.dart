@@ -12,7 +12,7 @@ class CollectionGroup {
 
   Map<String, dynamic> toJson(CollectionGroup collectionGroup){
     return {
-      'collections': collectionGroup.collections.map((e) => e.toJson(),),
+      'collections': collectionGroup.collections.map((e) => e.toJson(),).toList(),
     };
   }
 }
@@ -62,8 +62,8 @@ class Collection {
   Map<String, dynamic> toJson() {
     return{
       'collectionName': collectionName,
-      'requestGroups': requestGroups.map((e) => e.toJson()),
-      'environments': environments.map((e) => e.toJson())
+      'requestGroups': requestGroups.map((e) => e.toJson()).toList(),
+      'environments': environments.map((e) => e.toJson()).toList()
     };
   }
 }
@@ -85,7 +85,7 @@ class RequestGroup {
   Map<String, dynamic> toJson(){
     return{
       'requestGroupName': requestGroupName,
-      'requests': requests.map((e) => e._toMap())
+      'requests': requests.map((e) => e._toMap()).toList()
     };
   }
 }
@@ -162,18 +162,18 @@ class RequestOptions {
       required this.requestBody,
       required this.requestHeaders,
       required this.auth});
-  Map<String, dynamic> requestQuery;
+  Map<String, dynamic>? requestQuery;
    RequestBody requestBody;
-   Map<String, dynamic> requestHeaders;
+   Map<String, dynamic>? requestHeaders;
    Auth auth;
 
   factory RequestOptions.fromJson(Map<String, dynamic> data) {
-    Map<String, dynamic> requestQuery =
-        data['query'] as Map<String, dynamic>;
+    Map<String, dynamic>? requestQuery =
+        data['query'] as Map<String, dynamic>?;
     RequestBody requestBody =
         RequestBody.fromJson(data['body'] as Map<String, dynamic>);
-    Map<String, dynamic> requestHeaders =
-        data['headers'] as Map<String, dynamic>;
+    Map<String, dynamic>? requestHeaders =
+        data['headers'] as Map<String, dynamic>?;
     Auth auth = Auth.fromJson(data['auth'] as Map<String, dynamic>);
     return RequestOptions(
         requestQuery: requestQuery,
@@ -185,7 +185,7 @@ class RequestOptions {
   Map<String, dynamic> toJson(){
     return {
       'requestQuery': requestQuery,
-      'requestBody': requestBody,
+      'requestBody': requestBody.toJson(),
       'requestHeaders': requestHeaders,
       'auth': auth
     };
@@ -202,6 +202,13 @@ class RequestBody {
     Map<String, dynamic>? bodyValue = data['bodyValue'] as Map<String, dynamic>?;
     return RequestBody(
         bodyType: bodyType ?? 'json', bodyValue: bodyValue ?? {"body": ""});
+  }
+
+  Map<String, dynamic> toJson(){
+    return {
+      'bodyType': bodyType,
+      'bodyValue': bodyValue
+    };
   }
 }
 
