@@ -6,8 +6,9 @@ import 'package:qapic/model/collections_model.dart';
 
 class RenderRequestOptions extends StatelessWidget {
   final RequestOptions requestOptions;
+  final String requestUrl;
 
-  const RenderRequestOptions({super.key, required this.requestOptions});
+  const RenderRequestOptions({super.key, required this.requestOptions, required this.requestUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class RenderRequestOptions extends StatelessWidget {
               requestOptions: requestOptions, onUpdated: updateRequestOptions);
         case 'requestQuery':
           return RenderRequestQuery(
-            requestQuery: requestOptions.requestQuery, context: context,
+            requestQuery: requestOptions.requestQuery, context: context, requestUrl: requestUrl,
           );
         default:
           return Text('$requestHeading to be implemented');

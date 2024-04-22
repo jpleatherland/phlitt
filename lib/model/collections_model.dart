@@ -1,6 +1,6 @@
 class CollectionGroup {
   CollectionGroup({required this.collections});
-  final List<Collection> collections;
+  List<Collection> collections;
 
   factory CollectionGroup.fromJson(Map<String, dynamic> data) {
     List<Collection> collections = data['collections']
@@ -53,7 +53,7 @@ class Collection {
         .map<RequestGroup>((requestGroup) =>
             RequestGroup.fromJson(requestGroup as Map<String, dynamic>))
         .toList() as List<RequestGroup>;
-    final environments = data['environments']
+    List<Environment> environments = data['environments']
         .map<Environment>((environment) =>
             Environment.fromJson(environment as Map<String, dynamic>))
         .toList() as List<Environment>;

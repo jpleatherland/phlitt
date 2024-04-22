@@ -59,6 +59,9 @@ class _TabDataState extends State<TabData> {
       }
       if (send) {
         rm.submitRequest(updatedRequest, updateResponse);
+      } else {
+        print('editingcomplete');
+        setState(() {});
       }
     }
 
@@ -83,10 +86,17 @@ class _TabDataState extends State<TabData> {
                     updateRequest('requestMethod', value, false)),
           ),
           Expanded(
+              child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Focus(
+              canRequestFocus: false,
+              onFocusChange: (hasFocus) => {hasFocus ? null : updateRequest('requestUrl', urlController.text, false)},
               child: TextField(
-            controller: urlController,
-            onSubmitted: (value) => updateRequest('requestUrl', value, true),
-            onChanged: (value) => updateRequest('requestUrl', value, false),
+                controller: urlController,
+                onSubmitted: (value) =>
+                    updateRequest('requestUrl', value, true),
+              ),
+            ),
           )),
           IconButton(
               icon: const Icon(Icons.send),
@@ -99,7 +109,8 @@ class _TabDataState extends State<TabData> {
           children: [
             Expanded(
                 child: RenderRequestOptions(
-                    requestOptions: updatedRequest.options)),
+                    requestOptions: updatedRequest.options,
+                    requestUrl: updatedRequest.requestUrl)),
             Expanded(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

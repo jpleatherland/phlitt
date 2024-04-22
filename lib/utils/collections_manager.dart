@@ -29,7 +29,7 @@ mixin class CollectionsManager {
       final file = await _localFile;
       final contents = await file.readAsString();
       final collections = jsonDecode(contents) as Map<String, dynamic>;
-      final collectionToReturn = CollectionGroup.fromJson(collections);
+      CollectionGroup collectionToReturn = CollectionGroup.fromJson(collections);
       return collectionToReturn;
     } catch (error) {
       throw Exception(error);
