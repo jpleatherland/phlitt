@@ -5,32 +5,38 @@ class RenderRequestQuery extends StatelessWidget {
   final RequestQuery requestQuery;
   final BuildContext context;
   final String requestUrl;
+  final Function updateRequestQuery;
 
   const RenderRequestQuery(
       {super.key,
       required this.requestQuery,
       required this.context,
-      required this.requestUrl});
+      required this.requestUrl,
+      required this.updateRequestQuery});
 
-  void updateRequestQuery() {}
+  // void updateRequestQuery() {}
 
   Widget renderQueryOptions() {
     final uri = Uri.parse(requestUrl);
     final pathVariables = uri.pathSegments;
     for (final pathVar in pathVariables) {
-      if(pathVar.startsWith(':')){        
+      if (pathVar.startsWith(':')) {
         requestQuery.pathVariables[pathVar.split(':')[1]] = '';
       }
     }
 
-    requestQuery.queryParams.removeWhere((k, v) => !pathVariables.contains(k));
+    updateRequestQuery(pathVariables)
 
     requestQuery.queryParams = uri.queryParameters;
 
     return Column(
       children: [
-        ...requestQuery.pathVariables.entries.map((mapEntry) => Text('${mapEntry.key}:${mapEntry.value}'),),
-        ...requestQuery.queryParams.entries.map((mapEntry) => Text('${mapEntry.key}:${mapEntry.value}'),),
+        ...requestQuery.pathVariables.entries.map(
+          (mapEntry) => Text('${mapEntry.key}:${mapEntry.value}'),
+        ),
+        ...requestQuery.queryParams.entries.map(
+          (mapEntry) => Text('${mapEntry.key}:${mapEntry.value}'),
+        ),
       ],
     );
   }

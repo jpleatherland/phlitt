@@ -48,6 +48,32 @@ class _TabDataState extends State<TabData> {
       }
     }
 
+    void updateRequestQueries(String requestUrl){
+      final uri = Uri.parse(requestUrl);
+      Map<String, dynamic> updatedQueryParams = {};
+      Map<String, dynamic> updatedPathVariables = {}; 
+      final pathVariables = uri.pathSegments;
+      for (final pathVar in pathVariables) {
+        if (pathVar.startsWith(':')) {
+          updatedPathVariables[pathVar.split(':')[1]] = '';
+        }
+      }
+            for(final pathVar in updatedRequest.options.requestQuery.pathVariables.keys){
+        if(!updatedPathVariables.keys.contains(pathVar)){
+          updatedRequest.options.requestQuery.pathVariables.remove(pathVar);
+        }
+      }
+      for (final pathVar in updatedPathVariables.keys) {
+        if (updatedRequest.options.requestQuery.pathVariables.keys.contains(pathVar)) {
+          updatedPathVariables.remove(pathVar);
+        }
+      }
+
+      final queryParams = uri.queryParameters;
+      //do what was done above for path vars for query params
+    }
+    updatedRequest.options.requestQuery.pathVariables;
+
     void updateRequest(String key, dynamic value, bool send) {
       switch (key) {
         case 'requestMethod':
@@ -55,6 +81,7 @@ class _TabDataState extends State<TabData> {
           break;
         case 'requestUrl':
           updatedRequest.requestUrl = value as String;
+          updateRequestQueries(value) as String;
         default:
       }
       if (send) {
@@ -64,6 +91,8 @@ class _TabDataState extends State<TabData> {
         setState(() {});
       }
     }
+
+
 
     return Column(mainAxisSize: MainAxisSize.min, children: [
       Row(
