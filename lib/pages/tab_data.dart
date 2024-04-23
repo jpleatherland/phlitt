@@ -50,27 +50,29 @@ class _TabDataState extends State<TabData> {
 
     void updateRequestQueries(String requestUrl){
       final uri = Uri.parse(requestUrl);
-      Map<String, dynamic> updatedQueryParams = {};
       Map<String, dynamic> updatedPathVariables = {}; 
       final pathVariables = uri.pathSegments;
+      
       for (final pathVar in pathVariables) {
         if (pathVar.startsWith(':')) {
           updatedPathVariables[pathVar.split(':')[1]] = '';
         }
       }
-            for(final pathVar in updatedRequest.options.requestQuery.pathVariables.keys){
-        if(!updatedPathVariables.keys.contains(pathVar)){
-          updatedRequest.options.requestQuery.pathVariables.remove(pathVar);
-        }
-      }
-      for (final pathVar in updatedPathVariables.keys) {
-        if (updatedRequest.options.requestQuery.pathVariables.keys.contains(pathVar)) {
-          updatedPathVariables.remove(pathVar);
+
+      //save any existing values for our path variables
+      for(final pathVars in updatedRequest.options.requestQuery.pathVariables.entries) {
+        if(updatedPathVariables.keys.contains(pathVars.key)){
+          updatedPathVariables[pathVars.key] = pathVars.value;
         }
       }
 
       final queryParams = uri.queryParameters;
-      //do what was done above for path vars for query params
+
+      setState(() {
+        updatedRequest.options.requestQuery.pathVariables = updatedPathVariables;
+        updatedRequest.options.requestQuery.queryParams = queryParams;  
+      });
+
     }
     updatedRequest.options.requestQuery.pathVariables;
 
@@ -81,18 +83,13 @@ class _TabDataState extends State<TabData> {
           break;
         case 'requestUrl':
           updatedRequest.requestUrl = value as String;
-          updateRequestQueries(value) as String;
+          updateRequestQueries(value);
         default:
       }
       if (send) {
         rm.submitRequest(updatedRequest, updateResponse);
-      } else {
-        print('editingcomplete');
-        setState(() {});
       }
     }
-
-
 
     return Column(mainAxisSize: MainAxisSize.min, children: [
       Row(

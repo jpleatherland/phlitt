@@ -14,20 +14,8 @@ class RenderRequestQuery extends StatelessWidget {
       required this.requestUrl,
       required this.updateRequestQuery});
 
-  // void updateRequestQuery() {}
-
   Widget renderQueryOptions() {
-    final uri = Uri.parse(requestUrl);
-    final pathVariables = uri.pathSegments;
-    for (final pathVar in pathVariables) {
-      if (pathVar.startsWith(':')) {
-        requestQuery.pathVariables[pathVar.split(':')[1]] = '';
-      }
-    }
-
-    updateRequestQuery(pathVariables)
-
-    requestQuery.queryParams = uri.queryParameters;
+    
 
     return Column(
       children: [
