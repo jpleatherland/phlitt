@@ -24,8 +24,8 @@ class _TabDataState extends State<TabData> {
 
   @override
   void dispose() {
-    super.dispose();
     requestMethodController.dispose();
+    super.dispose();
   }
 
   final TextEditingController requestMethodController = TextEditingController();

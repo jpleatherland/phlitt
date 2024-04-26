@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qapic/model/collections_model.dart';
 import 'package:qapic/widgets/render_request_groups.dart';
-import 'package:qapic/pages/tab_data.dart';
+import 'package:qapic/pages/open_request.dart';
 
 class MainPage extends StatefulWidget {
   final Collection collection;
@@ -23,19 +23,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     Collection collection = widget.collection;
     ColorScheme colorScheme = Theme.of(context).colorScheme;
 
-    var tabController = TabController(length: openRequests.length, vsync: this);
-
+    TabController tabController = TabController(length: openRequests.length, vsync: this);
+    if(openRequests.isNotEmpty){
+      tabController.index = openRequests.length-1;
+    }
     void selectRequest(Request request) {
-      if (!openRequests.contains(request) && mounted) {
-        setState(
-          () => openRequests.add(request),
-        );
+      if(!openRequests.contains(request)){
+        setState(() => openRequests.add(request),);
+      } else {
+        tabController.index = openRequests.indexOf(request);
       }
-      tabController.dispose();
-      tabController = TabController(
-          length: openRequests.length,
-          vsync: this,
-          initialIndex: openRequests.indexOf(request));
+
     }
 
     return Scaffold(
