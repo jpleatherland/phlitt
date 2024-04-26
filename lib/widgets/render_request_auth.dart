@@ -5,13 +5,15 @@ class RenderRequestAuth extends StatelessWidget {
   final RequestOptions requestOptions;
   final Function onUpdated;
   final List<String> authTypeOptions = [
-    'Basic Auth',
-    'Bearer Token',
+    'Basic',
+    'Bearer',
     'No Auth'
   ];
 
   RenderRequestAuth(
       {super.key, required this.requestOptions, required this.onUpdated});
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,9 @@ class RenderRequestAuth extends StatelessWidget {
                 .map((e) => DropdownMenuEntry(value: e, label: e))
                 .toList(),
             onSelected: (value) =>
-                requestOptions.auth.authType = value as String)
+                requestOptions.auth.authType = value as String),
+        TextFormField(initialValue: requestOptions.auth.authValue,
+          onFieldSubmitted: (value) => requestOptions.auth.authValue = value,)
       ],
     );
   }

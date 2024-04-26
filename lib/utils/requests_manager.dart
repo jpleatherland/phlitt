@@ -7,7 +7,7 @@ class RequestsManager {
     Uri requestUrl = Uri.parse(request.requestUrl);
     switch (request.requestMethod) {
       case 'GET':
-        getRequest(requestUrl, updateResponse);
+        getRequest(request, updateResponse);
         break;
       case 'POST':
         postRequest(requestUrl, request.options.requestBody, updateResponse);
@@ -22,8 +22,28 @@ class RequestsManager {
     }
   }
 
-  void getRequest(Uri requestUrl, Function updateResponse) async {
-    http.Response response = await http.get(requestUrl);
+  void getRequest(Request request, Function updateResponse) async {
+    Uri currentUrl = Uri.parse(request.requestUrl);
+    String currentScheme = currentUrl.scheme;
+    String currentHost = currentUrl.host;
+    List<String> splitPath = currentUrl.path.split("/").sublist(1);
+    List<dynamic> updatedPath = [];
+    for (var element in splitPath) {
+      if (element.startsWith(":")) {
+        updatedPath.add(request.options.requestQuery.pathVariables[element.substring(1)]);
+      } else {
+        updatedPath.add(element);
+      }
+    }
+    Map<String, String> currentQueryParams = currentUrl.queryParameters;
+    String authType = request.options.auth.authType;
+    String authValue = request.options.auth.authValue;
+    Uri parsedUrl = Uri(
+        scheme: currentScheme,
+        host: currentHost,
+        path: updatedPath.join("/"),
+        queryParameters: currentQueryParams);
+    http.Response response = await http.get(parsedUrl, headers: {'authorization': '$authType $authValue'});
     updateResponse({
       'statusCode': response.statusCode,
       'body': json.decode(response.body)

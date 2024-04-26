@@ -48,11 +48,11 @@ class _TabDataState extends State<TabData> {
       }
     }
 
-    void updateRequestQueries(String requestUrl){
+    void updateRequestQueries(String requestUrl) {
       final uri = Uri.parse(requestUrl);
-      Map<String, dynamic> updatedPathVariables = {}; 
+      Map<String, dynamic> updatedPathVariables = {};
       final pathVariables = uri.pathSegments;
-      
+
       for (final pathVar in pathVariables) {
         if (pathVar.startsWith(':')) {
           updatedPathVariables[pathVar.split(':')[1]] = '';
@@ -60,8 +60,9 @@ class _TabDataState extends State<TabData> {
       }
 
       //save any existing values for our path variables
-      for(final pathVars in updatedRequest.options.requestQuery.pathVariables.entries) {
-        if(updatedPathVariables.keys.contains(pathVars.key)){
+      for (final pathVars
+          in updatedRequest.options.requestQuery.pathVariables.entries) {
+        if (updatedPathVariables.keys.contains(pathVars.key)) {
           updatedPathVariables[pathVars.key] = pathVars.value;
         }
       }
@@ -69,12 +70,83 @@ class _TabDataState extends State<TabData> {
       final queryParams = uri.queryParameters;
 
       setState(() {
-        updatedRequest.options.requestQuery.pathVariables = updatedPathVariables;
-        updatedRequest.options.requestQuery.queryParams = queryParams;  
+        updatedRequest.options.requestQuery.pathVariables =
+            updatedPathVariables;
+        updatedRequest.options.requestQuery.queryParams = queryParams;
       });
-
     }
-    updatedRequest.options.requestQuery.pathVariables;
+
+    void updateUrlQueries(String originalKey, String queryKey,
+        String queryValue, String queryType) {
+      Uri currentUrl = Uri.parse(updatedRequest.requestUrl);
+      String currentScheme = currentUrl.scheme;
+      String currentHost = currentUrl.host;
+      String currentPath = currentUrl.path;
+      List<String> splitPath = currentUrl.path.split("/").sublist(1);
+      Map<int, String> splitIndexedPath = {};
+      splitPath.asMap().forEach((key, value) => splitIndexedPath[key] = value);
+      Map<String, String> currentQueryParams = currentUrl.queryParameters;
+
+      switch (queryType) {
+        case 'queryParams':
+          Map<String, dynamic> newQueryParameters = {};
+          updatedRequest.options.requestQuery.queryParams.forEach((key, value) {
+            if (key == originalKey) {
+              newQueryParameters[queryKey] = queryValue;
+            } else {
+              newQueryParameters[key] = value;
+            }
+          });
+          if (!newQueryParameters.containsKey(queryKey)) {
+            newQueryParameters[queryKey] = queryValue;
+          }
+          updatedRequest.options.requestQuery.queryParams = newQueryParameters;
+          String newUrl = Uri(
+                  scheme: currentScheme,
+                  host: currentHost,
+                  path: currentPath,
+                  queryParameters:
+                      updatedRequest.options.requestQuery.queryParams)
+              .toString();
+          updatedRequest.requestUrl = newUrl;
+          break;
+        case 'pathVars':
+          Map<String, dynamic> newPathVariables = {};
+          updatedRequest.options.requestQuery.pathVariables
+              .forEach((key, value) {
+            if (key == originalKey) {
+              newPathVariables[queryKey] = queryValue;
+            } else {
+              newPathVariables[key] = value;
+            }
+          });
+          if (!newPathVariables.containsKey(queryKey)) {
+            newPathVariables[queryKey] = queryValue;
+          }
+          updatedRequest.options.requestQuery.pathVariables = newPathVariables;
+          splitIndexedPath.forEach((key, value) {
+            if (value.startsWith(":") && value.substring(1) == originalKey) {
+              splitIndexedPath[key] = ':$queryKey';
+            }
+          });
+          List<String> newPathVars = splitIndexedPath.values.toList();
+          if (!newPathVars.contains(':$queryKey')) {
+            newPathVars.add(':$queryKey');
+          }
+          newPathVars.removeWhere((element) =>
+              element.startsWith(':') &
+              !newPathVariables.keys.contains(element.substring(1)));
+          String newUrl = Uri(
+                  scheme: currentScheme,
+                  host: currentHost,
+                  path: newPathVars.join("/"),
+                  queryParameters: currentQueryParams)
+              .toString();
+          updatedRequest.requestUrl = newUrl;
+        default:
+      }
+      setState(() {});
+    }
 
     void updateRequest(String key, dynamic value, bool send) {
       switch (key) {
@@ -116,7 +188,11 @@ class _TabDataState extends State<TabData> {
             padding: const EdgeInsets.all(10.0),
             child: Focus(
               canRequestFocus: false,
-              onFocusChange: (hasFocus) => {hasFocus ? null : updateRequest('requestUrl', urlController.text, false)},
+              onFocusChange: (hasFocus) => {
+                hasFocus
+                    ? null
+                    : updateRequest('requestUrl', urlController.text, false)
+              },
               child: TextField(
                 controller: urlController,
                 onSubmitted: (value) =>
@@ -135,8 +211,10 @@ class _TabDataState extends State<TabData> {
           children: [
             Expanded(
                 child: RenderRequestOptions(
-                    requestOptions: updatedRequest.options,
-                    requestUrl: updatedRequest.requestUrl)),
+              requestOptions: updatedRequest.options,
+              requestUrl: updatedRequest.requestUrl,
+              updateUrl: updateUrlQueries,
+            )),
             Expanded(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
