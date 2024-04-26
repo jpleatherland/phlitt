@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:qapic/model/collections_model.dart';
+import 'package:qapic/pages/main_page.dart';
+import 'package:qapic/utils/collections_manager.dart';
 
 class CollectionSelected extends Notification {
   final String val;
@@ -6,9 +9,13 @@ class CollectionSelected extends Notification {
   CollectionSelected(this.index, this.val);
 }
 
-class CollectionsPage extends StatelessWidget {
-  final Map<String, dynamic> collections;
-  const CollectionsPage({super.key, required this.collections});
+class CollectionsPage extends StatelessWidget with CollectionsManager {
+  final CollectionGroup collectionGroups;
+  const CollectionsPage({super.key, required this.collectionGroups});
+
+  writeBack() {
+    writeCollections(collectionGroups);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,18 +24,22 @@ class CollectionsPage extends StatelessWidget {
       child: GridView.count(
           crossAxisCount: 2,
           children: List<Widget>.generate(
-              collections['collections'].length,
+              collectionGroups.collections.length,
               (index) => Column(
                     children: [
                       IconButton(
-                          onPressed: () => CollectionSelected(
-                                  1,
-                                  collections['collections'][index]
-                                      ['collectionName'])
-                              .dispatch(context),
                           icon: const Icon(Icons.space_dashboard),
-                          iconSize: 80),
-                      Text(collections['collections'][index]['collectionName']),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MainPage(
+                                  collection:
+                                      collectionGroups.collections[index],
+                                  writeback: writeBack,
+                                ),
+                              )),
+                          iconSize: 100,),
+                      Text(collectionGroups.collections[index].collectionName),
                     ],
                   ))),
     );

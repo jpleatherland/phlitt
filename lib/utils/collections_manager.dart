@@ -3,10 +3,10 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:qapic/model/collections_model.dart';
 import './example_collection.dart';
 
-class CollectionsManager {  
-
+mixin class CollectionsManager {
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
@@ -24,20 +24,23 @@ class CollectionsManager {
     }
   }
 
-  Future<Map<String, dynamic>> readCollectionsFile() async {
+  Future<CollectionGroup> readCollectionsFile() async {
     try {
       final file = await _localFile;
       final contents = await file.readAsString();
       final collections = jsonDecode(contents) as Map<String, dynamic>;
-      return collections;
+      CollectionGroup collectionToReturn = CollectionGroup.fromJson(collections);
+      return collectionToReturn;
     } catch (error) {
-      return {};
+      throw Exception(error);
     }
   }
 
-  Future<File> writeCollections(Map collection) async {
+  Future<void> writeCollections(CollectionGroup collection) async {
     final file = await _localFile;
+    final dataToEncode = collection.toJson(collection);
+    final contents = jsonEncode(dataToEncode);
 
-    return file.writeAsString('$collection');
+    file.writeAsString(contents);
   }
 }

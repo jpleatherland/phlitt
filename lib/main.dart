@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:qapic/model/collections_model.dart';
 
 import 'pages/collections_overview.dart';
-import 'pages/main_page.dart';
 
 import 'utils/collections_manager.dart';
 
@@ -16,10 +16,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'QAPIC',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 0, 100, 193)),
         useMaterial3: true,
+        fontFamily: 'NotoSans',
       ),
       home: MyHomePage(title: 'QAPIC', collections: CollectionsManager()),
     );
@@ -28,9 +30,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title, required this.collections});
-
   final String title;
-
   final CollectionsManager collections;
 
   @override
@@ -40,32 +40,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var selectedIndex = 0;
   String selectedCollectionName = '';
-  late Future<Map<String, dynamic>> collectionsFile;
+  late Future<CollectionGroup> collectionsFile;
 
   @override
   void initState() {
     super.initState();
     collectionsFile = widget.collections.readCollectionsFile();
-  }
-
-  routeSelector(int selectedIndex, Map<String, dynamic> collectionsFile, String selectedCollectionName) {
-    
-    Iterable selectedCollection = [];
-
-    if (selectedCollectionName != '') {
-      selectedCollection = collectionsFile['collections'].where((collection) =>
-          collection['collectionName'] == selectedCollectionName);
-    }
-    switch (selectedIndex) {
-      case 0:
-        return CollectionsPage(collections: collectionsFile);
-      case 1:
-        return MainPage(
-            collection: selectedCollection,
-            collectionName: selectedCollectionName);
-      default:
-        return CollectionsPage(collections: collectionsFile);
-    }
   }
 
   @override
@@ -87,23 +67,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         body: Center(
-            child: FutureBuilder(
-                future: collectionsFile,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Text('Loading...');
-                  } else {
-                    return NotificationListener<CollectionSelected>(
-                        child: routeSelector(selectedIndex, snapshot.data!,
-                            selectedCollectionName),
-                        onNotification: (notification) {
-                          setState(() {
-                            selectedIndex = notification.index;
-                            selectedCollectionName = notification.val;
-                          });
-                          return true;
-                        });
-                  }
-                })));
+          child: FutureBuilder(
+              future: collectionsFile,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Text('Loading...');
+                } else {
+                  return CollectionsPage(collectionGroups: snapshot.data!);
+                }
+              }),
+        ));
   }
 }
