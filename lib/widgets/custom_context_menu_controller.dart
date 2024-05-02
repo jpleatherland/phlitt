@@ -58,7 +58,6 @@ class CustomContextMenuController {
     );
 
     _menuOverlayEntry = OverlayEntry(
-      opaque: true,
       builder: (BuildContext context) {
         return capturedThemes.wrap(contextMenuBuilder(context));
       },

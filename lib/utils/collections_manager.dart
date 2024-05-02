@@ -29,7 +29,8 @@ mixin class CollectionsManager {
       final file = await _localFile;
       final contents = await file.readAsString();
       final collections = jsonDecode(contents) as Map<String, dynamic>;
-      CollectionGroup collectionToReturn = CollectionGroup.fromJson(collections);
+      CollectionGroup collectionToReturn =
+          CollectionGroup.fromJson(collections);
       return collectionToReturn;
     } catch (error) {
       throw Exception(error);
@@ -42,5 +43,36 @@ mixin class CollectionsManager {
     final contents = jsonEncode(dataToEncode);
 
     file.writeAsString(contents);
+  }
+
+  void newRequest(RequestGroup requestGroup) {
+    requestGroup.requests.add(Request(
+        requestName: 'New Request',
+        requestMethod: 'GET',
+        requestUrl: '',
+        options: RequestOptions(
+            requestBody: RequestBody(bodyType: '', bodyValue: {'body': ''}),
+            requestHeaders: {},
+            requestQuery: RequestQuery(pathVariables: {}, queryParams: {}),
+            auth: Auth(authType: '', authValue: ''))));
+  }
+
+  void newRequestGroup(Collection collection) {
+    collection.requestGroups
+        .add(RequestGroup(requestGroupName: 'New Request Group', requests: []));
+  }
+
+  void newCollection(CollectionGroup collectionGroup) {
+    collectionGroup.collections.add(Collection(
+        collectionName: 'New Collection',
+        requestGroups: [
+          RequestGroup(requestGroupName: 'New Request Group', requests: [])
+        ],
+        environments: []));
+  }
+
+  void deleteCollection(CollectionGroup collectionGroup, String collectionName) {
+    print('deleting $collectionName');
+    collectionGroup.collections.removeWhere((e) => e.collectionName == collectionName);
   }
 }

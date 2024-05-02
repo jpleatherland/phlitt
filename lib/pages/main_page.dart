@@ -44,6 +44,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             title: Text(collection.collectionName,
                 style: TextStyle(color: colorScheme.onPrimary)),
             actions: [
+               DropdownMenu(menuStyle: MenuStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onPrimary)), dropdownMenuEntries: [DropdownMenuEntry(label: 'Hi', value: 'Hi')]),
               IconButton(
                   onPressed: () => writeback(),
                   icon: const Icon(Icons.save),
@@ -53,7 +54,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         body: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
+            Flexible(
               flex: 1,
               child: Column(children: [
                 RenderCollectionRequestGroups(
@@ -62,7 +63,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 )
               ]),
             ),
-            Expanded(
+            Flexible(
                 flex: 5,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
