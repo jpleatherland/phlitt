@@ -72,7 +72,10 @@ mixin class CollectionsManager {
   }
 
   void deleteCollection(CollectionGroup collectionGroup, String collectionName) {
-    print('deleting $collectionName');
     collectionGroup.collections.removeWhere((e) => e.collectionName == collectionName);
+  }
+
+  void newEnvironment(Collection collection) {
+    collection.environments.add(Environment(environmentName: 'New Environment', environmentParameters: {}));
   }
 }

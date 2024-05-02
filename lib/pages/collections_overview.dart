@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:qapic/model/collections_model.dart';
 import 'package:qapic/pages/main_page.dart';
 import 'package:qapic/utils/collections_manager.dart';

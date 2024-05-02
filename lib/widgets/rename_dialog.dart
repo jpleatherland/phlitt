@@ -82,3 +82,33 @@ deleteCollectionDialog(
             ),
           )));
 }
+
+renameEnvironmentDialog(
+  BuildContext context,
+  Environment environment,
+  void Function(Environment environment, String value) callback,
+) {
+  TextEditingController controller =
+      TextEditingController(text: environment.environmentName);
+  Navigator.of(context).push(DialogRoute<void>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+            title: const Text("Environment Name:"),
+            content: Column(
+              children: [
+                TextFormField(
+                    controller: controller,
+                    onFieldSubmitted: (value) {
+                      callback(environment, value);
+                      Navigator.of(context).pop();
+                    }),
+                IconButton(
+                    onPressed: () {
+                      callback(environment, controller.text);
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(Icons.save))
+              ],
+            ),
+          )));
+}

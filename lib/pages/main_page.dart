@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qapic/model/collections_model.dart';
+import 'package:qapic/pages/environments_page.dart';
 import 'package:qapic/widgets/render_request_groups.dart';
 import 'package:qapic/pages/open_request.dart';
 import 'package:qapic/widgets/custom_context_menu_controller.dart';
@@ -17,20 +18,25 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   List<Request> openRequests = [];
+  TextEditingController environmentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     Function writeback = widget.writeback;
     Collection collection = widget.collection;
     ColorScheme colorScheme = Theme.of(context).colorScheme;
+    environmentController.text = collection.environments.first.environmentName;
 
-    TabController tabController = TabController(length: openRequests.length, vsync: this);
-    if(openRequests.isNotEmpty){
-      tabController.index = openRequests.length-1;
+    TabController tabController =
+        TabController(length: openRequests.length, vsync: this);
+    if (openRequests.isNotEmpty) {
+      tabController.index = openRequests.length - 1;
     }
     void selectRequest(Request request) {
-      if(!openRequests.contains(request)){
-        setState(() => openRequests.add(request),);
+      if (!openRequests.contains(request)) {
+        setState(
+          () => openRequests.add(request),
+        );
       } else {
         tabController.index = openRequests.indexOf(request);
       }
@@ -44,7 +50,28 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             title: Text(collection.collectionName,
                 style: TextStyle(color: colorScheme.onPrimary)),
             actions: [
-               DropdownMenu(menuStyle: MenuStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onPrimary)), dropdownMenuEntries: [DropdownMenuEntry(label: 'Hi', value: 'Hi')]),
+              IconButton(
+                icon: const Icon(Icons.settings),
+                iconSize: 37,
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EnvironmentsPage(
+                        collection: collection,
+                        writeback: writeback,
+                      ),
+                    )),
+              ),
+              DropdownMenu(
+                controller: environmentController,
+                menuStyle: MenuStyle(
+                    backgroundColor: MaterialStatePropertyAll(
+                        Theme.of(context).colorScheme.onPrimary)),
+                dropdownMenuEntries: collection.environments
+                    .map((e) => DropdownMenuEntry(
+                        value: e.environmentName, label: e.environmentName))
+                    .toList(),
+              ),
               IconButton(
                   onPressed: () => writeback(),
                   icon: const Icon(Icons.save),
@@ -85,7 +112,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               .map(
                                 (e) => Container(
                                     padding: const EdgeInsets.all(5.0),
-                                    child: TabData(request: e)),
+                                    child: TabData(
+                                        request: e,
+                                        environment: collection.environments
+                                            .where(
+                                              (element) =>
+                                                  element.environmentName ==
+                                                  environmentController.text,
+                                            )
+                                            .first)),
                               )
                               .toList()),
                     ),

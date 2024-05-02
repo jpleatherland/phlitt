@@ -6,7 +6,8 @@ import 'package:qapic/model/collections_model.dart';
 
 class TabData extends StatefulWidget {
   final Request request;
-  const TabData({super.key, required this.request});
+  final Environment? environment;
+  const TabData({super.key, required this.request, this.environment});
 
   @override
   State<TabData> createState() => _TabDataState();
@@ -32,6 +33,7 @@ class _TabDataState extends State<TabData> {
 
   @override
   Widget build(BuildContext context) {
+    Environment? environment = widget.environment;
     TextEditingController urlController =
         TextEditingController(text: updatedRequest.requestUrl);
 
@@ -159,7 +161,7 @@ class _TabDataState extends State<TabData> {
         default:
       }
       if (send) {
-        rm.submitRequest(updatedRequest, updateResponse);
+        rm.submitRequest(updatedRequest, updateResponse, environment);
       }
     }
 
@@ -202,7 +204,8 @@ class _TabDataState extends State<TabData> {
           )),
           IconButton(
               icon: const Icon(Icons.send),
-              onPressed: () => rm.submitRequest(updatedRequest, updateResponse))
+              onPressed: () =>
+                  rm.submitRequest(updatedRequest, updateResponse, environment))
         ],
       ),
       Expanded(
