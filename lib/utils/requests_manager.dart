@@ -40,6 +40,7 @@ class RequestsManager {
         path: updatedPath.join('/'),
         queryParameters: currentQueryParams);
     Map<String, String> headers = {'authorization': '$authType $authValue'};
+    headers.addAll(request.options.requestHeaders as Map<String, String>);
 
     switch (request.requestMethod) {
       case 'GET':
