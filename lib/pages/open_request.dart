@@ -17,6 +17,7 @@ class _TabDataState extends State<TabData> {
   RequestsManager rm = RequestsManager();
   Map<String, dynamic> responseData = {'statusCode': 0, 'body': ''};
   late Request updatedRequest;
+  bool isFetching = false;
   @override
   void initState() {
     super.initState();
@@ -41,10 +42,12 @@ class _TabDataState extends State<TabData> {
       const encoder = JsonEncoder.withIndent('    ');
       String prettyResponse = encoder.convert(response['body']);
       if (mounted) {
-        setState(
-          () => responseData = {
-            'statusCode': response['statusCode'],
-            'body': prettyResponse
+        setState(() {
+            isFetching = false;
+            responseData = {
+              'statusCode': response['statusCode'],
+              'body': prettyResponse
+            };
           },
         );
       }
@@ -152,6 +155,7 @@ class _TabDataState extends State<TabData> {
 
     void submitRequest(
         Request request, Function updateResponse, Environment? environment) {
+      setState(() => isFetching = true);
       try {
         rm.submitRequest(updatedRequest, updateResponse, environment);
       } on FormatException catch (error) {
@@ -238,7 +242,7 @@ class _TabDataState extends State<TabData> {
                   'Status Code: ${responseData['statusCode']}',
                   textAlign: TextAlign.right,
                 ),
-                Expanded(
+                isFetching ? const Center(child: CircularProgressIndicator()) : Expanded(
                   child: SingleChildScrollView(
                     child: Text(
                       responseData['body'] as String,

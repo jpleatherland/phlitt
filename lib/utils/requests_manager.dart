@@ -10,7 +10,8 @@ class RequestsManager {
     if (environment != null) {
       try {
         updatedUrl = replacePlaceholders(request.requestUrl, environment);
-        authValue = replacePlaceholders(request.options.auth.authValue, environment);
+        authValue =
+            replacePlaceholders(request.options.auth.authValue, environment);
       } catch (error) {
         throw const FormatException('Environment parameter not found');
       }
@@ -39,6 +40,7 @@ class RequestsManager {
         path: updatedPath.join('/'),
         queryParameters: currentQueryParams);
     Map<String, String> headers = {'authorization': '$authType $authValue'};
+
     switch (request.requestMethod) {
       case 'GET':
         getRequest(parsedUrl, headers, updateResponse);

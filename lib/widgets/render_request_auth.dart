@@ -22,6 +22,7 @@ class RenderRequestAuth extends StatelessWidget {
                 requestOptions.auth.authType = value as String),
         TextFormField(
           initialValue: requestOptions.auth.authValue,
+          onChanged: (value) => requestOptions.auth.authValue = value,
           onFieldSubmitted: (value) => requestOptions.auth.authValue = value,
         )
       ],
