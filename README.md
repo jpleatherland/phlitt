@@ -1,16 +1,16 @@
 # qapic
 
-A new Flutter project.
+A basic http client that stores all configuration locally in a json file
 
-## Getting Started
+## Path variables
+Path variables can be defined with :
+e.g. https://www.google.com/:pathVar
+These can be edited in the request query pane
 
-This project is a starting point for a Flutter application.
+## Query parameters
+Query parameters can be edited directly in the url or via the request query pane
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Environment variables
+Environment variables can be changed using the gear icon in the app var of a collection. These can be used in the url with {{}}
+e.g. {{googleUrl}}/:pathVar
+The environment variable in the selected environment could be https://www.google.com
