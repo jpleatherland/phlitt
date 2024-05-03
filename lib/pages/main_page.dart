@@ -50,8 +50,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             title: Text(collection.collectionName,
                 style: TextStyle(color: colorScheme.onPrimary)),
             actions: [
-              IconButton(
+              IconButton.filled(
                 icon: const Icon(Icons.settings),
+                color: Theme.of(context).colorScheme.onPrimary,
                 iconSize: 37,
                 onPressed: () => Navigator.push(
                     context,
@@ -62,15 +63,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       ),
                     )),
               ),
-              DropdownMenu(
-                controller: environmentController,
-                menuStyle: MenuStyle(
-                    backgroundColor: MaterialStatePropertyAll(
-                        Theme.of(context).colorScheme.onPrimary)),
-                dropdownMenuEntries: collection.environments
-                    .map((e) => DropdownMenuEntry(
-                        value: e.environmentName, label: e.environmentName))
-                    .toList(),
+              Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onPrimary),
+                child: DropdownMenu(
+                  controller: environmentController,
+                  dropdownMenuEntries: collection.environments
+                      .map((e) => DropdownMenuEntry(
+                          value: e.environmentName, label: e.environmentName))
+                      .toList(),
+                ),
               ),
               IconButton(
                   onPressed: () => writeback(),

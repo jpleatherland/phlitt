@@ -14,8 +14,8 @@ class CollectionsPage extends StatefulWidget with CollectionsManager {
 
 class _CollectionsPageState extends State<CollectionsPage> {
   writeBack() {
-    print('writeback');
     widget.writeCollections(widget.collectionGroups);
+    setState(() {});
   }
 
   void updateCollection(Collection collection, String newCollectionName) {
