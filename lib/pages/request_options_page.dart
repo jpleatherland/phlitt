@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qapic/widgets/render_request_body.dart';
 import 'package:qapic/widgets/render_request_auth.dart';
 import 'package:qapic/widgets/render_request_query.dart';
+import 'package:qapic/widgets/render_request_headers.dart';
 import 'package:qapic/model/collections_model.dart';
 
 class RenderRequestOptions extends StatefulWidget {
@@ -53,6 +54,11 @@ class _RenderRequestOptionsState extends State<RenderRequestOptions> {
             context: context,
             requestUrl: widget.requestUrl,
             updateUrl: widget.updateUrl,
+          );
+        case 'requestHeaders' :
+          return RenderRequestHeader(
+            context: context,
+            requestOptions: widget.requestOptions,
           );
         default:
           return Text('$requestHeading to be implemented');
