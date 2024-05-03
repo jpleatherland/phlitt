@@ -6,9 +6,11 @@ class RequestsManager {
   void submitRequest(
       Request request, Function updateResponse, Environment? environment) {
     String updatedUrl = request.requestUrl;
+    String authValue = request.options.auth.authValue;
     if (environment != null) {
       try {
         updatedUrl = replacePlaceholders(request.requestUrl, environment);
+        authValue = replacePlaceholders(request.options.auth.authValue, environment);
       } catch (error) {
         throw const FormatException('Environment parameter not found');
       }
@@ -16,6 +18,7 @@ class RequestsManager {
     Uri requestUrl = Uri.parse(updatedUrl);
     String currentScheme = requestUrl.scheme;
     String currentHost = requestUrl.host;
+    int currentPort = requestUrl.port;
     List<String> splitPath = requestUrl.path.split('/').sublist(1);
     List<dynamic> updatedPath = [];
     for (var element in splitPath) {
@@ -29,10 +32,10 @@ class RequestsManager {
     String updatedScheme = currentScheme.isEmpty ? 'https' : currentScheme;
     Map<String, String> currentQueryParams = requestUrl.queryParameters;
     String authType = request.options.auth.authType;
-    String authValue = request.options.auth.authValue;
     Uri parsedUrl = Uri(
         scheme: updatedScheme,
         host: currentHost,
+        port: currentPort,
         path: updatedPath.join('/'),
         queryParameters: currentQueryParams);
     Map<String, String> headers = {'authorization': '$authType $authValue'};
