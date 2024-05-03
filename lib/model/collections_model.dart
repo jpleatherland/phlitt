@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class CollectionGroup {
   CollectionGroup({required this.collections});
   List<Collection> collections;
@@ -167,7 +169,7 @@ class RequestOptions {
       required this.auth});
   RequestQuery requestQuery;
   RequestBody requestBody;
-  Map<String, dynamic>? requestHeaders;
+  Map<String, String>? requestHeaders;
   Auth auth;
 
   factory RequestOptions.fromJson(Map<String, dynamic> data) {
@@ -175,8 +177,8 @@ class RequestOptions {
         RequestQuery.fromJson(data['requestQuery'] as Map<String, dynamic>);
     RequestBody requestBody =
         RequestBody.fromJson(data['requestBody'] as Map<String, dynamic>);
-    Map<String, dynamic>? requestHeaders =
-        data['requestHeaders'] as Map<String, dynamic>?;
+    Map<String, String>? requestHeaders =
+        Map.castFrom(json.decode(data['requestHeaders'].toString()));
     Auth auth = Auth.fromJson(data['auth'] as Map<String, dynamic>);
     return RequestOptions(
         requestQuery: requestQuery,
