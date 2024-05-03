@@ -42,7 +42,8 @@ class _TabDataState extends State<TabData> {
       const encoder = JsonEncoder.withIndent('    ');
       String prettyResponse = encoder.convert(response['body']);
       if (mounted) {
-        setState(() {
+        setState(
+          () {
             isFetching = false;
             responseData = {
               'statusCode': response['statusCode'],
@@ -242,14 +243,16 @@ class _TabDataState extends State<TabData> {
                   'Status Code: ${responseData['statusCode']}',
                   textAlign: TextAlign.right,
                 ),
-                isFetching ? const Center(child: CircularProgressIndicator()) : Expanded(
-                  child: SingleChildScrollView(
-                    child: Text(
-                      responseData['body'] as String,
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                ),
+                isFetching
+                    ? const Center(child: CircularProgressIndicator())
+                    : Expanded(
+                        child: SingleChildScrollView(
+                          child: Text(
+                            responseData['body'] as String,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
               ],
             )),
           ],
