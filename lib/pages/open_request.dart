@@ -6,7 +6,8 @@ import 'package:qapic/model/collections_model.dart';
 
 class TabData extends StatefulWidget {
   final Request request;
-  const TabData({super.key, required this.request});
+  final Environment? environment;
+  const TabData({super.key, required this.request, this.environment});
 
   @override
   State<TabData> createState() => _TabDataState();
@@ -32,11 +33,12 @@ class _TabDataState extends State<TabData> {
 
   @override
   Widget build(BuildContext context) {
+    Environment? environment = widget.environment;
     TextEditingController urlController =
         TextEditingController(text: updatedRequest.requestUrl);
 
     void updateResponse(Map<String, dynamic> response) {
-      const encoder = JsonEncoder.withIndent("    ");
+      const encoder = JsonEncoder.withIndent('    ');
       String prettyResponse = encoder.convert(response['body']);
       if (mounted) {
         setState(
@@ -82,7 +84,7 @@ class _TabDataState extends State<TabData> {
       String currentScheme = currentUrl.scheme;
       String currentHost = currentUrl.host;
       String currentPath = currentUrl.path;
-      List<String> splitPath = currentUrl.path.split("/").sublist(1);
+      List<String> splitPath = currentUrl.path.split('/').sublist(1);
       Map<int, String> splitIndexedPath = {};
       splitPath.asMap().forEach((key, value) => splitIndexedPath[key] = value);
       Map<String, String> currentQueryParams = currentUrl.queryParameters;
@@ -125,7 +127,7 @@ class _TabDataState extends State<TabData> {
           }
           updatedRequest.options.requestQuery.pathVariables = newPathVariables;
           splitIndexedPath.forEach((key, value) {
-            if (value.startsWith(":") && value.substring(1) == originalKey) {
+            if (value.startsWith(':') && value.substring(1) == originalKey) {
               splitIndexedPath[key] = ':$queryKey';
             }
           });
@@ -139,13 +141,24 @@ class _TabDataState extends State<TabData> {
           String newUrl = Uri(
                   scheme: currentScheme,
                   host: currentHost,
-                  path: newPathVars.join("/"),
+                  path: newPathVars.join('/'),
                   queryParameters: currentQueryParams)
               .toString();
           updatedRequest.requestUrl = newUrl;
         default:
       }
       setState(() {});
+    }
+
+    void submitRequest(
+        Request request, Function updateResponse, Environment? environment) {
+      try {
+        rm.submitRequest(updatedRequest, updateResponse, environment);
+      } on FormatException catch (error) {
+        updateResponse({'statusCode': 400, 'body': error.message});
+      } catch (error) {
+        updateResponse({'statusCode': 400, 'body': error});
+      }
     }
 
     void updateRequest(String key, dynamic value, bool send) {
@@ -159,7 +172,7 @@ class _TabDataState extends State<TabData> {
         default:
       }
       if (send) {
-        rm.submitRequest(updatedRequest, updateResponse);
+        submitRequest(updatedRequest, updateResponse, environment);
       }
     }
 
@@ -201,8 +214,10 @@ class _TabDataState extends State<TabData> {
             ),
           )),
           IconButton(
-              icon: const Icon(Icons.send),
-              onPressed: () => rm.submitRequest(updatedRequest, updateResponse))
+            icon: const Icon(Icons.send),
+            onPressed: () =>
+                submitRequest(updatedRequest, updateResponse, environment),
+          )
         ],
       ),
       Expanded(

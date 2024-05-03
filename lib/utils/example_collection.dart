@@ -134,7 +134,16 @@ String collectionTemplate = '''{
                     ]
                 }
             ],
-            "environments": []
+            "environments": [
+                              {
+                    "environmentName": "Example Environment",
+                    "environmentParameters": {
+                        "server1": "https://www.google.com",
+                        "server2": "https://www.bing.com",
+                        "token": "tokenValue"
+                    }
+                }
+            ]
         }
     ]
 }''';

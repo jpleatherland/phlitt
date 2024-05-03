@@ -34,12 +34,12 @@ class _RenderRequestQueryState extends State<RenderRequestQuery> {
     void addRequestQuery(String queryType) {
       switch (queryType) {
         case 'queryParam':
-          String qpLength = (queryParams.entries.length+1).toString();
+          String qpLength = (queryParams.entries.length + 1).toString();
           widget.updateUrl(
               '', 'newParam$qpLength', 'newParamValue$qpLength', 'queryParams');
           break;
         case 'pathVars':
-          String pvLength = (pathVars.entries.length+1).toString();
+          String pvLength = (pathVars.entries.length + 1).toString();
           widget.updateUrl(
               '', 'newParam$pvLength', 'newParamValue$pvLength', 'pathVars');
           break;
