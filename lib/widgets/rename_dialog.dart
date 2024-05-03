@@ -13,7 +13,7 @@ void showDialog(
   Navigator.of(context).push(DialogRoute<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-          title: const Text("Request Name:"),
+          title: const Text('Request name:'),
           content: TextFormField(
             initialValue: request?.requestName ?? requestGroup.requestGroupName,
             onChanged: (value) => callback(requestGroup, request,
@@ -36,7 +36,7 @@ showCollectionsDialog(
   Navigator.of(context).push(DialogRoute<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-            title: const Text("Collection Name:"),
+            title: const Text('Collection name:'),
             content: Column(
               children: [
                 TextFormField(
@@ -60,18 +60,23 @@ deleteCollectionDialog(
   BuildContext context,
   CollectionGroup collectionGroup,
   String collectionName,
-  void Function(CollectionGroup collectionGroup, String collectionName) callback,
+  void Function(CollectionGroup collectionGroup, String collectionName)
+      callback,
 ) {
   Navigator.of(context).push(DialogRoute<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-            title: Text("Delete Collection $collectionName ?"),
+            title: Text('Delete collection $collectionName ?'),
             content: Row(
               children: [
-                Expanded(child: IconButton(icon: const Icon(Icons.arrow_back), iconSize: 50,  onPressed:()=> Navigator.of(context).pop())),
+                Expanded(
+                    child: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        iconSize: 50,
+                        onPressed: () => Navigator.of(context).pop())),
                 Expanded(
                   child: IconButton(
-                    iconSize: 50,
+                      iconSize: 50,
                       onPressed: () {
                         callback(collectionGroup, collectionName);
                         Navigator.of(context).pop();
@@ -93,7 +98,7 @@ renameEnvironmentDialog(
   Navigator.of(context).push(DialogRoute<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-            title: const Text("Environment Name:"),
+            title: const Text('Environment name:'),
             content: Column(
               children: [
                 TextFormField(
@@ -108,6 +113,99 @@ renameEnvironmentDialog(
                       Navigator.of(context).pop();
                     },
                     icon: const Icon(Icons.save))
+              ],
+            ),
+          )));
+}
+
+deleteRequestGroupDialog(
+  BuildContext context,
+  Collection collection,
+  String requestGroupName,
+  Function callback,
+) {
+  Navigator.of(context).push(DialogRoute<void>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+            title: Text('Delete request group: $requestGroupName?'),
+            content: Row(
+              children: [
+                Expanded(
+                    child: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        iconSize: 50,
+                        onPressed: () => Navigator.of(context).pop())),
+                Expanded(
+                  child: IconButton(
+                      iconSize: 50,
+                      onPressed: () {
+                        callback(collection, requestGroupName);
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.delete)),
+                )
+              ],
+            ),
+          )));
+}
+
+deleteRequestDialog(
+  BuildContext context,
+  RequestGroup requestGroup,
+  String requestName,
+  Function callback,
+) {
+  Navigator.of(context).push(DialogRoute<void>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+            title: Text('Delete request: $requestName?'),
+            content: Row(
+              children: [
+                Expanded(
+                    child: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        iconSize: 50,
+                        onPressed: () => Navigator.of(context).pop())),
+                Expanded(
+                  child: IconButton(
+                      iconSize: 50,
+                      onPressed: () {
+                        callback(requestGroup, requestName);
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.delete)),
+                )
+              ],
+            ),
+          )));
+}
+
+deleteEnvironmentDialog(
+  BuildContext context,
+  Collection collection,
+  String environmentName,
+  Function callback,
+) {
+  Navigator.of(context).push(DialogRoute<void>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+            title: Text('Delete environment: $environmentName?'),
+            content: Row(
+              children: [
+                Expanded(
+                    child: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        iconSize: 50,
+                        onPressed: () => Navigator.of(context).pop())),
+                Expanded(
+                  child: IconButton(
+                      iconSize: 50,
+                      onPressed: () {
+                        callback(collection, environmentName);
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.delete)),
+                )
               ],
             ),
           )));

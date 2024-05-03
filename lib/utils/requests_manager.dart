@@ -7,15 +7,19 @@ class RequestsManager {
       Request request, Function updateResponse, Environment? environment) {
     String updatedUrl = request.requestUrl;
     if (environment != null) {
-      updatedUrl = replacePlaceholders(request.requestUrl, environment);
+      try {
+        updatedUrl = replacePlaceholders(request.requestUrl, environment);
+      } catch (error) {
+        throw const FormatException('Environment parameter not found');
+      }
     }
     Uri requestUrl = Uri.parse(updatedUrl);
     String currentScheme = requestUrl.scheme;
     String currentHost = requestUrl.host;
-    List<String> splitPath = requestUrl.path.split("/").sublist(1);
+    List<String> splitPath = requestUrl.path.split('/').sublist(1);
     List<dynamic> updatedPath = [];
     for (var element in splitPath) {
-      if (element.startsWith(":")) {
+      if (element.startsWith(':')) {
         updatedPath.add(
             request.options.requestQuery.pathVariables[element.substring(1)]);
       } else {
@@ -29,7 +33,7 @@ class RequestsManager {
     Uri parsedUrl = Uri(
         scheme: updatedScheme,
         host: currentHost,
-        path: updatedPath.join("/"),
+        path: updatedPath.join('/'),
         queryParameters: currentQueryParams);
     Map<String, String> headers = {'authorization': '$authType $authValue'};
     switch (request.requestMethod) {
@@ -88,21 +92,13 @@ class RequestsManager {
   }
 
   String replacePlaceholders(String input, Environment environment) {
+    // match between {{ }} to envParam key and replace with envParam value
     final RegExp pattern = RegExp(r'\{\{([^}]+)\}\}');
-    // final Iterable<Match> matches = pattern.allMatches(input);
-    // final Map<String, String> extractedValues = {};
-
-    // for (final Match match in matches) {
-    //   final String placeholder = match.group(1) as String;
-    //   extractedValues[placeholder] = environment.environmentParameters['${extractedValues[placeholder]}'] as String;
-    // }
 
     final String updatedUrl = input.replaceAllMapped(
       pattern,
       (match) => environment.environmentParameters[match.group(1)] as String,
     );
-
-    print(updatedUrl);
 
     return updatedUrl;
   }

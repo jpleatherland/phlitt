@@ -28,25 +28,38 @@ class _RenderEnvironments extends State<RenderEnvironments> {
     List<Environment> environments = widget.collection.environments;
     Function newEnvironment = collectionsManager.newEnvironment;
 
+    void deleteEnvironment(Collection collection, String environmentName) {
+      collectionsManager.deleteEnvironment(collection, environmentName);
+      widget.selectEnvironment('');
+      setState(() {});
+    }
+
     return ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         itemCount: environments.length,
         itemBuilder: (BuildContext context, int index) {
           return _ContextMenuRegion(
-              contextMenuBuilder: (BuildContext context, Offset offset) =>
-                  contextMenu(offset, context, widget.collection,
-                      environments[index], newEnvironment),
-              child: TextButton(
-                  onPressed: () => widget.selectEnvironment(
-                      widget.collection.environments[index].environmentName),
-                  child: Text(
-                      widget.collection.environments[index].environmentName)));
+            contextMenuBuilder: (BuildContext context, Offset offset) =>
+                contextMenu(offset, context, widget.collection,
+                    environments[index], newEnvironment, deleteEnvironment),
+            child: TextButton(
+              onPressed: () => widget.selectEnvironment(
+                  widget.collection.environments[index].environmentName),
+              child:
+                  Text(widget.collection.environments[index].environmentName),
+            ),
+          );
         });
   }
 
-  AdaptiveTextSelectionToolbar contextMenu(Offset offset, BuildContext context,
-      Collection collection, Environment environment, Function newEnvironment) {
+  AdaptiveTextSelectionToolbar contextMenu(
+      Offset offset,
+      BuildContext context,
+      Collection collection,
+      Environment environment,
+      Function newEnvironment,
+      Function deleteEnvironment) {
     return AdaptiveTextSelectionToolbar.buttonItems(
       anchors: TextSelectionToolbarAnchors(
         primaryAnchor: offset,
@@ -62,19 +75,23 @@ class _RenderEnvironments extends State<RenderEnvironments> {
         ),
         ContextMenuButtonItem(
           onPressed: () {
-            // CustomContextMenuController.removeAny();
-            // newRequestGroup(widget.collection);
-            // setState(() {});
+            CustomContextMenuController.removeAny();
+            newEnvironment(widget.collection);
+            setState(() {});
           },
-          label: 'Add Request Group',
+          label: 'Add Environment',
         ),
         ContextMenuButtonItem(
             onPressed: () {
-              // CustomContextMenuController.removeAny();
-              // newRequest(requestGroup);
-              // setState(() {});
+              if (widget.collection.environments.length > 1) {
+                CustomContextMenuController.removeAny();
+                rd.deleteEnvironmentDialog(context, widget.collection,
+                    environment.environmentName, deleteEnvironment);
+              } else {
+                null;
+              }
             },
-            label: 'Add Request')
+            label: 'Delete Environment')
       ],
     );
   }

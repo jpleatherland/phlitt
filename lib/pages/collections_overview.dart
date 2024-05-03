@@ -74,11 +74,12 @@ class _CollectionsPageState extends State<CollectionsPage> {
                                   icon: const Icon(Icons.edit),
                                   onPressed: () => rd.showCollectionsDialog(
                                       context,
-                                      widget.collectionGroups.collections[index],
+                                      widget
+                                          .collectionGroups.collections[index],
                                       updateCollection)),
                             ),
                             Expanded(
-                              flex:1,
+                              flex: 1,
                               child: IconButton(
                                 icon: const Icon(Icons.delete),
                                 onPressed: () => rd.deleteCollectionDialog(

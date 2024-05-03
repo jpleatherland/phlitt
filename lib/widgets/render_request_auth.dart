@@ -4,16 +4,10 @@ import 'package:qapic/model/collections_model.dart';
 class RenderRequestAuth extends StatelessWidget {
   final RequestOptions requestOptions;
   final Function onUpdated;
-  final List<String> authTypeOptions = [
-    'Basic',
-    'Bearer',
-    'No Auth'
-  ];
+  final List<String> authTypeOptions = ['Basic', 'Bearer', 'No Auth'];
 
   RenderRequestAuth(
       {super.key, required this.requestOptions, required this.onUpdated});
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +20,10 @@ class RenderRequestAuth extends StatelessWidget {
                 .toList(),
             onSelected: (value) =>
                 requestOptions.auth.authType = value as String),
-        TextFormField(initialValue: requestOptions.auth.authValue,
-          onFieldSubmitted: (value) => requestOptions.auth.authValue = value,)
+        TextFormField(
+          initialValue: requestOptions.auth.authValue,
+          onFieldSubmitted: (value) => requestOptions.auth.authValue = value,
+        )
       ],
     );
   }

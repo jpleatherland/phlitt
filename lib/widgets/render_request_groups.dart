@@ -18,9 +18,8 @@ class RenderCollectionRequestGroups extends StatefulWidget {
 
 class _RenderCollectionRequestGroupsState
     extends State<RenderCollectionRequestGroups> {
-
   final collectionsManager = CollectionsManager();
- 
+
   void updateRequest(RequestGroup requestGroup, Request? request,
       String valueToUpdate, dynamic value) {
     switch (valueToUpdate) {
@@ -37,9 +36,18 @@ class _RenderCollectionRequestGroupsState
 
   Widget renderCollectionRequestGroups(
       Collection collection, Function selectRequest) {
-    
     Function newRequest = collectionsManager.newRequest;
     Function newRequestGroup = collectionsManager.newRequestGroup;
+
+    void deleteRequest(RequestGroup requestGroup, String requestName) {
+      collectionsManager.deleteRequest(requestGroup, requestName);
+      setState(() {});
+    }
+
+    void deleteRequestGroup(Collection collection, String requestGroupName) {
+      collectionsManager.deleteRequestGroup(collection, requestGroupName);
+      setState(() {});
+    }
 
     return ListView.builder(
         shrinkWrap: true,
@@ -49,16 +57,30 @@ class _RenderCollectionRequestGroupsState
           return ExpansionTile(
               title: _ContextMenuRegion(
                   contextMenuBuilder: (BuildContext context, Offset offset) =>
-                      renameMenu(offset, context,
-                          collection.requestGroups[index], null, newRequest, newRequestGroup),
+                      renameMenu(
+                          offset,
+                          context,
+                          collection.requestGroups[index],
+                          null,
+                          newRequest,
+                          newRequestGroup,
+                          deleteRequest,
+                          deleteRequestGroup),
                   child:
                       Text(collection.requestGroups[index].requestGroupName)),
               children: collection.requestGroups[index].requests
                   .map((e) => _ContextMenuRegion(
                         contextMenuBuilder:
                             (BuildContext context, Offset offset) {
-                          return renameMenu(offset, context,
-                              collection.requestGroups[index], e, newRequest, newRequestGroup);
+                          return renameMenu(
+                              offset,
+                              context,
+                              collection.requestGroups[index],
+                              e,
+                              newRequest,
+                              newRequestGroup,
+                              deleteRequest,
+                              deleteRequestGroup);
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(left: 14.0),
@@ -89,8 +111,15 @@ class _RenderCollectionRequestGroupsState
         });
   }
 
-  AdaptiveTextSelectionToolbar renameMenu(Offset offset, BuildContext context,
-      RequestGroup requestGroup, Request? request, Function newRequest, Function newRequestGroup) {
+  AdaptiveTextSelectionToolbar renameMenu(
+      Offset offset,
+      BuildContext context,
+      RequestGroup requestGroup,
+      Request? request,
+      Function newRequest,
+      Function newRequestGroup,
+      Function deleteRequest,
+      Function deleteRequestGroup) {
     return AdaptiveTextSelectionToolbar.buttonItems(
       anchors: TextSelectionToolbarAnchors(
         primaryAnchor: offset,
@@ -111,12 +140,33 @@ class _RenderCollectionRequestGroupsState
           },
           label: 'Add Request Group',
         ),
-        ContextMenuButtonItem(onPressed: () {
-          CustomContextMenuController.removeAny();
-          newRequest(requestGroup);
-          setState(() {});
-        },
-        label: 'Add Request')
+        ContextMenuButtonItem(
+          onPressed: () {
+            CustomContextMenuController.removeAny();
+            newRequest(requestGroup);
+            setState(() {});
+          },
+          label: 'Add Request',
+        ),
+        ContextMenuButtonItem(
+          onPressed: () {
+            if (widget.collection.requestGroups.length > 1) {
+              CustomContextMenuController.removeAny();
+              rd.deleteRequestGroupDialog(context, widget.collection,
+                  requestGroup.requestGroupName, deleteRequestGroup);
+            } else {
+              null;
+            }
+          },
+          label: 'Delete Request Group',
+        ),
+        ContextMenuButtonItem(
+            onPressed: () {
+              CustomContextMenuController.removeAny();
+              rd.deleteRequestDialog(
+                  context, requestGroup, request!.requestName, deleteRequest);
+            },
+            label: 'Delete Request'),
       ],
     );
   }

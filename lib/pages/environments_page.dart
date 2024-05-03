@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qapic/model/collections_model.dart';
 import 'package:qapic/widgets/render_environments.dart';
 import 'package:qapic/widgets/render_environment_parameters.dart';
+import 'package:qapic/widgets/custom_context_menu_controller.dart';
 
 class EnvironmentsPage extends StatefulWidget {
   const EnvironmentsPage({
@@ -29,35 +30,39 @@ class EnvironmentsPageState extends State<EnvironmentsPage> {
   Widget build(BuildContext context) {
     List<Environment> environments = widget.collection.environments;
     ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return Scaffold(
-        appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            title: Text('Environments Manager',
-                style: TextStyle(color: colorScheme.onPrimary)),
-            actions: [
-              IconButton(
-                  onPressed: () => widget.writeback(),
-                  icon: const Icon(Icons.save),
-                  iconSize: 37,
-                  color: colorScheme.onPrimary)
-            ]),
-        body: Row(mainAxisSize: MainAxisSize.min, children: [
-          Expanded(
-            flex: 1,
-            child: RenderEnvironments(
-                collection: widget.collection,
-                selectEnvironment: selectEnvironment),
-          ),
-          Expanded(
-              flex: 5,
-              child: selectedEnvironment.isNotEmpty
-                  ? RenderEnvironmentParameters(
-                      context: context,
-                      environment: environments
-                          .where((e) =>
-                              e.environmentName == selectedEnvironment)
-                          .first)
-                  : const Center(child: Text('Select an environment')))
-        ]));
+    return GestureDetector(
+      onTap: () => CustomContextMenuController.removeAny(),
+      child: Scaffold(
+          appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              title: Text('Environments Manager',
+                  style: TextStyle(color: colorScheme.onPrimary)),
+              actions: [
+                IconButton(
+                    onPressed: () => widget.writeback(),
+                    icon: const Icon(Icons.save),
+                    iconSize: 37,
+                    color: colorScheme.onPrimary)
+              ]),
+          body: Row(mainAxisSize: MainAxisSize.min, children: [
+            Expanded(
+              flex: 1,
+              child: RenderEnvironments(
+                  collection: widget.collection,
+                  selectEnvironment: selectEnvironment),
+            ),
+            Expanded(
+                flex: 5,
+                child: selectedEnvironment.isNotEmpty
+                    ? RenderEnvironmentParameters(
+                        context: context,
+                        environment: environments
+                            .where(
+                                (e) => e.environmentName == selectedEnvironment)
+                            .first,
+                      )
+                    : const Center(child: Text('Select an environment')))
+          ])),
+    );
   }
 }

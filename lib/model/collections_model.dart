@@ -201,13 +201,17 @@ class RequestQuery {
   Map<String, dynamic> pathVariables;
 
   factory RequestQuery.fromJson(Map<String, dynamic> data) {
-    Map<String, dynamic>? queryParams = data['queryParams'] as Map<String, dynamic>?;
-    Map<String, dynamic>? pathVariables = data['pathVariables'] as Map<String, dynamic>?;
-    return RequestQuery(queryParams: queryParams ?? {"":""}, pathVariables: pathVariables ?? {"":""});
+    Map<String, dynamic>? queryParams =
+        data['queryParams'] as Map<String, dynamic>?;
+    Map<String, dynamic>? pathVariables =
+        data['pathVariables'] as Map<String, dynamic>?;
+    return RequestQuery(
+        queryParams: queryParams ?? {'': ''},
+        pathVariables: pathVariables ?? {'': ''});
   }
 
-  Map<String, dynamic> toJson(){
-    return{'queryParams': queryParams, 'pathVariables': pathVariables};
+  Map<String, dynamic> toJson() {
+    return {'queryParams': queryParams, 'pathVariables': pathVariables};
   }
 }
 
@@ -220,7 +224,7 @@ class RequestBody {
     String? bodyType = data['bodyType'] as String?;
     Map<String, dynamic>? bodyValue =
         data['bodyValue'] as Map<String, dynamic>?;
-    return RequestBody(bodyType: bodyType ?? "", bodyValue: bodyValue ?? {});
+    return RequestBody(bodyType: bodyType ?? '', bodyValue: bodyValue ?? {});
   }
 
   Map<String, dynamic> toJson() {

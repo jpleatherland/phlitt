@@ -57,25 +57,44 @@ mixin class CollectionsManager {
             auth: Auth(authType: '', authValue: ''))));
   }
 
+  void deleteRequest(RequestGroup requestGroup, String requestName) {
+    requestGroup.requests.removeWhere(
+      (element) => element.requestName == requestName,
+    );
+  }
+
   void newRequestGroup(Collection collection) {
     collection.requestGroups
         .add(RequestGroup(requestGroupName: 'New Request Group', requests: []));
   }
 
-  void newCollection(CollectionGroup collectionGroup) {
-    collectionGroup.collections.add(Collection(
-        collectionName: 'New Collection',
-        requestGroups: [
-          RequestGroup(requestGroupName: 'New Request Group', requests: [])
-        ],
-        environments: []));
+  void deleteRequestGroup(Collection collection, String requestGroupName) {
+    collection.requestGroups
+        .removeWhere((element) => element.requestGroupName == requestGroupName);
   }
 
-  void deleteCollection(CollectionGroup collectionGroup, String collectionName) {
-    collectionGroup.collections.removeWhere((e) => e.collectionName == collectionName);
+  void newCollection(CollectionGroup collectionGroup) {
+    collectionGroup.collections.add(
+        Collection(collectionName: 'New Collection', requestGroups: [
+      RequestGroup(requestGroupName: 'New Request Group', requests: [])
+    ], environments: [
+      Environment(environmentName: 'New Environment', environmentParameters: {})
+    ]));
+  }
+
+  void deleteCollection(
+      CollectionGroup collectionGroup, String collectionName) {
+    collectionGroup.collections
+        .removeWhere((e) => e.collectionName == collectionName);
   }
 
   void newEnvironment(Collection collection) {
-    collection.environments.add(Environment(environmentName: 'New Environment', environmentParameters: {}));
+    collection.environments.add(Environment(
+        environmentName: 'New Environment', environmentParameters: {}));
+  }
+
+  void deleteEnvironment(Collection collection, String environmentName) {
+    collection.environments
+        .removeWhere((e) => e.environmentName == environmentName);
   }
 }

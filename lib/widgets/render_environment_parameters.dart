@@ -24,11 +24,26 @@ class _RenderEnvironmentParameters extends State<RenderEnvironmentParameters> {
   Widget renderQueryOptions() {
     Map<String, dynamic> envParams = widget.environment.environmentParameters;
 
+    if (envParamKeyControllers.length > envParams.length) {
+      int originalControllerLength = envParamKeyControllers.length;
+      int itemsRemoved = 0;
+      for (int i = 0; i < originalControllerLength; i++) {
+        if (!envParams.keys
+            .contains(envParamKeyControllers[i - itemsRemoved].text)) {
+          envParamKeyControllers.removeAt(i - itemsRemoved);
+          envParamValueControllers.removeAt(i - itemsRemoved);
+          itemsRemoved++;
+        }
+      }
+    }
+
     for (int i = 0; i < envParams.keys.length; i++) {
-      envParamKeyControllers
-          .add(TextEditingController(text: envParams.keys.elementAt(i)));
-      envParamValueControllers.add(TextEditingController(
-          text: envParams[envParams.keys.elementAt(i)] as String));
+      if (envParamKeyControllers.length <= i) {
+        envParamKeyControllers
+            .add(TextEditingController(text: envParams.keys.elementAt(i)));
+        envParamValueControllers.add(TextEditingController(
+            text: envParams[envParams.keys.elementAt(i)] as String));
+      }
     }
 
     void applyEnvChanges() {
@@ -40,6 +55,32 @@ class _RenderEnvironmentParameters extends State<RenderEnvironmentParameters> {
       }
       setState(() {
         isDirty = false;
+      });
+    }
+
+    void addEnvParam() {
+      setState(
+        () => widget.environment.environmentParameters[
+                'newEnvParam${widget.environment.environmentParameters.length}'] =
+            'newEnvVar',
+      );
+    }
+
+    void deleteEnvParam(String envParamKey, int index) {
+      // Set the param key to the latest value in the text controller
+      // envParamKey might not exist in the original collection
+      // if it has been changed and the change not applied
+      // then remove the key from the original env params map
+      String oldKey =
+          widget.environment.environmentParameters.entries.elementAt(index).key;
+      Map<String, dynamic> newMap = {};
+      widget.environment.environmentParameters.forEach((key, value) {
+        String newKey = key == oldKey ? envParamKey : key;
+        newMap[newKey] = value;
+      });
+      widget.environment.environmentParameters = newMap;
+      setState(() {
+        widget.environment.environmentParameters.remove(envParamKey);
       });
     }
 
@@ -61,18 +102,24 @@ class _RenderEnvironmentParameters extends State<RenderEnvironmentParameters> {
               itemBuilder: (context, index) {
                 return (Row(
                   children: [
+                    //Keys
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(
                             left: 8.0, right: 8.0, top: 4.0),
-                        child: TextFormField(
-                          controller: envParamKeyControllers[index],
-                          onChanged: (_) => setState(() {
-                            isDirty = true;
-                          }),
+                        child: Focus(
+                          onFocusChange: (hasFocus) =>
+                              hasFocus ? null : setState(() => isDirty = true),
+                          child: TextFormField(
+                            controller: envParamKeyControllers[index],
+                            onFieldSubmitted: (_) => setState(() {
+                              isDirty = true;
+                            }),
+                          ),
                         ),
                       ),
                     ),
+                    //Values
                     Expanded(
                       child: Padding(
                           padding: const EdgeInsets.only(
@@ -83,16 +130,26 @@ class _RenderEnvironmentParameters extends State<RenderEnvironmentParameters> {
                               isDirty = true;
                             }),
                           )),
+                    ),
+                    Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.all(1.0),
+                          child: IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => deleteEnvParam(
+                                envParamKeyControllers[index].text, index),
+                          )),
                     )
                   ],
                 ));
               }),
         ),
+        //Add environment param
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () => print('addEnvParam'),
+            onPressed: () => addEnvParam(),
           ),
         ),
         Center(
