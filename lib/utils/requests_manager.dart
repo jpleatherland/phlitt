@@ -71,7 +71,7 @@ class RequestsManager {
   void postRequest(
       Uri requestUrl, RequestBody requestBody, Function updateResponse) async {
     http.Response response = await http.post(requestUrl,
-        body: requestBody.bodyValue['body'],
+        body: requestBody.bodyValue,
         headers: {'Content-type': 'application/json; charset=UTF-8'});
     updateResponse({
       'statusCode': response.statusCode,

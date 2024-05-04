@@ -220,13 +220,13 @@ class RequestQuery {
 class RequestBody {
   RequestBody({required this.bodyType, required this.bodyValue});
   String bodyType;
-  Map<String, dynamic> bodyValue;
+  String bodyValue;
 
   factory RequestBody.fromJson(Map<String, dynamic> data) {
     String? bodyType = data['bodyType'] as String?;
-    Map<String, dynamic>? bodyValue =
-        data['bodyValue'] as Map<String, dynamic>?;
-    return RequestBody(bodyType: bodyType ?? '', bodyValue: bodyValue ?? {});
+    String? bodyValue =
+        data['bodyValue'] as String?;
+    return RequestBody(bodyType: bodyType ?? '', bodyValue: bodyValue ?? '');
   }
 
   Map<String, dynamic> toJson() {

@@ -17,7 +17,7 @@ String collectionTemplate = '''{
                                 },
                                 "requestBody": {
                                     "bodyType": "",
-                                    "bodyValue": {}
+                                    "bodyValue": ""
                                 },
                                 "requestHeaders": {},
                                 "auth": {
@@ -37,7 +37,7 @@ String collectionTemplate = '''{
                                 },
                                 "requestBody": {
                                     "bodyType": "",
-                                    "bodyValue": {}
+                                    "bodyValue": ""
                                 },
                                 "requestHeaders": {},
                                 "auth": {
@@ -77,7 +77,7 @@ String collectionTemplate = '''{
                                 },
                                 "requestBody": {
                                     "bodyType": "",
-                                    "bodyValue": {}
+                                    "bodyValue": ""
                                 },
                                 "requestHeaders": {},
                                 "auth": {
@@ -102,7 +102,7 @@ String collectionTemplate = '''{
                                 },
                                 "requestBody": {
                                     "bodyType": "",
-                                    "bodyValue": {}
+                                    "bodyValue": ""
                                 },
                                 "requestHeaders": {},
                                 "auth": {
@@ -122,7 +122,7 @@ String collectionTemplate = '''{
                                 },
                                 "requestBody": {
                                     "bodyType": "",
-                                    "bodyValue": {}
+                                    "bodyValue": ""
                                 },
                                 "requestHeaders": {},
                                 "auth": {

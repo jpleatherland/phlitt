@@ -51,7 +51,7 @@ mixin class CollectionsManager {
         requestMethod: 'GET',
         requestUrl: '',
         options: RequestOptions(
-            requestBody: RequestBody(bodyType: '', bodyValue: {'body': ''}),
+            requestBody: RequestBody(bodyType: '', bodyValue: ''),
             requestHeaders: {},
             requestQuery: RequestQuery(pathVariables: {}, queryParams: {}),
             auth: Auth(authType: '', authValue: ''))));
