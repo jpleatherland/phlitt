@@ -41,7 +41,7 @@ class _RenderRequestOptionsState extends State<RenderRequestOptions> {
       switch (requestHeading) {
         case 'requestBody':
           return RenderRequestBody(
-            existingRequestOptions: widget.requestOptions,
+            requestOptions: widget.requestOptions,
             updateRequestOptions: updateRequestOptions,
           );
         case 'auth':

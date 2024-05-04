@@ -21,7 +21,7 @@ class _RenderEnvironmentParameters extends State<RenderEnvironmentParameters> {
   List<TextEditingController> envParamValueControllers = [];
   bool isDirty = false;
 
-  Widget renderQueryOptions() {
+  Widget renderEnvironmentParameters() {
     Map<String, dynamic> envParams = widget.environment.environmentParameters;
 
     if (envParamKeyControllers.length > envParams.length) {
@@ -167,6 +167,6 @@ class _RenderEnvironmentParameters extends State<RenderEnvironmentParameters> {
 
   @override
   Widget build(BuildContext context) {
-    return renderQueryOptions();
+    return renderEnvironmentParameters();
   }
 }
