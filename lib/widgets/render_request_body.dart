@@ -49,6 +49,7 @@ class _RenderRequestBodyState extends State<RenderRequestBody> {
     setRequestBody(String bodyType, String text) {
       widget.requestOptions.requestBody.bodyType = bodyType;
       widget.requestOptions.requestBody.bodyValue = text;
+      widget.requestOptions.requestHeaders['Content-Type'] = 'application/json';
     }
 
     return Column(

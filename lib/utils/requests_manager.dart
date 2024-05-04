@@ -40,17 +40,28 @@ class RequestsManager {
         path: updatedPath.join('/'),
         queryParameters: currentQueryParams);
     Map<String, String> headers = {'authorization': '$authType $authValue'};
-    headers.addAll(request.options.requestHeaders as Map<String, String>);
+    headers.addAll(request.options.requestHeaders
+        .map((key, value) => MapEntry(key, value.toString())));
+    
+    String encodedBody = '';
+    if(request.options.requestBody.bodyType == 'application/json'){
+      encodedBody = jsonEncode(jsonDecode(request.options.requestBody.bodyValue));
+    } else {
+      encodedBody = request.options.requestBody.bodyValue;
+    }
 
     switch (request.requestMethod) {
       case 'GET':
-        getRequest(parsedUrl, headers, updateResponse);
+        getRequest(
+            parsedUrl, encodedBody, headers, updateResponse);
         break;
       case 'POST':
-        postRequest(parsedUrl, request.options.requestBody, updateResponse);
+        postRequest(
+            parsedUrl, encodedBody, headers, updateResponse);
         break;
       case 'PUT':
-        putRequest(parsedUrl, request.options.requestBody, updateResponse);
+        putRequest(
+            parsedUrl, encodedBody, headers, updateResponse);
         break;
       case 'DELETE':
         deleteRequest(parsedUrl, updateResponse);
@@ -59,30 +70,50 @@ class RequestsManager {
     }
   }
 
-  void getRequest(Uri requestUrl, Map<String, String> headers,
-      Function updateResponse) async {
-    http.Response response = await http.get(requestUrl, headers: headers);
+  void getRequest(Uri requestUrl, String requestBody,
+      Map<String, String> headers, Function updateResponse) async {
+    http.Request request = http.Request('GET', requestUrl)
+      ..headers.addAll(headers);
+    request.body = requestBody;
+    http.StreamedResponse response = await request.send();
+    if(response.statusCode > 399){
+      updateResponse({
+        'statusCode': response.statusCode,
+        'body': {'error': await response.stream.bytesToString()}
+      });
+    }
     updateResponse({
       'statusCode': response.statusCode,
-      'body': json.decode(response.body)
+      'body': await jsonDecode(await response.stream.bytesToString())
     });
   }
 
-  void postRequest(
-      Uri requestUrl, RequestBody requestBody, Function updateResponse) async {
+  void postRequest(Uri requestUrl, String requestBody,
+      Map<String, String> requestHeaders, Function updateResponse) async {
     http.Response response = await http.post(requestUrl,
-        body: requestBody.bodyValue,
-        headers: {'Content-type': 'application/json; charset=UTF-8'});
+        body: requestBody, headers: requestHeaders);
+    if(response.statusCode > 399){
+      updateResponse({
+        'statusCode': response.statusCode,
+        'body': {'error': response.body}
+      });
+    }
     updateResponse({
       'statusCode': response.statusCode,
       'body': json.decode(response.body)
     });
   }
 
-  void putRequest(
-      Uri requestUrl, RequestBody requestBody, Function updateResponse) async {
-    http.Response response =
-        await http.put(requestUrl, body: requestBody.bodyValue);
+  void putRequest(Uri requestUrl, String requestBody,
+      Map<String, String> requestHeaders, Function updateResponse) async {
+    http.Response response = await http.put(requestUrl,
+        body: requestBody, headers: requestHeaders);
+    if(response.statusCode > 399){
+      updateResponse({
+        'statusCode': response.statusCode,
+        'body': {'error': response.body}
+      });
+    }
     updateResponse({
       'statusCode': response.statusCode,
       'body': json.decode(response.body)
@@ -91,6 +122,12 @@ class RequestsManager {
 
   void deleteRequest(Uri requestUrl, Function updateResponse) async {
     http.Response response = await http.delete(requestUrl);
+    if(response.statusCode > 399){
+      updateResponse({
+        'statusCode': response.statusCode,
+        'body': {'error': response.body}
+      });
+    }
     updateResponse({
       'statusCode': response.statusCode,
       'body': json.decode(response.body)

@@ -76,6 +76,7 @@ class _RenderMultipartFormBody extends State<RenderMultipartFormBody> {
       setState(() {
         widget.requestOptions.requestBody.bodyType = 'x-www-form-urlencoded';
         widget.requestOptions.requestBody.bodyValue = parsedBodyValue;
+        widget.requestOptions.requestHeaders['Content-Type'] = 'application/x-www-form-urlencoded';
         isDirty = false;
       });
     }

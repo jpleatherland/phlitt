@@ -12,8 +12,12 @@ String collectionTemplate = '''{
                             "requestUrl": "{{server1}}/test",
                             "options": {
                                 "requestQuery": {
-                                  "queryParams":{"":""},
-                                  "pathVariables":{"":""}
+                                    "queryParams": {
+                                        "": ""
+                                    },
+                                    "pathVariables": {
+                                        "": ""
+                                    }
                                 },
                                 "requestBody": {
                                     "bodyType": "",
@@ -32,8 +36,12 @@ String collectionTemplate = '''{
                             "requestUrl": "{{server1}}",
                             "options": {
                                 "requestQuery": {
-                                  "queryParams":{"":""},
-                                  "pathVariables":{"":""}
+                                    "queryParams": {
+                                        "": ""
+                                    },
+                                    "pathVariables": {
+                                        "": ""
+                                    }
                                 },
                                 "requestBody": {
                                     "bodyType": "",
@@ -72,8 +80,12 @@ String collectionTemplate = '''{
                             "requestUrl": "https://jsonplaceholder.typicode.com/todos/4",
                             "options": {
                                 "requestQuery": {
-                                  "queryParams":{"":""},
-                                  "pathVariables":{"":""}
+                                    "queryParams": {
+                                        "": ""
+                                    },
+                                    "pathVariables": {
+                                        "": ""
+                                    }
                                 },
                                 "requestBody": {
                                     "bodyType": "",
@@ -97,8 +109,12 @@ String collectionTemplate = '''{
                             "requestUrl": "https://jsonplaceholder.typicode.com/users/3",
                             "options": {
                                 "requestQuery": {
-                                  "queryParams":{"":""},
-                                  "pathVariables":{"":""}
+                                    "queryParams": {
+                                        "": ""
+                                    },
+                                    "pathVariables": {
+                                        "": ""
+                                    }
                                 },
                                 "requestBody": {
                                     "bodyType": "",
@@ -117,8 +133,12 @@ String collectionTemplate = '''{
                             "requestUrl": "https://jsonplaceholder.typicode.com/posts/5",
                             "options": {
                                 "requestQuery": {
-                                  "queryParams":{"":""},
-                                  "pathVariables":{"":""}
+                                    "queryParams": {
+                                        "": ""
+                                    },
+                                    "pathVariables": {
+                                        "": ""
+                                    }
                                 },
                                 "requestBody": {
                                     "bodyType": "",
@@ -135,7 +155,7 @@ String collectionTemplate = '''{
                 }
             ],
             "environments": [
-                              {
+                {
                     "environmentName": "Example Environment",
                     "environmentParameters": {
                         "server1": "https://www.google.com",
