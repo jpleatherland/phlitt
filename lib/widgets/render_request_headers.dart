@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:qapic/model/collections_model.dart';
-import 'dart:math';
 
 class RenderRequestHeader extends StatefulWidget {
   final RequestOptions requestOptions;
@@ -13,8 +12,7 @@ class RenderRequestHeader extends StatefulWidget {
   });
 
   @override
-  State<RenderRequestHeader> createState() =>
-      _RenderRequestHeader();
+  State<RenderRequestHeader> createState() => _RenderRequestHeader();
 }
 
 class _RenderRequestHeader extends State<RenderRequestHeader> {
@@ -23,7 +21,7 @@ class _RenderRequestHeader extends State<RenderRequestHeader> {
   bool isDirty = false;
 
   Widget renderQueryOptions() {
-    Map<String, dynamic> headers = widget.requestOptions.requestHeaders as Map<String, dynamic>;
+    Map<String, dynamic> headers = widget.requestOptions.requestHeaders;
 
     if (headerKeyControllers.length > headers.length) {
       int originalControllerLength = headerKeyControllers.length;
@@ -50,8 +48,7 @@ class _RenderRequestHeader extends State<RenderRequestHeader> {
     void applyHeaderChanges() {
       widget.requestOptions.requestHeaders = {};
       for (int i = 0; i < headers.keys.length; i++) {
-        widget.requestOptions
-                .requestHeaders![headerKeyControllers[i].text] =
+        widget.requestOptions.requestHeaders[headerKeyControllers[i].text] =
             headerValueControllers[i].text;
       }
       setState(() {
@@ -61,8 +58,8 @@ class _RenderRequestHeader extends State<RenderRequestHeader> {
 
     void addEnvParam() {
       setState(
-        () => widget.requestOptions.requestHeaders![
-                'newHeader${widget.requestOptions.requestHeaders?.length ?? Random()}'] =
+        () => widget.requestOptions.requestHeaders[
+                'newHeader${widget.requestOptions.requestHeaders.length}'] =
             'newHeaderValue',
       );
     }
@@ -73,15 +70,15 @@ class _RenderRequestHeader extends State<RenderRequestHeader> {
       // if it has been changed and the change not applied
       // then remove the key from the original env params map
       String oldKey =
-          widget.requestOptions.requestHeaders!.entries.elementAt(index).key;
+          widget.requestOptions.requestHeaders.entries.elementAt(index).key;
       Map<String, String> newMap = {};
-      widget.requestOptions.requestHeaders!.forEach((key, value) {
+      widget.requestOptions.requestHeaders.forEach((key, value) {
         String newKey = key == oldKey ? headerKey : key;
-        newMap[newKey] = value;
+        newMap[newKey] = value as String;
       });
       widget.requestOptions.requestHeaders = newMap;
       setState(() {
-        widget.requestOptions.requestHeaders!.remove(headerKey);
+        widget.requestOptions.requestHeaders.remove(headerKey);
       });
     }
 
@@ -92,8 +89,7 @@ class _RenderRequestHeader extends State<RenderRequestHeader> {
             child: Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: Text('Request Headers',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 20)),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
             )),
         Flexible(
           flex: 3,
