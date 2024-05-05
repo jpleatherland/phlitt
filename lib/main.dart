@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double densityAmt = -3.0;
+    double densityAmt = -2.0;
     VisualDensity density =
         VisualDensity(horizontal: densityAmt, vertical: densityAmt);
     return MaterialApp(

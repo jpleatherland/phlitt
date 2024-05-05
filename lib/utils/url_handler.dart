@@ -15,7 +15,7 @@ String replacePlaceholders(String input, Environment environment) {
 String insertPlaceholder(String input, Environment environment) {
   if (environment.environmentParameters.isNotEmpty) {
     for (var env in environment.environmentParameters.entries) {
-      RegExp pattern = RegExp(r'^\w{"' + env.value.toString() + r'"}$');
+      RegExp pattern = RegExp(env.value.toString());
       input = input.replaceAllMapped(pattern, (match) => '{{${env.key}}}');
     }
   }
