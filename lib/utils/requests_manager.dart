@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:qapic/model/collections_model.dart';
+import 'package:qapic/utils/url_handler.dart';
 
 class RequestsManager {
   void submitRequest(
@@ -42,26 +43,24 @@ class RequestsManager {
     Map<String, String> headers = {'authorization': '$authType $authValue'};
     headers.addAll(request.options.requestHeaders
         .map((key, value) => MapEntry(key, value.toString())));
-    
+
     String encodedBody = '';
-    if(request.options.requestBody.bodyType == 'application/json'){
-      encodedBody = jsonEncode(jsonDecode(request.options.requestBody.bodyValue));
+    if (request.options.requestBody.bodyType == 'application/json') {
+      encodedBody =
+          jsonEncode(jsonDecode(request.options.requestBody.bodyValue));
     } else {
       encodedBody = request.options.requestBody.bodyValue;
     }
 
     switch (request.requestMethod) {
       case 'GET':
-        getRequest(
-            parsedUrl, encodedBody, headers, updateResponse);
+        getRequest(parsedUrl, encodedBody, headers, updateResponse);
         break;
       case 'POST':
-        postRequest(
-            parsedUrl, encodedBody, headers, updateResponse);
+        postRequest(parsedUrl, encodedBody, headers, updateResponse);
         break;
       case 'PUT':
-        putRequest(
-            parsedUrl, encodedBody, headers, updateResponse);
+        putRequest(parsedUrl, encodedBody, headers, updateResponse);
         break;
       case 'DELETE':
         deleteRequest(parsedUrl, updateResponse);
@@ -76,7 +75,7 @@ class RequestsManager {
       ..headers.addAll(headers);
     request.body = requestBody;
     http.StreamedResponse response = await request.send();
-    if(response.statusCode > 399){
+    if (response.statusCode > 399) {
       updateResponse({
         'statusCode': response.statusCode,
         'body': {'error': await response.stream.bytesToString()}
@@ -90,9 +89,9 @@ class RequestsManager {
 
   void postRequest(Uri requestUrl, String requestBody,
       Map<String, String> requestHeaders, Function updateResponse) async {
-    http.Response response = await http.post(requestUrl,
-        body: requestBody, headers: requestHeaders);
-    if(response.statusCode > 399){
+    http.Response response =
+        await http.post(requestUrl, body: requestBody, headers: requestHeaders);
+    if (response.statusCode > 399) {
       updateResponse({
         'statusCode': response.statusCode,
         'body': {'error': response.body}
@@ -106,9 +105,9 @@ class RequestsManager {
 
   void putRequest(Uri requestUrl, String requestBody,
       Map<String, String> requestHeaders, Function updateResponse) async {
-    http.Response response = await http.put(requestUrl,
-        body: requestBody, headers: requestHeaders);
-    if(response.statusCode > 399){
+    http.Response response =
+        await http.put(requestUrl, body: requestBody, headers: requestHeaders);
+    if (response.statusCode > 399) {
       updateResponse({
         'statusCode': response.statusCode,
         'body': {'error': response.body}
@@ -122,7 +121,7 @@ class RequestsManager {
 
   void deleteRequest(Uri requestUrl, Function updateResponse) async {
     http.Response response = await http.delete(requestUrl);
-    if(response.statusCode > 399){
+    if (response.statusCode > 399) {
       updateResponse({
         'statusCode': response.statusCode,
         'body': {'error': response.body}
@@ -132,17 +131,5 @@ class RequestsManager {
       'statusCode': response.statusCode,
       'body': json.decode(response.body)
     });
-  }
-
-  String replacePlaceholders(String input, Environment environment) {
-    // match between {{ }} to envParam key and replace with envParam value
-    final RegExp pattern = RegExp(r'\{\{([^}]+)\}\}');
-
-    final String updatedUrl = input.replaceAllMapped(
-      pattern,
-      (match) => environment.environmentParameters[match.group(1)] as String,
-    );
-
-    return updatedUrl;
   }
 }
