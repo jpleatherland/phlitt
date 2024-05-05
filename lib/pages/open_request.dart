@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:qapic/utils/requests_manager.dart';
 import 'package:qapic/pages/request_options_page.dart';
 import 'package:qapic/model/collections_model.dart';
+import 'package:qapic/utils/url_handler.dart';
 
 class TabData extends StatefulWidget {
   final Request request;
-  final Environment? environment;
-  const TabData({super.key, required this.request, this.environment});
+  final Environment environment;
+  const TabData({super.key, required this.request, required this.environment});
 
   @override
   State<TabData> createState() => _TabDataState();
@@ -84,9 +85,12 @@ class _TabDataState extends State<TabData> {
 
     void updateUrlQueries(String originalKey, String queryKey,
         String queryValue, String queryType) {
-      Uri currentUrl = Uri.parse(updatedRequest.requestUrl);
+      String parsedUrl =
+          replacePlaceholders(updatedRequest.requestUrl, environment);
+      Uri currentUrl = Uri.parse(parsedUrl);
       String currentScheme = currentUrl.scheme;
       String currentHost = currentUrl.host;
+      int currentPort = currentUrl.port;
       String currentPath = currentUrl.path;
       List<String> splitPath = currentUrl.path.split('/').sublist(1);
       Map<int, String> splitIndexedPath = {};
@@ -110,11 +114,13 @@ class _TabDataState extends State<TabData> {
           String newUrl = Uri(
                   scheme: currentScheme,
                   host: currentHost,
+                  port: currentPort,
                   path: currentPath,
                   queryParameters:
                       updatedRequest.options.requestQuery.queryParams)
               .toString();
-          updatedRequest.requestUrl = newUrl;
+          String interpolatedUrl = insertPlaceholder(newUrl, environment);
+          updatedRequest.requestUrl = interpolatedUrl;
           break;
         case 'pathVars':
           Map<String, dynamic> newPathVariables = {};
@@ -145,10 +151,12 @@ class _TabDataState extends State<TabData> {
           String newUrl = Uri(
                   scheme: currentScheme,
                   host: currentHost,
+                  port: currentPort,
                   path: newPathVars.join('/'),
                   queryParameters: currentQueryParams)
               .toString();
-          updatedRequest.requestUrl = newUrl;
+          String interpolatedUrl = insertPlaceholder(newUrl, environment);
+          updatedRequest.requestUrl = interpolatedUrl;
         default:
       }
       setState(() {});
