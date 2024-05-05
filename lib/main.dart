@@ -14,12 +14,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double densityAmt = -3.0;
+    VisualDensity density =
+        VisualDensity(horizontal: densityAmt, vertical: densityAmt);
     return MaterialApp(
       title: 'QAPIC',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 0, 100, 193)),
+        visualDensity: density,
         useMaterial3: true,
         fontFamily: 'NotoSans',
       ),
