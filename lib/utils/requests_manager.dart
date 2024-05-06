@@ -74,62 +74,94 @@ class RequestsManager {
     http.Request request = http.Request('GET', requestUrl)
       ..headers.addAll(headers);
     request.body = requestBody;
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode > 399) {
+    try {
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode > 399) {
+        updateResponse({
+          'statusCode': response.statusCode,
+          'body': {'error': await response.stream.bytesToString()}
+        });
+      } else {
+        updateResponse({
+          'statusCode': response.statusCode,
+          'body': await jsonDecode(await response.stream.bytesToString())
+        });
+      }
+    } catch (error) {
       updateResponse({
-        'statusCode': response.statusCode,
-        'body': {'error': await response.stream.bytesToString()}
+        'statusCode': 500,
+        'body': {'error': error.toString()}
       });
     }
-    updateResponse({
-      'statusCode': response.statusCode,
-      'body': await jsonDecode(await response.stream.bytesToString())
-    });
   }
 
   void postRequest(Uri requestUrl, String requestBody,
       Map<String, String> requestHeaders, Function updateResponse) async {
-    http.Response response =
-        await http.post(requestUrl, body: requestBody, headers: requestHeaders);
-    if (response.statusCode > 399) {
+    try {
+      http.Response response = await http.post(requestUrl,
+          body: requestBody, headers: requestHeaders);
+      if (response.statusCode > 399) {
+        updateResponse({
+          'statusCode': response.statusCode,
+          'body': {'error': response.body}
+        });
+      } else {
+        updateResponse({
+          'statusCode': response.statusCode,
+          'body': json.decode(response.body)
+        });
+      }
+    } catch (error) {
       updateResponse({
-        'statusCode': response.statusCode,
-        'body': {'error': response.body}
+        'statusCode': 500,
+        'body': {'error': error.toString()}
       });
     }
-    updateResponse({
-      'statusCode': response.statusCode,
-      'body': json.decode(response.body)
-    });
   }
 
   void putRequest(Uri requestUrl, String requestBody,
       Map<String, String> requestHeaders, Function updateResponse) async {
-    http.Response response =
-        await http.put(requestUrl, body: requestBody, headers: requestHeaders);
-    if (response.statusCode > 399) {
+    try {
+      http.Response response = await http.put(requestUrl,
+          body: requestBody, headers: requestHeaders);
+      if (response.statusCode > 399) {
+        updateResponse({
+          'statusCode': response.statusCode,
+          'body': {'error': response.body}
+        });
+      } else {
+        updateResponse({
+          'statusCode': response.statusCode,
+          'body': json.decode(response.body)
+        });
+      }
+    } catch (error) {
       updateResponse({
-        'statusCode': response.statusCode,
-        'body': {'error': response.body}
+        'statusCode': 500,
+        'body': {'error': error.toString()}
       });
     }
-    updateResponse({
-      'statusCode': response.statusCode,
-      'body': json.decode(response.body)
-    });
   }
 
   void deleteRequest(Uri requestUrl, Function updateResponse) async {
-    http.Response response = await http.delete(requestUrl);
-    if (response.statusCode > 399) {
+    try {
+      http.Response response = await http.delete(requestUrl);
+      if (response.statusCode > 399) {
+        updateResponse({
+          'statusCode': response.statusCode,
+          'body': {'error': response.body}
+        });
+      } else {
+        updateResponse({
+          'statusCode': response.statusCode,
+          'body': json.decode(response.body)
+        });
+      }
+    } catch (error) {
       updateResponse({
-        'statusCode': response.statusCode,
-        'body': {'error': response.body}
+        'statusCode': 500,
+        'body': {'error': error.toString()}
       });
     }
-    updateResponse({
-      'statusCode': response.statusCode,
-      'body': json.decode(response.body)
-    });
   }
 }

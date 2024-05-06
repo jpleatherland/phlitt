@@ -25,7 +25,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     Function writeback = widget.writeback;
     Collection collection = widget.collection;
     ColorScheme colorScheme = Theme.of(context).colorScheme;
-    environmentController.text = collection.environments.first.environmentName;
+    environmentController.text == '' ? environmentController.text = widget.collection.environments.first.environmentName : environmentController.text;
 
     TabController tabController =
         TabController(length: openRequests.length, vsync: this);
@@ -61,13 +61,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         collection: collection,
                         writeback: writeback,
                       ),
-                    )),
+                    )).then((value) => setState((){})),
               ),
               Container(
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.onPrimary),
                 child: DropdownMenu(
                   controller: environmentController,
+                  onSelected: (value) => setState(() {}),
                   dropdownMenuEntries: collection.environments
                       .map((e) => DropdownMenuEntry(
                           value: e.environmentName, label: e.environmentName))

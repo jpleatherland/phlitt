@@ -146,7 +146,7 @@ class _TabDataState extends State<TabData> {
             newPathVars.add(':$queryKey');
           }
           newPathVars.removeWhere((element) =>
-              element.startsWith(':') &
+              element.startsWith(':') &&
               !newPathVariables.keys.contains(element.substring(1)));
           String newUrl = Uri(
                   scheme: currentScheme,

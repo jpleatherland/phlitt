@@ -67,7 +67,7 @@ class _RenderCollectionRequestGroupsState
                           deleteRequest,
                           deleteRequestGroup),
                   child:
-                      Text(collection.requestGroups[index].requestGroupName)),
+                      Text(collection.requestGroups[index].requestGroupName,)),
               children: collection.requestGroups[index].requests
                   .map((e) => _ContextMenuRegion(
                         contextMenuBuilder:
@@ -82,29 +82,26 @@ class _RenderCollectionRequestGroupsState
                               deleteRequest,
                               deleteRequestGroup);
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 14.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.zero,
-                                      ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextButton(
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.zero,
                                     ),
                                   ),
-                                  onPressed: () {
-                                    CustomContextMenuController.removeAny();
-                                    selectRequest(e);
-                                  },
-                                  child: Text(e.requestName),
                                 ),
+                                onPressed: () {
+                                  CustomContextMenuController.removeAny();
+                                  selectRequest(e);
+                                },
+                                child: Text(e.requestName),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ))
                   .toList());
