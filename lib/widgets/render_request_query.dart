@@ -40,8 +40,8 @@ class _RenderRequestQueryState extends State<RenderRequestQuery> {
           break;
         case 'pathVars':
           String pvLength = (pathVars.entries.length + 1).toString();
-          widget.updateUrl(
-              '', 'newParam$pvLength', 'newParamValue$pvLength', 'pathVars');
+          widget.updateUrl('', 'newPathVar$pvLength',
+              'newPathVarValue$pvLength', 'pathVars');
           break;
         default:
       }
@@ -68,7 +68,11 @@ class _RenderRequestQueryState extends State<RenderRequestQuery> {
             child: Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: Text('Query Parameters',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  )),
             )),
         Flexible(
           flex: 3,
