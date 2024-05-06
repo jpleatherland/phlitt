@@ -18,14 +18,13 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   List<Request> openRequests = [];
-  TextEditingController environmentController = TextEditingController();
+  TextEditingController environmentController = TextEditingController(text: widget.collection.environments.first.environmentName);
 
   @override
   Widget build(BuildContext context) {
     Function writeback = widget.writeback;
     Collection collection = widget.collection;
     ColorScheme colorScheme = Theme.of(context).colorScheme;
-    environmentController.text = collection.environments.first.environmentName;
 
     TabController tabController =
         TabController(length: openRequests.length, vsync: this);
@@ -61,13 +60,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         collection: collection,
                         writeback: writeback,
                       ),
-                    )),
+                    )).then((value) => setState((){})),
               ),
               Container(
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.onPrimary),
                 child: DropdownMenu(
                   controller: environmentController,
+                  onSelected: (value) => setState(() {}),
                   dropdownMenuEntries: collection.environments
                       .map((e) => DropdownMenuEntry(
                           value: e.environmentName, label: e.environmentName))

@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
         visualDensity: density,
         useMaterial3: true,
         fontFamily: 'NotoSans',
+        inputDecorationTheme: const InputDecorationTheme(isDense: true),
       ),
       home: MyHomePage(title: 'QAPIC', collections: CollectionsManager()),
     );

@@ -80,11 +80,12 @@ class RequestsManager {
         'statusCode': response.statusCode,
         'body': {'error': await response.stream.bytesToString()}
       });
+    } else {
+      updateResponse({
+        'statusCode': response.statusCode,
+        'body': await jsonDecode(await response.stream.bytesToString())
+      });
     }
-    updateResponse({
-      'statusCode': response.statusCode,
-      'body': await jsonDecode(await response.stream.bytesToString())
-    });
   }
 
   void postRequest(Uri requestUrl, String requestBody,
@@ -96,11 +97,12 @@ class RequestsManager {
         'statusCode': response.statusCode,
         'body': {'error': response.body}
       });
+    } else {
+      updateResponse({
+        'statusCode': response.statusCode,
+        'body': json.decode(response.body)
+      });
     }
-    updateResponse({
-      'statusCode': response.statusCode,
-      'body': json.decode(response.body)
-    });
   }
 
   void putRequest(Uri requestUrl, String requestBody,
@@ -112,11 +114,12 @@ class RequestsManager {
         'statusCode': response.statusCode,
         'body': {'error': response.body}
       });
+    } else {
+      updateResponse({
+        'statusCode': response.statusCode,
+        'body': json.decode(response.body)
+      });
     }
-    updateResponse({
-      'statusCode': response.statusCode,
-      'body': json.decode(response.body)
-    });
   }
 
   void deleteRequest(Uri requestUrl, Function updateResponse) async {
@@ -126,10 +129,11 @@ class RequestsManager {
         'statusCode': response.statusCode,
         'body': {'error': response.body}
       });
+    } else {
+      updateResponse({
+        'statusCode': response.statusCode,
+        'body': json.decode(response.body)
+      });
     }
-    updateResponse({
-      'statusCode': response.statusCode,
-      'body': json.decode(response.body)
-    });
   }
 }
