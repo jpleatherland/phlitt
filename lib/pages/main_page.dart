@@ -18,13 +18,14 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   List<Request> openRequests = [];
-  TextEditingController environmentController = TextEditingController(text: widget.collection.environments.first.environmentName);
+  TextEditingController environmentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     Function writeback = widget.writeback;
     Collection collection = widget.collection;
     ColorScheme colorScheme = Theme.of(context).colorScheme;
+    environmentController.text == '' ? environmentController.text = widget.collection.environments.first.environmentName : environmentController.text;
 
     TabController tabController =
         TabController(length: openRequests.length, vsync: this);
