@@ -2,13 +2,14 @@ import 'package:path_provider/path_provider.dart';
 
 import 'dart:io';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:qapic/model/collections_model.dart';
 import './example_collection.dart';
 
 mixin class CollectionsManager {
   Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
+    final directory = await getApplicationSupportDirectory();
     return directory.path;
   }
 
@@ -47,7 +48,7 @@ mixin class CollectionsManager {
 
   void newRequest(RequestGroup requestGroup) {
     requestGroup.requests.add(Request(
-        requestName: 'New Request',
+        requestName: generateRandomString(),
         requestMethod: 'GET',
         requestUrl: '',
         options: RequestOptions(
@@ -64,8 +65,8 @@ mixin class CollectionsManager {
   }
 
   void newRequestGroup(Collection collection) {
-    collection.requestGroups
-        .add(RequestGroup(requestGroupName: 'New Request Group', requests: []));
+    collection.requestGroups.add(
+        RequestGroup(requestGroupName: generateRandomString(), requests: []));
   }
 
   void deleteRequestGroup(Collection collection, String requestGroupName) {
@@ -74,12 +75,16 @@ mixin class CollectionsManager {
   }
 
   void newCollection(CollectionGroup collectionGroup) {
-    collectionGroup.collections.add(
-        Collection(collectionName: 'New Collection', requestGroups: [
-      RequestGroup(requestGroupName: 'New Request Group', requests: [])
-    ], environments: [
-      Environment(environmentName: 'New Environment', environmentParameters: {})
-    ]));
+    collectionGroup.collections.add(Collection(
+        collectionName: 'New Collection',
+        requestGroups: [
+          RequestGroup(requestGroupName: 'New Request Group', requests: [])
+        ],
+        environments: [
+          Environment(
+              environmentName: generateRandomString(),
+              environmentParameters: {})
+        ]));
   }
 
   void deleteCollection(
@@ -90,11 +95,17 @@ mixin class CollectionsManager {
 
   void newEnvironment(Collection collection) {
     collection.environments.add(Environment(
-        environmentName: 'New Environment', environmentParameters: {}));
+        environmentName: generateRandomString(), environmentParameters: {}));
   }
 
   void deleteEnvironment(Collection collection, String environmentName) {
     collection.environments
         .removeWhere((e) => e.environmentName == environmentName);
+  }
+
+  String generateRandomString() {
+    var r = Random();
+    return String.fromCharCodes(
+        List.generate(10, (index) => r.nextInt(33) + 89));
   }
 }

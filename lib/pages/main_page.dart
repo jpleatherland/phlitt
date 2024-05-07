@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qapic/model/collections_model.dart';
 import 'package:qapic/pages/environments_page.dart';
 import 'package:qapic/widgets/render_request_groups.dart';
-import 'package:qapic/pages/open_request.dart';
+import 'package:qapic/pages/active_request.dart';
 import 'package:qapic/widgets/custom_context_menu_controller.dart';
 
 class MainPage extends StatefulWidget {
@@ -25,13 +25,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     Function writeback = widget.writeback;
     Collection collection = widget.collection;
     ColorScheme colorScheme = Theme.of(context).colorScheme;
-    environmentController.text == '' ? environmentController.text = widget.collection.environments.first.environmentName : environmentController.text;
+    environmentController.text == ''
+        ? environmentController.text =
+            widget.collection.environments.first.environmentName
+        : environmentController.text;
 
     TabController tabController =
         TabController(length: openRequests.length, vsync: this);
     if (openRequests.isNotEmpty) {
       tabController.index = openRequests.length - 1;
     }
+
     void selectRequest(Request request) {
       if (!openRequests.contains(request)) {
         setState(
@@ -40,6 +44,26 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       } else {
         tabController.index = openRequests.indexOf(request);
       }
+    }
+
+    void closeOpenRequest(Request request) {
+      if (openRequests.contains(request)) {
+        setState(
+          () => openRequests.remove(request),
+        );
+      }
+    }
+
+    void renameOpenRequest(Request request, String newRequestName) {
+      bool wasOpen = false;
+      if (openRequests.contains(request)) {
+        closeOpenRequest(request);
+        wasOpen = true;
+      }
+      setState(() {
+        request.requestName = newRequestName;
+        if (wasOpen) selectRequest(request);
+      });
     }
 
     return GestureDetector(
@@ -61,7 +85,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         collection: collection,
                         writeback: writeback,
                       ),
-                    )).then((value) => setState((){})),
+                    )).then((value) => setState(() {})),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -90,6 +114,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 RenderCollectionRequestGroups(
                   collection: collection,
                   selectRequest: selectRequest,
+                  closeOpenRequest: closeOpenRequest,
+                  renameOpenRequest: renameOpenRequest,
                 )
               ]),
             ),
@@ -115,7 +141,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               .map(
                                 (e) => Container(
                                     padding: const EdgeInsets.all(5.0),
-                                    child: TabData(
+                                    child: ActiveRequest(
                                         request: e,
                                         environment: collection.environments
                                             .where(
