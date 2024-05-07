@@ -7,9 +7,15 @@ import 'package:qapic/widgets/rename_dialog.dart' as rd;
 class RenderCollectionRequestGroups extends StatefulWidget {
   final Collection collection;
   final Function(Request) selectRequest;
+  final Function(Request) closeOpenRequest;
+  final Function(Request, String) renameOpenRequest;
 
   const RenderCollectionRequestGroups(
-      {super.key, required this.collection, required this.selectRequest});
+      {super.key,
+      required this.collection,
+      required this.selectRequest,
+      required this.closeOpenRequest,
+      required this.renameOpenRequest});
 
   @override
   State<RenderCollectionRequestGroups> createState() =>
@@ -24,9 +30,7 @@ class _RenderCollectionRequestGroupsState
       String valueToUpdate, dynamic value) {
     switch (valueToUpdate) {
       case 'requestName':
-        setState(
-          () => request!.requestName = value as String,
-        );
+        widget.renameOpenRequest(request!, value as String);
         break;
       case 'requestGroupName':
         setState(() => requestGroup.requestGroupName = value as String);
@@ -40,72 +44,92 @@ class _RenderCollectionRequestGroupsState
     Function newRequestGroup = collectionsManager.newRequestGroup;
 
     void deleteRequest(RequestGroup requestGroup, String requestName) {
+      widget.closeOpenRequest(requestGroup.requests
+          .where((element) => element.requestName == requestName)
+          .first);
       collectionsManager.deleteRequest(requestGroup, requestName);
       setState(() {});
     }
 
     void deleteRequestGroup(Collection collection, String requestGroupName) {
+      for (Request request in collection.requestGroups
+          .where(
+            (element) => element.requestGroupName == requestGroupName,
+          )
+          .first
+          .requests) {
+        widget.closeOpenRequest(request);
+      }
       collectionsManager.deleteRequestGroup(collection, requestGroupName);
       setState(() {});
     }
 
-    return ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        itemCount: collection.requestGroups.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ExpansionTile(
-              title: _ContextMenuRegion(
-                  contextMenuBuilder: (BuildContext context, Offset offset) =>
-                      renameMenu(
-                          offset,
-                          context,
-                          collection.requestGroups[index],
-                          null,
-                          newRequest,
-                          newRequestGroup,
-                          deleteRequest,
-                          deleteRequestGroup),
-                  child:
-                      Text(collection.requestGroups[index].requestGroupName,)),
-              children: collection.requestGroups[index].requests
-                  .map((e) => _ContextMenuRegion(
-                        contextMenuBuilder:
-                            (BuildContext context, Offset offset) {
-                          return renameMenu(
+    return Column(
+      children: [
+        ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            itemCount: collection.requestGroups.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ExpansionTile(
+                  title: _ContextMenuRegion(
+                      contextMenuBuilder:
+                          (BuildContext context, Offset offset) => renameMenu(
                               offset,
                               context,
                               collection.requestGroups[index],
-                              e,
+                              null,
                               newRequest,
                               newRequestGroup,
                               deleteRequest,
-                              deleteRequestGroup);
-                        },
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextButton(
-                                style: ButtonStyle(
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.zero,
+                              deleteRequestGroup),
+                      child: Text(
+                        collection.requestGroups[index].requestGroupName,
+                      )),
+                  children: collection.requestGroups[index].requests
+                      .map((e) => _ContextMenuRegion(
+                            contextMenuBuilder:
+                                (BuildContext context, Offset offset) {
+                              return renameMenu(
+                                  offset,
+                                  context,
+                                  collection.requestGroups[index],
+                                  e,
+                                  newRequest,
+                                  newRequestGroup,
+                                  deleteRequest,
+                                  deleteRequestGroup);
+                            },
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextButton(
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                        const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.zero,
+                                        ),
+                                      ),
                                     ),
+                                    onPressed: () {
+                                      CustomContextMenuController.removeAny();
+                                      selectRequest(e);
+                                    },
+                                    child: Text(e.requestName),
                                   ),
                                 ),
-                                onPressed: () {
-                                  CustomContextMenuController.removeAny();
-                                  selectRequest(e);
-                                },
-                                child: Text(e.requestName),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ))
-                  .toList());
-        });
+                          ))
+                      .toList());
+            }),
+        IconButton(
+          icon: const Icon(Icons.add_circle),
+          onPressed: () => setState(() => newRequestGroup(widget.collection)),
+        )
+      ],
+    );
   }
 
   AdaptiveTextSelectionToolbar renameMenu(
