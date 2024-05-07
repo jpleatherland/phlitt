@@ -5,16 +5,16 @@ import 'package:qapic/pages/request_options_page.dart';
 import 'package:qapic/model/collections_model.dart';
 import 'package:qapic/utils/url_handler.dart';
 
-class TabData extends StatefulWidget {
+class ActiveRequest extends StatefulWidget {
   final Request request;
   final Environment environment;
-  const TabData({super.key, required this.request, required this.environment});
+  const ActiveRequest({super.key, required this.request, required this.environment});
 
   @override
-  State<TabData> createState() => _TabDataState();
+  State<ActiveRequest> createState() => _ActiveRequestState();
 }
 
-class _TabDataState extends State<TabData> {
+class _ActiveRequestState extends State<ActiveRequest> {
   RequestsManager rm = RequestsManager();
   Map<String, dynamic> responseData = {'statusCode': 0, 'body': ''};
   late Request updatedRequest;
@@ -255,7 +255,7 @@ class _TabDataState extends State<TabData> {
                     ? const Center(child: CircularProgressIndicator())
                     : Expanded(
                         child: SingleChildScrollView(
-                          child: Text(
+                          child: SelectableText(
                             responseData['body'] as String,
                             textAlign: TextAlign.left,
                           ),
