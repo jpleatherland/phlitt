@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:qapic/model/collections_model.dart';
-import 'package:qapic/utils/url_handler.dart';
+import 'package:phlitt/model/collections_model.dart';
+import 'package:phlitt/utils/url_handler.dart';
 
 class RequestsManager {
   void submitRequest(

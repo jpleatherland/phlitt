@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:qapic/model/collections_model.dart';
-import 'package:qapic/widgets/custom_context_menu_controller.dart';
-import 'package:qapic/utils/collections_manager.dart';
-import 'package:qapic/widgets/rename_dialog.dart' as rd;
+import 'package:phlitt/model/collections_model.dart';
+import 'package:phlitt/widgets/custom_context_menu_controller.dart';
+import 'package:phlitt/utils/collections_manager.dart';
+import 'package:phlitt/widgets/rename_dialog.dart' as rd;
 
 class RenderEnvironments extends StatefulWidget {
   final Collection collection;

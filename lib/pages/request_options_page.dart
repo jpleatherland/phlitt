@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:qapic/widgets/render_request_body.dart';
-import 'package:qapic/widgets/render_request_auth.dart';
-import 'package:qapic/widgets/render_request_query.dart';
-import 'package:qapic/widgets/render_request_headers.dart';
-import 'package:qapic/model/collections_model.dart';
+import 'package:phlitt/widgets/render_request_body.dart';
+import 'package:phlitt/widgets/render_request_auth.dart';
+import 'package:phlitt/widgets/render_request_query.dart';
+import 'package:phlitt/widgets/render_request_headers.dart';
+import 'package:phlitt/model/collections_model.dart';
 
 class RenderRequestOptions extends StatefulWidget {
   final RequestOptions requestOptions;

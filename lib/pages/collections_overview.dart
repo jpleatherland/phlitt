@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:qapic/model/collections_model.dart';
-import 'package:qapic/pages/main_page.dart';
-import 'package:qapic/utils/collections_manager.dart';
-import 'package:qapic/widgets/rename_dialog.dart' as rd;
+import 'package:phlitt/model/collections_model.dart';
+import 'package:phlitt/pages/main_page.dart';
+import 'package:phlitt/utils/collections_manager.dart';
+import 'package:phlitt/widgets/rename_dialog.dart' as rd;
 
 class CollectionsPage extends StatefulWidget with CollectionsManager {
   final CollectionGroup collectionGroups;

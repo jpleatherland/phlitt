@@ -4,7 +4,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:qapic/model/collections_model.dart';
+import 'package:phlitt/model/collections_model.dart';
 import './example_collection.dart';
 
 mixin class CollectionsManager {
