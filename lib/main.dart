@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     VisualDensity density =
         VisualDensity(horizontal: densityAmt, vertical: densityAmt);
     return MaterialApp(
-      title: 'QAPIC',
+      title: 'Phlitt',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'NotoSans',
         inputDecorationTheme: const InputDecorationTheme(isDense: true),
       ),
-      home: MyHomePage(title: 'QAPIC', collections: CollectionsManager()),
+      home: MyHomePage(title: 'Phlitt', collections: CollectionsManager()),
     );
   }
 }
