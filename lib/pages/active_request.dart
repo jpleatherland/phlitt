@@ -8,7 +8,8 @@ import 'package:qapic/utils/url_handler.dart';
 class ActiveRequest extends StatefulWidget {
   final Request request;
   final Environment environment;
-  const ActiveRequest({super.key, required this.request, required this.environment});
+  const ActiveRequest(
+      {super.key, required this.request, required this.environment});
 
   @override
   State<ActiveRequest> createState() => _ActiveRequestState();
@@ -190,14 +191,13 @@ class _ActiveRequestState extends State<ActiveRequest> {
     }
 
     return Column(mainAxisSize: MainAxisSize.min, children: [
-      Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 5.0),
-            child: DropdownMenu<String>(
+      Container(
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DropdownMenu<String>(
                 controller: requestMethodController,
-                label: const Text('Method'),
                 initialSelection: updatedRequest.requestMethod,
                 dropdownMenuEntries: <String>['GET', 'POST', 'PUT', 'DELETE']
                     .map((String value) {
@@ -208,30 +208,30 @@ class _ActiveRequestState extends State<ActiveRequest> {
                 }).toList(),
                 onSelected: (value) =>
                     updateRequest('requestMethod', value, false)),
-          ),
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Focus(
-              canRequestFocus: false,
-              onFocusChange: (hasFocus) => {
-                hasFocus
-                    ? null
-                    : updateRequest('requestUrl', urlController.text, false)
-              },
-              child: TextField(
-                controller: urlController,
-                onSubmitted: (value) =>
-                    updateRequest('requestUrl', value, true),
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Focus(
+                canRequestFocus: false,
+                onFocusChange: (hasFocus) => {
+                  hasFocus
+                      ? null
+                      : updateRequest('requestUrl', urlController.text, false)
+                },
+                child: TextField(
+                  controller: urlController,
+                  onSubmitted: (value) =>
+                      updateRequest('requestUrl', value, true),
+                ),
               ),
-            ),
-          )),
-          IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: () =>
-                submitRequest(updatedRequest, updateResponse, environment),
-          )
-        ],
+            )),
+            IconButton(
+              icon: const Icon(Icons.send),
+              onPressed: () =>
+                  submitRequest(updatedRequest, updateResponse, environment),
+            )
+          ],
+        ),
       ),
       Expanded(
         child: Row(

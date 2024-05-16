@@ -24,7 +24,7 @@ class _RenderRequestOptionsState extends State<RenderRequestOptions> {
   @override
   Widget build(BuildContext context) {
     List<String> requestOptionHeadings =
-        widget.requestOptions.toJson().keys.toList();
+        ['Query Params', 'Body', 'Headers', 'Auth'];
 
     updateRequestOptions(List<String> newOptions) {
       List<String> splitNewOptions = [];

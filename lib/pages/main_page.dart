@@ -110,14 +110,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           children: [
             Flexible(
               flex: 1,
-              child: Column(children: [
-                RenderCollectionRequestGroups(
+              child: Container(
+                color: Theme.of(context).colorScheme.onInverseSurface,
+                child: RenderCollectionRequestGroups(
                   collection: collection,
                   selectRequest: selectRequest,
                   closeOpenRequest: closeOpenRequest,
                   renameOpenRequest: renameOpenRequest,
-                )
-              ]),
+                ),
+              ),
             ),
             Flexible(
                 flex: 5,
@@ -126,11 +127,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(2.0),
+                      color: Theme.of(context).colorScheme.onInverseSurface,
                       child: TabBar(
+                        tabAlignment: TabAlignment.start,
+                        dividerColor: Colors.black,
+                        isScrollable: true,
+                        
+                        unselectedLabelColor: Colors.grey,
                           controller: tabController,
                           tabs: openRequests
                               .map(
-                                (e) => Tab(text: e.requestName),
+                                (e) => Tab(child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(14)),child: Text(e.requestName))),
                               )
                               .toList()),
                     ),
@@ -140,7 +147,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           children: openRequests
                               .map(
                                 (e) => Container(
-                                    padding: const EdgeInsets.all(5.0),
                                     child: ActiveRequest(
                                         request: e,
                                         environment: collection.environments
