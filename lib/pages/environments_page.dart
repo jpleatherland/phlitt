@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:qapic/model/collections_model.dart';
-import 'package:qapic/widgets/render_environments.dart';
-import 'package:qapic/widgets/render_environment_parameters.dart';
-import 'package:qapic/widgets/custom_context_menu_controller.dart';
+import 'package:phlitt/model/collections_model.dart';
+import 'package:phlitt/widgets/render_environments.dart';
+import 'package:phlitt/widgets/render_environment_parameters.dart';
+import 'package:phlitt/widgets/custom_context_menu_controller.dart';
 
 class EnvironmentsPage extends StatefulWidget {
   const EnvironmentsPage({

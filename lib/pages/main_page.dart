@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:qapic/model/collections_model.dart';
-import 'package:qapic/pages/environments_page.dart';
-import 'package:qapic/widgets/render_request_groups.dart';
-import 'package:qapic/pages/active_request.dart';
-import 'package:qapic/widgets/custom_context_menu_controller.dart';
+import 'package:phlitt/model/collections_model.dart';
+import 'package:phlitt/pages/environments_page.dart';
+import 'package:phlitt/widgets/render_request_groups.dart';
+import 'package:phlitt/pages/active_request.dart';
+import 'package:phlitt/widgets/custom_context_menu_controller.dart';
 
 class MainPage extends StatefulWidget {
   final Collection collection;

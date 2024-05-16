@@ -1,4 +1,4 @@
-import 'package:qapic/model/collections_model.dart';
+import 'package:phlitt/model/collections_model.dart';
 
 String replacePlaceholders(String input, Environment environment) {
   // match between {{ }} to envParam key and replace with envParam value

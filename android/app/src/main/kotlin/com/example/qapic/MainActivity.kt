@@ -1,4 +1,4 @@
-package com.example.qapic
+package com.example.phlitt
 
 import io.flutter.embedding.android.FlutterActivity
 
