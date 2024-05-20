@@ -129,15 +129,25 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       padding: const EdgeInsets.all(2.0),
                       color: Theme.of(context).colorScheme.onInverseSurface,
                       child: TabBar(
-                        tabAlignment: TabAlignment.start,
-                        dividerColor: Colors.black,
-                        isScrollable: true,
-                        
-                        unselectedLabelColor: Colors.grey,
+                          tabAlignment: TabAlignment.start,
+                          dividerColor: Colors.black,
+                          isScrollable: true,
+                          unselectedLabelColor: Colors.grey,
+                          labelPadding: const EdgeInsets.all(0),
                           controller: tabController,
                           tabs: openRequests
                               .map(
-                                (e) => Tab(child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(14)),child: Text(e.requestName))),
+                                (e) => Container(
+                                  decoration: const BoxDecoration(
+                                      border: Border(
+                                        left: BorderSide(color: Colors.grey),
+                                          right:
+                                              BorderSide(color: Colors.grey))),
+                                  child: Tab(child: Padding(
+                                    padding: const EdgeInsets.only(right:12.0, left: 12.0),
+                                    child: Text(e.requestName),
+                                  )),
+                                ),
                               )
                               .toList()),
                     ),

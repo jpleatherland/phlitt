@@ -100,11 +100,12 @@ class _RenderCollectionRequestGroupsState
                                   deleteRequest,
                                   deleteRequestGroup);
                             },
-                            child: Row(
+                            child:  Row(
                               children: [
                                 Expanded(
                                   child: TextButton(
                                     style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(Colors.white),
                                       shape: MaterialStateProperty.all<
                                           RoundedRectangleBorder>(
                                         const RoundedRectangleBorder(

@@ -192,7 +192,6 @@ class _ActiveRequestState extends State<ActiveRequest> {
 
     return Column(mainAxisSize: MainAxisSize.min, children: [
       Container(
-        color: Theme.of(context).colorScheme.secondaryContainer,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
