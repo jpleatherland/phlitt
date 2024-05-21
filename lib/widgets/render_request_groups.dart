@@ -100,25 +100,29 @@ class _RenderCollectionRequestGroupsState
                                   deleteRequest,
                                   deleteRequestGroup);
                             },
-                            child:  Row(
+                            child: Row(
                               children: [
                                 Expanded(
                                   child: TextButton(
-                                    style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all(Colors.white),
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.zero,
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.zero,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    onPressed: () {
-                                      CustomContextMenuController.removeAny();
-                                      selectRequest(e);
-                                    },
-                                    child: Text(e.requestName),
-                                  ),
+                                      onPressed: () {
+                                        CustomContextMenuController.removeAny();
+                                        selectRequest(e);
+                                      },
+                                      child: Row(children: [
+                                        Text('${e.requestMethod} '),
+                                        Text(e.requestName),
+                                      ])),
                                 ),
                               ],
                             ),

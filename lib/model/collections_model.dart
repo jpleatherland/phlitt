@@ -224,7 +224,7 @@ class RequestBody {
     String? bodyType = data['bodyType'] as String?;
     String? bodyValue =
         data['bodyValue'] as String?;
-    return RequestBody(bodyType: bodyType ?? '', bodyValue: bodyValue ?? '');
+    return RequestBody(bodyType: bodyType ?? 'json', bodyValue: bodyValue ?? '');
   }
 
   Map<String, dynamic> toJson() {
