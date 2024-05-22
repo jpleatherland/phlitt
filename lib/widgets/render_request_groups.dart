@@ -101,6 +101,7 @@ class _RenderCollectionRequestGroupsState
                                   deleteRequestGroup);
                             },
                             child: Row(
+                            child: Row(
                               children: [
                                 Container(
                                   decoration:

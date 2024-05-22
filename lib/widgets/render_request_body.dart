@@ -22,16 +22,12 @@ class _RenderRequestBodyState extends State<RenderRequestBody> {
     final TextEditingController bodyTypeController =
         TextEditingController(text: widget.requestOptions.requestBody.bodyType);
 
-    setRequestBodyType(String? bodyType) {
-      setState(
-          () => widget.requestOptions.requestBody.bodyType = bodyType ?? '');
-    }
-
     return Column(
       children: [
         DropdownMenu(
           controller: bodyTypeController,
-          onSelected: (value) => setRequestBodyType(value),
+          onSelected: (value) => setState(() =>
+              widget.requestOptions.requestBody.bodyType = value as String),
           dropdownMenuEntries: ['x-www-form-urlencoded', 'json']
               .map((e) => DropdownMenuEntry(label: e, value: e))
               .toList(),
@@ -40,28 +36,12 @@ class _RenderRequestBodyState extends State<RenderRequestBody> {
             ? Expanded(
                 child: RenderMultipartFormBody(
                     requestOptions: widget.requestOptions))
-            : renderJsonBody(bodyController)
-      ],
-    );
-  }
-
-  Widget renderJsonBody(TextEditingController bodyController) {
-    setRequestBody(String bodyType, String text) {
-      widget.requestOptions.requestBody.bodyType = bodyType;
-      widget.requestOptions.requestBody.bodyValue = text;
-      widget.requestOptions.requestHeaders['Content-Type'] = 'application/json';
-    }
-
-    return Column(
-      children: [
-        TextButton(
-          onPressed: () => setRequestBody('json', bodyController.text),
-          child: const Text('Apply'),
-        ),
-        TextFormField(
-          controller: bodyController,
-          maxLines: null,
-        ),
+            : TextFormField(
+                controller: bodyController,
+                onChanged: (value) =>
+                    widget.requestOptions.requestBody.bodyValue = value,
+                maxLines: null,
+              ),
       ],
     );
   }
