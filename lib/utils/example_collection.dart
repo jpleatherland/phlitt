@@ -20,7 +20,7 @@ String collectionTemplate = '''{
                                     }
                                 },
                                 "requestBody": {
-                                    "bodyType": "",
+                                    "bodyType": "json",
                                     "bodyValue": ""
                                 },
                                 "requestHeaders": {},

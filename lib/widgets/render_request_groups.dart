@@ -100,12 +100,23 @@ class _RenderCollectionRequestGroupsState
                                   deleteRequest,
                                   deleteRequestGroup);
                             },
-                            child:  Row(
+                            child: Row(
                               children: [
+                                Container(
+                                  decoration:
+                                      BoxDecoration(border: Border.all()),
+                                  width: 60,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(e.requestMethod),
+                                  ),
+                                ),
                                 Expanded(
                                   child: TextButton(
                                     style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.white),
                                       shape: MaterialStateProperty.all<
                                           RoundedRectangleBorder>(
                                         const RoundedRectangleBorder(
@@ -117,7 +128,10 @@ class _RenderCollectionRequestGroupsState
                                       CustomContextMenuController.removeAny();
                                       selectRequest(e);
                                     },
-                                    child: Text(e.requestName),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(e.requestName),
+                                    ),
                                   ),
                                 ),
                               ],

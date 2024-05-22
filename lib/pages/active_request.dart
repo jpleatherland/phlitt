@@ -218,6 +218,9 @@ class _ActiveRequestState extends State<ActiveRequest> {
                       : updateRequest('requestUrl', urlController.text, false)
                 },
                 child: TextField(
+                  decoration: const InputDecoration(
+                      hintText:
+                          'environment variables {{server}}, path vars :pathVar, queries ?key=value&key2=val2'),
                   controller: urlController,
                   onSubmitted: (value) =>
                       updateRequest('requestUrl', value, true),
