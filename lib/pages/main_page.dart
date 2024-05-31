@@ -126,9 +126,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(2.0),
+                      padding: const EdgeInsets.only(
+                          top: 2.0, left: 2.0, right: 2.0),
                       color: Theme.of(context).colorScheme.onInverseSurface,
                       child: TabBar(
+                        
                           tabAlignment: TabAlignment.start,
                           dividerColor: Colors.black,
                           isScrollable: true,
@@ -140,11 +142,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                 (e) => Container(
                                   decoration: const BoxDecoration(
                                       border: Border(
-                                        left: BorderSide(color: Colors.grey),
                                           right:
                                               BorderSide(color: Colors.grey))),
-                                  child: Tab(child: Padding(
-                                    padding: const EdgeInsets.only(right:12.0, left: 12.0),
+                                  child: Tab(
+                                      child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 12.0, left: 12.0),
                                     child: Text(e.requestName),
                                   )),
                                 ),
@@ -156,16 +159,19 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           controller: tabController,
                           children: openRequests
                               .map(
-                                (e) => Container(
-                                    child: ActiveRequest(
-                                        request: e,
-                                        environment: collection.environments
-                                            .where(
-                                              (element) =>
-                                                  element.environmentName ==
-                                                  environmentController.text,
-                                            )
-                                            .first)),
+                                (e) => Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 8.0, right: 8.0, bottom: 8.0),
+                                  child: ActiveRequest(
+                                      request: e,
+                                      environment: collection.environments
+                                          .where(
+                                            (element) =>
+                                                element.environmentName ==
+                                                environmentController.text,
+                                          )
+                                          .first),
+                                ),
                               )
                               .toList()),
                     ),

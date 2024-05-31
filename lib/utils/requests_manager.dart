@@ -89,7 +89,7 @@ class RequestsManager {
       }
     } catch (error) {
       updateResponse({
-        'statusCode': 500,
+        'statusCode': 0,
         'body': {'error': error.toString()}
       });
     }
@@ -103,7 +103,7 @@ class RequestsManager {
       if (response.statusCode > 399) {
         updateResponse({
           'statusCode': response.statusCode,
-          'body': {'error': response.body}
+          'body': {'error': response.reasonPhrase}
         });
       } else {
         updateResponse({
@@ -113,7 +113,7 @@ class RequestsManager {
       }
     } catch (error) {
       updateResponse({
-        'statusCode': 500,
+        'statusCode': 0,
         'body': {'error': error.toString()}
       });
     }

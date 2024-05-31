@@ -64,30 +64,43 @@ class _RenderCollectionRequestGroupsState
       setState(() {});
     }
 
-    return Column(
-      children: [
-        ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            itemCount: collection.requestGroups.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ExpansionTile(
-                  title: _ContextMenuRegion(
-                      contextMenuBuilder:
-                          (BuildContext context, Offset offset) => renameMenu(
-                              offset,
-                              context,
-                              collection.requestGroups[index],
-                              null,
-                              newRequest,
-                              newRequestGroup,
-                              deleteRequest,
-                              deleteRequestGroup),
-                      child: Text(
-                        collection.requestGroups[index].requestGroupName,
-                      )),
-                  children: collection.requestGroups[index].requests
-                      .map((e) => _ContextMenuRegion(
+    return Container(
+      decoration: const BoxDecoration(
+          border: Border(
+        right: BorderSide(color: Colors.black, width: 1),
+      )),
+      child: Column(
+        children: [
+          ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemCount: collection.requestGroups.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Theme(
+                  data: Theme.of(context).copyWith(
+                    dividerColor: Colors.transparent,
+                  ),
+                  child: ExpansionTile(
+                      dense: true,
+                      initiallyExpanded: true,
+                      title: _ContextMenuRegion(
+                          contextMenuBuilder:
+                              (BuildContext context, Offset offset) =>
+                                  renameMenu(
+                                      offset,
+                                      context,
+                                      collection.requestGroups[index],
+                                      null,
+                                      newRequest,
+                                      newRequestGroup,
+                                      deleteRequest,
+                                      deleteRequestGroup),
+                          child: Text(
+                            collection.requestGroups[index].requestGroupName,
+                          )),
+                      children: [
+                        ...collection.requestGroups[index].requests.map(
+                          (e) => _ContextMenuRegion(
                             contextMenuBuilder:
                                 (BuildContext context, Offset offset) {
                               return renameMenu(
@@ -100,7 +113,6 @@ class _RenderCollectionRequestGroupsState
                                   deleteRequest,
                                   deleteRequestGroup);
                             },
-                            child: Row(
                             child: Row(
                               children: [
                                 Container(
@@ -137,14 +149,18 @@ class _RenderCollectionRequestGroupsState
                                 ),
                               ],
                             ),
-                          ))
-                      .toList());
-            }),
-        IconButton(
-          icon: const Icon(Icons.add_circle),
-          onPressed: () => setState(() => newRequestGroup(widget.collection)),
-        )
-      ],
+                          ),
+                        ),
+                        Text("hi"),
+                      ]),
+                );
+              }),
+          IconButton(
+            icon: const Icon(Icons.add_circle),
+            onPressed: () => setState(() => newRequestGroup(widget.collection)),
+          )
+        ],
+      ),
     );
   }
 

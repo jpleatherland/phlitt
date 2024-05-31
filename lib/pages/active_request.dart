@@ -4,6 +4,7 @@ import 'package:phlitt/utils/requests_manager.dart';
 import 'package:phlitt/pages/request_options_page.dart';
 import 'package:phlitt/model/collections_model.dart';
 import 'package:phlitt/utils/url_handler.dart';
+import 'package:phlitt/widgets/render_response.dart';
 
 class ActiveRequest extends StatefulWidget {
   final Request request;
@@ -41,18 +42,25 @@ class _ActiveRequestState extends State<ActiveRequest> {
         TextEditingController(text: updatedRequest.requestUrl);
 
     void updateResponse(Map<String, dynamic> response) {
-      const encoder = JsonEncoder.withIndent('    ');
-      String prettyResponse = encoder.convert(response['body']);
-      if (mounted) {
-        setState(
-          () {
-            isFetching = false;
-            responseData = {
-              'statusCode': response['statusCode'],
-              'body': prettyResponse
-            };
-          },
-        );
+      try {
+        const encoder = JsonEncoder.withIndent('    ');
+        String prettyResponse = encoder.convert(response['body']);
+        if (mounted) {
+          setState(
+            () {
+              isFetching = false;
+              responseData = {
+                'statusCode': response['statusCode'],
+                'body': prettyResponse
+              };
+            },
+          );
+        }
+      } catch (error) {
+        setState(() {
+          isFetching = false;
+          response['body'] = error.toString();
+        });
       }
     }
 
@@ -191,49 +199,48 @@ class _ActiveRequestState extends State<ActiveRequest> {
     }
 
     return Column(mainAxisSize: MainAxisSize.min, children: [
-      Container(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DropdownMenu<String>(
-                controller: requestMethodController,
-                initialSelection: updatedRequest.requestMethod,
-                dropdownMenuEntries: <String>['GET', 'POST', 'PUT', 'DELETE']
-                    .map((String value) {
-                  return DropdownMenuEntry<String>(
-                    value: value,
-                    label: value,
-                  );
-                }).toList(),
-                onSelected: (value) =>
-                    updateRequest('requestMethod', value, false)),
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Focus(
-                canRequestFocus: false,
-                onFocusChange: (hasFocus) => {
-                  hasFocus
-                      ? null
-                      : updateRequest('requestUrl', urlController.text, false)
-                },
-                child: TextField(
-                  decoration: const InputDecoration(
-                      hintText:
-                          'environment variables {{server}}, path vars :pathVar, queries ?key=value&key2=val2'),
-                  controller: urlController,
-                  onSubmitted: (value) =>
-                      updateRequest('requestUrl', value, true),
-                ),
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DropdownMenu<String>(
+              inputDecorationTheme: const InputDecorationTheme(isDense: true),
+              controller: requestMethodController,
+              initialSelection: updatedRequest.requestMethod,
+              dropdownMenuEntries:
+                  <String>['GET', 'POST', 'PUT', 'DELETE'].map((String value) {
+                return DropdownMenuEntry<String>(
+                  value: value,
+                  label: value,
+                );
+              }).toList(),
+              onSelected: (value) =>
+                  updateRequest('requestMethod', value, false)),
+          Expanded(
+              child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Focus(
+              canRequestFocus: false,
+              onFocusChange: (hasFocus) => {
+                hasFocus
+                    ? null
+                    : updateRequest('requestUrl', urlController.text, false)
+              },
+              child: TextField(
+                decoration: const InputDecoration(
+                    hintText:
+                        '{{environmentVariable}}/:pathVar/?queryParam=value&queryParam2=value2'),
+                controller: urlController,
+                onSubmitted: (value) =>
+                    updateRequest('requestUrl', value, true),
               ),
-            )),
-            IconButton(
-              icon: const Icon(Icons.send),
-              onPressed: () =>
-                  submitRequest(updatedRequest, updateResponse, environment),
-            )
-          ],
-        ),
+            ),
+          )),
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: () =>
+                submitRequest(updatedRequest, updateResponse, environment),
+          )
+        ],
       ),
       Expanded(
         child: Row(
@@ -246,24 +253,14 @@ class _ActiveRequestState extends State<ActiveRequest> {
               updateUrl: updateUrlQueries,
             )),
             Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Status Code: ${responseData['statusCode']}',
-                  textAlign: TextAlign.right,
-                ),
-                isFetching
-                    ? const Center(child: CircularProgressIndicator())
-                    : Expanded(
-                        child: SingleChildScrollView(
-                          child: SelectableText(
-                            responseData['body'] as String,
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ),
-              ],
+                child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                    left: BorderSide(
+                        color: Theme.of(context).colorScheme.tertiary)),
+              ),
+              child: RenderResponse(
+                  responseData: responseData, isFetching: isFetching),
             )),
           ],
         ),
