@@ -54,15 +54,15 @@ class _ActiveRequestState extends State<ActiveRequest> {
         );
       } else {
         try {
-          const encoder = JsonEncoder.withIndent('    ');
-          String prettyResponse = encoder.convert(response['body']);
+          //const encoder = JsonEncoder.withIndent('    ');
+          //String prettyResponse = encoder.convert(response['body']);
           if (mounted) {
             setState(
               () {
                 isFetching = false;
                 responseData = {
                   'statusCode': response['statusCode'],
-                  'body': prettyResponse
+                  'body': response['body']
                 };
               },
             );
