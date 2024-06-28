@@ -14,15 +14,19 @@ void showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
           title: const Text('Request name:'),
-          content: TextFormField(
-            initialValue: request?.requestName ?? requestGroup.requestGroupName,
-            onChanged: (value) => callback(requestGroup, request,
-                hasRequest ? 'requestName' : 'requestGroupName', value),
-            onFieldSubmitted: (value) {
-              callback(requestGroup, request,
-                  hasRequest ? 'requestName' : 'requestGroupName', value);
-              Navigator.of(context).pop();
-            },
+          content: Focus(
+            child: TextFormField(
+              autofocus: true,
+              initialValue:
+                  request?.requestName ?? requestGroup.requestGroupName,
+              onChanged: (value) => callback(requestGroup, request,
+                  hasRequest ? 'requestName' : 'requestGroupName', value),
+              onFieldSubmitted: (value) {
+                callback(requestGroup, request,
+                    hasRequest ? 'requestName' : 'requestGroupName', value);
+                Navigator.of(context).pop();
+              },
+            ),
           ))));
 }
 

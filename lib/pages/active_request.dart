@@ -42,25 +42,37 @@ class _ActiveRequestState extends State<ActiveRequest> {
         TextEditingController(text: updatedRequest.requestUrl);
 
     void updateResponse(Map<String, dynamic> response) {
-      try {
-        const encoder = JsonEncoder.withIndent('    ');
-        String prettyResponse = encoder.convert(response['body']);
-        if (mounted) {
-          setState(
-            () {
-              isFetching = false;
-              responseData = {
-                'statusCode': response['statusCode'],
-                'body': prettyResponse
-              };
-            },
-          );
+      if (response['body'] is String) {
+        setState(
+          () {
+            isFetching = false;
+            responseData = {
+              'statusCode': response['statusCode'],
+              'body': response['body']
+            };
+          },
+        );
+      } else {
+        try {
+          const encoder = JsonEncoder.withIndent('    ');
+          String prettyResponse = encoder.convert(response['body']);
+          if (mounted) {
+            setState(
+              () {
+                isFetching = false;
+                responseData = {
+                  'statusCode': response['statusCode'],
+                  'body': prettyResponse
+                };
+              },
+            );
+          }
+        } catch (error) {
+          setState(() {
+            isFetching = false;
+            response['body'] = error.toString();
+          });
         }
-      } catch (error) {
-        setState(() {
-          isFetching = false;
-          response['body'] = error.toString();
-        });
       }
     }
 

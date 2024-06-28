@@ -71,90 +71,93 @@ class _RenderCollectionRequestGroupsState
       )),
       child: Column(
         children: [
-          ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemCount: collection.requestGroups.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Theme(
-                  data: Theme.of(context).copyWith(
-                    dividerColor: Colors.transparent,
-                  ),
-                  child: ExpansionTile(
-                      dense: true,
-                      initiallyExpanded: true,
-                      title: _ContextMenuRegion(
-                          contextMenuBuilder:
-                              (BuildContext context, Offset offset) =>
-                                  renameMenu(
-                                      offset,
-                                      context,
-                                      collection.requestGroups[index],
-                                      null,
-                                      newRequest,
-                                      newRequestGroup,
-                                      deleteRequest,
-                                      deleteRequestGroup),
-                          child: Text(
-                            collection.requestGroups[index].requestGroupName,
-                          )),
-                      children: [
-                        ...collection.requestGroups[index].requests.map(
-                          (e) => _ContextMenuRegion(
+          Expanded(
+            child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: collection.requestGroups.length,
+                physics: const ClampingScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) {
+                  return Theme(
+                    data: Theme.of(context).copyWith(
+                      dividerColor: Colors.transparent,
+                    ),
+                    child: ExpansionTile(
+                        dense: true,
+                        initiallyExpanded: true,
+                        title: _ContextMenuRegion(
                             contextMenuBuilder:
-                                (BuildContext context, Offset offset) {
-                              return renameMenu(
-                                  offset,
-                                  context,
-                                  collection.requestGroups[index],
-                                  e,
-                                  newRequest,
-                                  newRequestGroup,
-                                  deleteRequest,
-                                  deleteRequestGroup);
-                            },
-                            child: Row(
-                              children: [
-                                Container(
-                                  decoration:
-                                      BoxDecoration(border: Border.all()),
-                                  width: 60,
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(e.requestMethod),
+                                (BuildContext context, Offset offset) =>
+                                    renameMenu(
+                                        offset,
+                                        context,
+                                        collection.requestGroups[index],
+                                        null,
+                                        newRequest,
+                                        newRequestGroup,
+                                        deleteRequest,
+                                        deleteRequestGroup),
+                            child: Text(
+                              collection.requestGroups[index].requestGroupName,
+                            )),
+                        children: [
+                          ...collection.requestGroups[index].requests.map(
+                            (e) => _ContextMenuRegion(
+                              contextMenuBuilder:
+                                  (BuildContext context, Offset offset) {
+                                return renameMenu(
+                                    offset,
+                                    context,
+                                    collection.requestGroups[index],
+                                    e,
+                                    newRequest,
+                                    newRequestGroup,
+                                    deleteRequest,
+                                    deleteRequestGroup);
+                              },
+                              child: Row(
+                                children: [
+                                  Container(
+                                    decoration:
+                                        BoxDecoration(border: Border.all()),
+                                    width: 60,
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(e.requestMethod),
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: TextButton(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.white),
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.zero,
+                                  Expanded(
+                                    child: TextButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            WidgetStateProperty.all(
+                                                Colors.white),
+                                        shape: WidgetStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.zero,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    onPressed: () {
-                                      CustomContextMenuController.removeAny();
-                                      selectRequest(e);
-                                    },
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(e.requestName),
+                                      onPressed: () {
+                                        CustomContextMenuController.removeAny();
+                                        selectRequest(e);
+                                      },
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(e.requestName),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        Text("hi"),
-                      ]),
-                );
-              }),
+                          const Text('hi'),
+                        ]),
+                  );
+                }),
+          ),
           IconButton(
             icon: const Icon(Icons.add_circle),
             onPressed: () => setState(() => newRequestGroup(widget.collection)),

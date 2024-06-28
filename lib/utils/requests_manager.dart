@@ -76,16 +76,20 @@ class RequestsManager {
     request.body = requestBody;
     try {
       http.StreamedResponse response = await request.send();
+      var responseBody = await response.stream.bytesToString();
       if (response.statusCode > 399) {
         updateResponse({
           'statusCode': response.statusCode,
-          'body': {'error': await response.stream.bytesToString()}
+          'body': {'error': responseBody}
         });
       } else {
-        updateResponse({
-          'statusCode': response.statusCode,
-          'body': await jsonDecode(await response.stream.bytesToString())
-        });
+        try {
+          var jsonBody = await jsonDecode(responseBody);
+          updateResponse({'statusCode': response.statusCode, 'body': jsonBody});
+        } catch (err) {
+          updateResponse(
+              {'statusCode': response.statusCode, 'body': responseBody});
+        }
       }
     } catch (error) {
       updateResponse({

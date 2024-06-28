@@ -130,7 +130,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           top: 2.0, left: 2.0, right: 2.0),
                       color: Theme.of(context).colorScheme.onInverseSurface,
                       child: TabBar(
-                        
                           tabAlignment: TabAlignment.start,
                           dividerColor: Colors.black,
                           isScrollable: true,
@@ -145,11 +144,23 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                           right:
                                               BorderSide(color: Colors.grey))),
                                   child: Tab(
-                                      child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 12.0, left: 12.0),
-                                    child: Text(e.requestName),
-                                  )),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        right: 12.0,
+                                        left: 12.0,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Text(e.requestName),
+                                          IconButton(
+                                            icon: const Icon(Icons.close),
+                                            onPressed: () =>
+                                                closeOpenRequest(e),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               )
                               .toList()),

@@ -21,9 +21,9 @@ class RenderResponse extends StatelessWidget {
         ),
         isFetching
             ? const Center(child: CircularProgressIndicator())
-            : Padding(
-              padding: const EdgeInsets.only(left:8.0),
-              child: Expanded(
+            : Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
                   child: SingleChildScrollView(
                     child: SelectableText(
                       responseData['body'] as String,
@@ -31,7 +31,7 @@ class RenderResponse extends StatelessWidget {
                     ),
                   ),
                 ),
-            ),
+              ),
       ],
     );
   }
