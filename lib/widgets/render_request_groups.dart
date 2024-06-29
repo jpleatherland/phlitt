@@ -153,7 +153,12 @@ class _RenderCollectionRequestGroupsState
                               ),
                             ),
                           ),
-                          const Text('hi'),
+                          IconButton(
+                              icon: const Icon(Icons.add),
+                              onPressed: () {
+                                setState(() => newRequest(
+                                    collection.requestGroups[index]));
+                              }),
                         ]),
                   );
                 }),
