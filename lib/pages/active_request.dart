@@ -1,10 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:phlitt/utils/requests_manager.dart';
 import 'package:phlitt/pages/request_options_page.dart';
 import 'package:phlitt/model/collections_model.dart';
 import 'package:phlitt/utils/url_handler.dart';
 import 'package:phlitt/widgets/render_response.dart';
+import 'package:flutter_resizable_container/flutter_resizable_container.dart';
 
 class ActiveRequest extends StatefulWidget {
   final Request request;
@@ -255,16 +255,16 @@ class _ActiveRequestState extends State<ActiveRequest> {
         ],
       ),
       Expanded(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ResizableContainer(
+          direction: Axis.horizontal,
           children: [
-            Expanded(
+            ResizableChild(
                 child: RenderRequestOptions(
               requestOptions: updatedRequest.options,
               requestUrl: updatedRequest.requestUrl,
               updateUrl: updateUrlQueries,
             )),
-            Expanded(
+            ResizableChild(
                 child: Container(
               decoration: BoxDecoration(
                 border: Border(

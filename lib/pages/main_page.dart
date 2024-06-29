@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_resizable_container/flutter_resizable_container.dart';
 import 'package:phlitt/model/collections_model.dart';
 import 'package:phlitt/pages/environments_page.dart';
 import 'package:phlitt/widgets/render_request_groups.dart';
@@ -105,11 +106,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   iconSize: 37,
                   color: colorScheme.onPrimary)
             ]),
-        body: Row(
-          mainAxisSize: MainAxisSize.min,
+        body: ResizableContainer(
+          direction: Axis.horizontal,
           children: [
-            Flexible(
-              flex: 1,
+            ResizableChild(
+              size: const ResizableSize.ratio(0.15),
               child: Container(
                 color: Theme.of(context).colorScheme.onInverseSurface,
                 child: RenderCollectionRequestGroups(
@@ -120,74 +121,71 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            Flexible(
-                flex: 5,
+            ResizableChild(
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(
-                          top: 2.0, left: 2.0, right: 2.0),
-                      color: Theme.of(context).colorScheme.onInverseSurface,
-                      child: TabBar(
-                          tabAlignment: TabAlignment.start,
-                          dividerColor: Colors.black,
-                          isScrollable: true,
-                          unselectedLabelColor: Colors.grey,
-                          labelPadding: const EdgeInsets.all(0),
-                          controller: tabController,
-                          tabs: openRequests
-                              .map(
-                                (e) => Container(
-                                  decoration: const BoxDecoration(
-                                      border: Border(
-                                          right:
-                                              BorderSide(color: Colors.grey))),
-                                  child: Tab(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        right: 12.0,
-                                        left: 12.0,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Text(e.requestName),
-                                          IconButton(
-                                            icon: const Icon(Icons.close),
-                                            onPressed: () =>
-                                                closeOpenRequest(e),
-                                          )
-                                        ],
-                                      ),
-                                    ),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.only(top: 2.0, left: 2.0, right: 2.0),
+                  color: Theme.of(context).colorScheme.onInverseSurface,
+                  child: TabBar(
+                      tabAlignment: TabAlignment.start,
+                      dividerColor: Colors.black,
+                      isScrollable: true,
+                      unselectedLabelColor: Colors.grey,
+                      labelPadding: const EdgeInsets.all(0),
+                      controller: tabController,
+                      tabs: openRequests
+                          .map(
+                            (e) => Container(
+                              decoration: const BoxDecoration(
+                                  border: Border(
+                                      right: BorderSide(color: Colors.grey))),
+                              child: Tab(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    right: 12.0,
+                                    left: 12.0,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Text(e.requestName),
+                                      IconButton(
+                                        icon: const Icon(Icons.close),
+                                        onPressed: () => closeOpenRequest(e),
+                                      )
+                                    ],
                                   ),
                                 ),
-                              )
-                              .toList()),
-                    ),
-                    Expanded(
-                      child: TabBarView(
-                          controller: tabController,
-                          children: openRequests
-                              .map(
-                                (e) => Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8.0, bottom: 8.0),
-                                  child: ActiveRequest(
-                                      request: e,
-                                      environment: collection.environments
-                                          .where(
-                                            (element) =>
-                                                element.environmentName ==
-                                                environmentController.text,
-                                          )
-                                          .first),
-                                ),
-                              )
-                              .toList()),
-                    ),
-                  ],
-                )),
+                              ),
+                            ),
+                          )
+                          .toList()),
+                ),
+                Expanded(
+                  child: TabBarView(
+                      controller: tabController,
+                      children: openRequests
+                          .map(
+                            (e) => Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 8.0, right: 8.0, bottom: 8.0),
+                              child: ActiveRequest(
+                                  request: e,
+                                  environment: collection.environments
+                                      .where(
+                                        (element) =>
+                                            element.environmentName ==
+                                            environmentController.text,
+                                      )
+                                      .first),
+                            ),
+                          )
+                          .toList()),
+                ),
+              ],
+            )),
           ],
         ),
       ),
