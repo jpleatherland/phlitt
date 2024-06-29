@@ -24,6 +24,7 @@ class _RenderResponseState extends State<RenderResponse>
     TabController tabController =
         TabController(length: 2, initialIndex: 1, vsync: this);
     TextEditingController searchController = TextEditingController();
+    ScrollController scrollController = ScrollController();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -32,7 +33,7 @@ class _RenderResponseState extends State<RenderResponse>
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Expanded(
-              flex: 6,
+              flex: 5,
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: TextField(
@@ -42,9 +43,26 @@ class _RenderResponseState extends State<RenderResponse>
               ),
             ),
             Expanded(
-                flex: 1,
-                child: IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.search))),
+              flex: 1,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {},
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_forward),
+                onPressed: () {},
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {},
+              ),
+            ),
             Expanded(
               flex: 3,
               child: Text(
@@ -65,9 +83,11 @@ class _RenderResponseState extends State<RenderResponse>
                           controller: tabController,
                           tabs: const [
                             Tab(
+                              height: 25.0,
                               text: 'Json',
                             ),
                             Tab(
+                              height: 25.0,
                               text: 'Selectable Text',
                             ),
                           ],
@@ -88,6 +108,7 @@ class _RenderResponseState extends State<RenderResponse>
                                 ),
                               ),
                               SingleChildScrollView(
+                                controller: scrollController,
                                 child: SelectableText(
                                   const JsonEncoder.withIndent('    ')
                                       .convert(widget.responseData['body']),

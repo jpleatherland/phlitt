@@ -154,11 +154,12 @@ class _RenderCollectionRequestGroupsState
                             ),
                           ),
                           IconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: () {
-                                setState(() => newRequest(
-                                    collection.requestGroups[index]));
-                              }),
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              setState(() =>
+                                  newRequest(collection.requestGroups[index]));
+                            },
+                          ),
                         ]),
                   );
                 }),
