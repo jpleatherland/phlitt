@@ -19,3 +19,9 @@ Environment variables can be changed using the gear icon in the app bar of a col
 `{{googleUrl}}/:pathVar`
 
 Where `{{googleUrl}}` in the environment is set to `https://www.google.com`.
+
+## Latest State on branch searchResponse
+![image](https://github.com/jpleatherland/phlitt/assets/19578072/d6461e73-0b94-4b11-bfde-de41f785e7a6)
+Resizable panels
+Added new tab in responses with nicer formatted json
+Next todo is a find functionality for the response 
