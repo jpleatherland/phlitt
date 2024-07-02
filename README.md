@@ -21,7 +21,7 @@ Environment variables can be changed using the gear icon in the app bar of a col
 Where `{{googleUrl}}` in the environment is set to `https://www.google.com`.
 
 ## Latest State on branch searchResponse
-![image](https://github.com/jpleatherland/phlitt/assets/19578072/d6461e73-0b94-4b11-bfde-de41f785e7a6)
+![image](https://github.com/jpleatherland/phlitt/assets/19578072/e58e600b-1c2a-4b4e-add6-daebb67f9995)
 Resizable panels
 Added new tab in responses with nicer formatted json
-Next todo is a find functionality for the response 
+Response can now be searched. There is no highlight of the search term but the response does scroll so that the match is in view
