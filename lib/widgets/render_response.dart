@@ -19,24 +19,70 @@ class RenderResponse extends StatefulWidget {
 
 class _RenderResponseState extends State<RenderResponse>
     with TickerProviderStateMixin {
+  ScrollController scrollController = ScrollController();
+  TextEditingController searchController = TextEditingController();
+  Map<int, int> searchResult = {};
+  int currentSearchIndex = 0;
+  double heightPerLine = 0.0;
+
   @override
   Widget build(BuildContext context) {
     TabController tabController =
         TabController(length: 2, initialIndex: 1, vsync: this);
-    TextEditingController searchController = TextEditingController();
-    ScrollController scrollController = ScrollController();
 
-    Iterable<RegExpMatch> searchResult;
+    String responseBody = '';
 
-    void setFindPattern(String toSearch) {
-      RegExp pattern = RegExp(toSearch)
-      searchResults = pattern.allMatches(toSearch);
-      setState(() => searchResult = searchResults )
+    () {
+      if (widget.responseData['body'] is String) {
+        setState(
+          () => responseBody = widget.responseData['body'] as String,
+        );
+      } else {
+        String encodedBody = const JsonEncoder.withIndent('    ')
+            .convert(widget.responseData['body']);
+        setState(() => responseBody = encodedBody);
+      }
+    }();
+
+    void setScrollPoint(int index) {
+      if (index > searchResult.length - 1) {
+        if (searchResult.containsKey(0)) {
+          scrollController.jumpTo(searchResult[0]!.toDouble() * heightPerLine);
+          print(searchResult[0]!.toDouble() * heightPerLine);
+          print(scrollController.position);
+          setState(() => currentSearchIndex = 0);
+        }
+      } else {
+        if (searchResult.containsKey(index)) {
+          scrollController
+              .jumpTo(searchResult[index]!.toDouble() * heightPerLine);
+          print(searchResult[index]!.toDouble() * heightPerLine);
+          print(scrollController.position);
+          setState(() => currentSearchIndex = index);
+        }
+      }
     }
 
-    void scrollPoint(int searchIndex, List searchResult) {
-      RegExp pattern = RegExp(toSearch)
-
+    void findMatches(String searchTerm) {
+      print(scrollController.position);
+      List<String> splitBody = responseBody.split('\n');
+      int outerIndex = 0;
+      Map<int, int> matches = {};
+      for (int index = 0; index < splitBody.length; index++) {
+        if (splitBody[index].contains(searchTerm)) {
+          matches[outerIndex] = index;
+          outerIndex++;
+        }
+      }
+      setState(() {
+        currentSearchIndex = 0;
+        heightPerLine =
+            scrollController.position.maxScrollExtent / splitBody.length;
+        searchResult = matches;
+      });
+      if (matches.isNotEmpty) {
+        setScrollPoint(0);
+      }
     }
 
     return Column(
@@ -57,23 +103,35 @@ class _RenderResponseState extends State<RenderResponse>
             ),
             Expanded(
               flex: 1,
+              child: Row(
+                children: [
+                  Text(
+                    '${currentSearchIndex + 1}/${searchResult.length}',
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
               child: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () {},
+                onPressed: () => setScrollPoint(currentSearchIndex - 1),
               ),
             ),
             Expanded(
               flex: 1,
               child: IconButton(
                 icon: const Icon(Icons.arrow_forward),
-                onPressed: () {},
+                onPressed: () => setScrollPoint(currentSearchIndex + 1),
               ),
             ),
             Expanded(
               flex: 1,
               child: IconButton(
                 icon: const Icon(Icons.search),
-                onPressed: () {},
+                onPressed: () {
+                  findMatches(searchController.text);
+                },
               ),
             ),
             Expanded(
@@ -88,7 +146,7 @@ class _RenderResponseState extends State<RenderResponse>
         widget.isFetching
             ? const Center(child: CircularProgressIndicator())
             : widget.responseData['body'] is String
-                ? Text(widget.responseData['body'] as String)
+                ? Text(responseBody)
                 : Expanded(
                     child: Column(
                       children: [
@@ -121,11 +179,9 @@ class _RenderResponseState extends State<RenderResponse>
                                 ),
                               ),
                               SingleChildScrollView(
+                                padding: const EdgeInsets.all(8.0),
                                 controller: scrollController,
-                                child: SelectableText(
-                                  const JsonEncoder.withIndent('    ')
-                                      .convert(widget.responseData['body']),
-                                ),
+                                child: SelectableText(responseBody),
                               ),
                             ],
                           ),
