@@ -26,6 +26,19 @@ class _RenderResponseState extends State<RenderResponse>
     TextEditingController searchController = TextEditingController();
     ScrollController scrollController = ScrollController();
 
+    Iterable<RegExpMatch> searchResult;
+
+    void setFindPattern(String toSearch) {
+      RegExp pattern = RegExp(toSearch)
+      searchResults = pattern.allMatches(toSearch);
+      setState(() => searchResult = searchResults )
+    }
+
+    void scrollPoint(int searchIndex, List searchResult) {
+      RegExp pattern = RegExp(toSearch)
+
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
