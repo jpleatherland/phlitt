@@ -4,7 +4,7 @@ import 'package:phlitt/model/collections_model.dart';
 class RenderRequestAuth extends StatelessWidget {
   final RequestOptions requestOptions;
   final Function onUpdated;
-  final List<String> authTypeOptions = ['Basic', 'Bearer', 'No Auth'];
+  final List<String> authTypeOptions = ['ApiKey', 'Basic', 'Bearer', 'No Auth'];
 
   RenderRequestAuth(
       {super.key, required this.requestOptions, required this.onUpdated});
