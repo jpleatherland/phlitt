@@ -63,7 +63,7 @@ class RequestsManager {
         putRequest(parsedUrl, encodedBody, headers, updateResponse);
         break;
       case 'DELETE':
-        deleteRequest(parsedUrl, updateResponse);
+        deleteRequest(parsedUrl, updateResponse, headers);
       default:
         break;
     }
@@ -147,9 +147,9 @@ class RequestsManager {
     }
   }
 
-  void deleteRequest(Uri requestUrl, Function updateResponse) async {
+  void deleteRequest(Uri requestUrl, Function updateResponse, Map<String, String> requestHeaders) async {
     try {
-      http.Response response = await http.delete(requestUrl);
+      http.Response response = await http.delete(requestUrl, headers: requestHeaders);
       if (response.statusCode > 399) {
         updateResponse({
           'statusCode': response.statusCode,
