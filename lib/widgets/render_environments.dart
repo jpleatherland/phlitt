@@ -85,8 +85,12 @@ class _RenderEnvironments extends State<RenderEnvironments> {
             onPressed: () {
               if (widget.collection.environments.length > 1) {
                 CustomContextMenuController.removeAny();
-                rd.deleteEnvironmentDialog(context, widget.collection,
-                    environment.environmentName, deleteEnvironment);
+                rd.deleteEnvironmentDialog(
+                    context,
+                    widget.collection,
+                    environment.environmentName,
+                    environment.environmentId,
+                    deleteEnvironment);
               } else {
                 null;
               }

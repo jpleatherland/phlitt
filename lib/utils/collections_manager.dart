@@ -5,11 +5,14 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:phlitt/model/collections_model.dart';
+import 'package:uuid/uuid.dart';
 import './example_collection.dart';
 
 mixin class CollectionsManager {
+  static const uuid = Uuid();
   Future<String> get _localPath async {
     final directory = await getApplicationSupportDirectory();
+    print(directory);
     return directory.path;
   }
 
@@ -48,7 +51,8 @@ mixin class CollectionsManager {
 
   void newRequest(RequestGroup requestGroup) {
     requestGroup.requests.add(Request(
-        requestName: generateRandomString(),
+        requestId: uuid.v4().toString(),
+        requestName: 'New Request',
         requestMethod: 'GET',
         requestUrl: '',
         options: RequestOptions(
@@ -58,49 +62,57 @@ mixin class CollectionsManager {
             auth: Auth(authType: '', authValue: ''))));
   }
 
-  void deleteRequest(RequestGroup requestGroup, String requestName) {
+  void deleteRequest(RequestGroup requestGroup, String requestId) {
     requestGroup.requests.removeWhere(
-      (element) => element.requestName == requestName,
+      (element) => element.requestId == requestId,
     );
   }
 
   void newRequestGroup(Collection collection) {
-    collection.requestGroups.add(
-        RequestGroup(requestGroupName: generateRandomString(), requests: []));
+    collection.requestGroups.add(RequestGroup(
+        requestGroupId: uuid.v4().toString(),
+        requestGroupName: 'Request Group',
+        requests: []));
   }
 
-  void deleteRequestGroup(Collection collection, String requestGroupName) {
+  void deleteRequestGroup(Collection collection, String requestGroupId) {
     collection.requestGroups
-        .removeWhere((element) => element.requestGroupName == requestGroupName);
+        .removeWhere((element) => element.requestGroupId == requestGroupId);
   }
 
   void newCollection(CollectionGroup collectionGroup) {
     collectionGroup.collections.add(Collection(
+        collectionId: uuid.v4().toString(),
         collectionName: 'New Collection',
         requestGroups: [
-          RequestGroup(requestGroupName: 'New Request Group', requests: [])
+          RequestGroup(
+              requestGroupId: uuid.v4().toString(),
+              requestGroupName: 'New Request Group',
+              requests: [])
         ],
         environments: [
           Environment(
+              environmentId: uuid.v4().toString(),
               environmentName: generateRandomString(),
               environmentParameters: {})
         ]));
   }
 
-  void deleteCollection(
-      CollectionGroup collectionGroup, String collectionName) {
+  void deleteCollection(CollectionGroup collectionGroup, String collectionId) {
     collectionGroup.collections
-        .removeWhere((e) => e.collectionName == collectionName);
+        .removeWhere((e) => e.collectionId == collectionId);
   }
 
   void newEnvironment(Collection collection) {
     collection.environments.add(Environment(
-        environmentName: generateRandomString(), environmentParameters: {}));
+        environmentId: uuid.v4().toString(),
+        environmentName: generateRandomString(),
+        environmentParameters: {}));
   }
 
-  void deleteEnvironment(Collection collection, String environmentName) {
+  void deleteEnvironment(Collection collection, String environmentId) {
     collection.environments
-        .removeWhere((e) => e.environmentName == environmentName);
+        .removeWhere((e) => e.environmentId == environmentId);
   }
 
   String generateRandomString() {

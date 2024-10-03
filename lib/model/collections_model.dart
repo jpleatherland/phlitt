@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 class CollectionGroup {
   CollectionGroup({required this.collections});
   List<Collection> collections;
@@ -23,15 +25,20 @@ class CollectionGroup {
 
 class Collection {
   Collection(
-      {required this.collectionName,
+      {required this.collectionId,
+      required this.collectionName,
       required this.requestGroups,
       required this.environments});
+  String collectionId;
   String collectionName;
   List<RequestGroup> requestGroups;
   List<Environment> environments;
 
   factory Collection.fromCollectionGroup(
       CollectionGroup data, String collectionToSelect) {
+    String collectionId = data.collections
+        .firstWhere((e) => e.collectionId == collectionToSelect)
+        .collectionId;
     String collectionName = data.collections
         .firstWhere((e) => e.collectionName == collectionToSelect)
         .collectionName;
@@ -42,12 +49,14 @@ class Collection {
         .firstWhere((e) => e.collectionName == collectionToSelect)
         .environments;
     return Collection(
+        collectionId: collectionId,
         collectionName: collectionName,
         requestGroups: requestGroups,
         environments: environments);
   }
 
   factory Collection.toCollectionGroup(Map<String, dynamic> data) {
+    String collectionId = data['collectionId'] as String;
     String collectionName = data['collectionName'] as String;
     List<RequestGroup> requestGroups = data['requestGroups']
         .map<RequestGroup>((requestGroup) =>
@@ -58,6 +67,7 @@ class Collection {
             Environment.fromJson(environment as Map<String, dynamic>))
         .toList() as List<Environment>;
     return Collection(
+        collectionId: collectionId,
         collectionName: collectionName,
         requestGroups: requestGroups,
         environments: environments);
@@ -65,6 +75,7 @@ class Collection {
 
   Map<String, dynamic> toJson() {
     return {
+      'collectionId': collectionId,
       'collectionName': collectionName,
       'requestGroups': requestGroups.map((e) => e.toJson()).toList(),
       'environments': environments.map((e) => e.toJson()).toList()
@@ -73,21 +84,30 @@ class Collection {
 }
 
 class RequestGroup {
-  RequestGroup({required this.requestGroupName, required this.requests});
+  RequestGroup(
+      {required this.requestGroupId,
+      required this.requestGroupName,
+      required this.requests});
+  String requestGroupId;
   String requestGroupName;
   List<Request> requests;
 
   factory RequestGroup.fromJson(Map<String, dynamic> data) {
+    String requestGroupId = data['requestGroupId'] as String;
     String requestGroupName = data['requestGroupName'] as String;
     List<Request> requests = data['requests']
         .map<Request>(
             (request) => Request.fromJson(request as Map<String, dynamic>))
         .toList() as List<Request>;
-    return RequestGroup(requestGroupName: requestGroupName, requests: requests);
+    return RequestGroup(
+        requestGroupId: requestGroupId,
+        requestGroupName: requestGroupName,
+        requests: requests);
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'requestGroupId': requestGroupId,
       'requestGroupName': requestGroupName,
       'requests': requests.map((e) => e._toMap()).toList()
     };
@@ -96,22 +116,26 @@ class RequestGroup {
 
 class Request {
   Request(
-      {required this.requestName,
+      {required this.requestId,
+      required this.requestName,
       required this.requestMethod,
       required this.requestUrl,
       required this.options});
+  String requestId;
   String requestName;
   String requestMethod;
   String requestUrl;
   RequestOptions options;
 
   factory Request.fromJson(Map<String, dynamic> data) {
+    String requestId = data['requestId'] as String;
     String requestName = data['requestName'] as String;
     String requestMethod = data['requestMethod'] as String;
     String requestUrl = data['requestUrl'] as String;
     RequestOptions options =
         RequestOptions.fromJson(data['options'] as Map<String, dynamic>);
     return Request(
+        requestId: requestId,
         requestName: requestName,
         requestMethod: requestMethod,
         requestUrl: requestUrl,
@@ -120,6 +144,7 @@ class Request {
 
   Map<String, dynamic> _toMap() {
     return {
+      'requestId': requestId,
       'requestName': requestName,
       'requestMethod': requestMethod,
       'requestUrl': requestUrl,
@@ -138,21 +163,27 @@ class Request {
 
 class Environment {
   Environment(
-      {required this.environmentName, required this.environmentParameters});
+      {required this.environmentId,
+      required this.environmentName,
+      required this.environmentParameters});
+  String environmentId;
   String environmentName;
   Map<String, dynamic> environmentParameters;
 
   factory Environment.fromJson(Map<String, dynamic> data) {
-    String? environmentName = data['environmentName'] as String?;
+    String environmentId = data['environmentId'] as String;
+    String environmentName = data['environmentName'] as String;
     Map<String, dynamic>? environmentParameters =
         data['environmentParameters'] as Map<String, dynamic>?;
     return Environment(
-        environmentName: environmentName ?? '',
+        environmentId: environmentId,
+        environmentName: environmentName,
         environmentParameters: environmentParameters ?? {});
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'environmentId': environmentId,
       'environmentName': environmentName,
       'environmentParameters': environmentParameters
     };
@@ -222,9 +253,9 @@ class RequestBody {
 
   factory RequestBody.fromJson(Map<String, dynamic> data) {
     String? bodyType = data['bodyType'] as String?;
-    String? bodyValue =
-        data['bodyValue'] as String?;
-    return RequestBody(bodyType: bodyType ?? 'json', bodyValue: bodyValue ?? '');
+    String? bodyValue = data['bodyValue'] as String?;
+    return RequestBody(
+        bodyType: bodyType ?? 'json', bodyValue: bodyValue ?? '');
   }
 
   Map<String, dynamic> toJson() {

@@ -215,7 +215,7 @@ class _RenderCollectionRequestGroupsState
             if (widget.collection.requestGroups.length > 1) {
               CustomContextMenuController.removeAny();
               rd.deleteRequestGroupDialog(context, widget.collection,
-                  requestGroup.requestGroupName, deleteRequestGroup);
+                  requestGroup.requestGroupName, requestGroup.requestGroupId, deleteRequestGroup);
             } else {
               null;
             }
@@ -226,7 +226,7 @@ class _RenderCollectionRequestGroupsState
             onPressed: () {
               CustomContextMenuController.removeAny();
               rd.deleteRequestDialog(
-                  context, requestGroup, request!.requestName, deleteRequest);
+                  context, requestGroup, request!.requestName, request.requestId, deleteRequest);
             },
             label: 'Delete Request'),
       ],
