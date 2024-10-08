@@ -1,0 +1,37 @@
+name: Build Flutter Windows App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 'stable'
+
+    - name: Install Flutter dependencies
+      run: flutter pub get
+
+    - name: Verify Flutter environment
+      run: flutter doctor
+
+    - name: Build Windows App
+      run: flutter build windows --no-sound-null-safety --release
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-app
+        path: build/windows/runner/Release/
