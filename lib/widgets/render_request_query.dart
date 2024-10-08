@@ -63,16 +63,16 @@ class _RenderRequestQueryState extends State<RenderRequestQuery> {
 
     return Column(
       children: [
-        const Flexible(
+        Flexible(
             flex: 1,
             child: Padding(
-              padding: EdgeInsets.only(top: 8.0),
-              child: Text('Query Parameters',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  )),
+              padding: const EdgeInsets.only(top: 8.0),
+              child: TextButton.icon(
+                label: const Text('Query Parameters',
+                    style: TextStyle(fontSize: 20)),
+                icon: const Icon(Icons.add),
+                onPressed: () => addRequestQuery('queryParam'),
+              ),
             )),
         Flexible(
           flex: 3,
@@ -100,6 +100,8 @@ class _RenderRequestQueryState extends State<RenderRequestQuery> {
                           },
                           child: TextFormField(
                               controller: queryParamKeyControllers[index],
+                              decoration:
+                                  const InputDecoration(hintText: 'key'),
                               onFieldSubmitted: (value) => widget.updateUrl(
                                     queryParams.keys.elementAt(index),
                                     queryParamKeyControllers[index].text,
@@ -127,6 +129,8 @@ class _RenderRequestQueryState extends State<RenderRequestQuery> {
                             },
                             child: TextFormField(
                                 controller: queryParamValueControllers[index],
+                                decoration:
+                                    const InputDecoration(hintText: 'value'),
                                 onFieldSubmitted: (value) => widget.updateUrl(
                                       queryParams.keys.elementAt(index),
                                       queryParamKeyControllers[index].text,
@@ -139,20 +143,19 @@ class _RenderRequestQueryState extends State<RenderRequestQuery> {
                 ));
               }),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => addRequestQuery('queryParam'),
-          ),
-        ),
         const SizedBox(
-          height: 50,
+          height: 80,
         ),
-        const Flexible(
+        Flexible(
             flex: 1,
-            child: Text('Path Variables',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
+            child: TextButton.icon(
+              label: const Text('Path Variables',
+                  style: TextStyle(
+                    fontSize: 20,
+                  )),
+              icon: const Icon(Icons.add),
+              onPressed: () => addRequestQuery('pathVars'),
+            )),
         Flexible(
           flex: 3,
           child: ListView.builder(
@@ -178,6 +181,7 @@ class _RenderRequestQueryState extends State<RenderRequestQuery> {
                               )
                       },
                       child: TextFormField(
+                        decoration: const InputDecoration(hintText: 'key'),
                         controller: pathVarsKeyControllers[index],
                       ),
                     ),
@@ -199,6 +203,7 @@ class _RenderRequestQueryState extends State<RenderRequestQuery> {
                                   )
                           },
                           child: TextFormField(
+                            decoration: const InputDecoration(hintText: 'value'),
                             controller: pathVarsValueControllers[index],
                           ),
                         )),
@@ -206,13 +211,6 @@ class _RenderRequestQueryState extends State<RenderRequestQuery> {
                 ],
               ));
             },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => addRequestQuery('pathVars'),
           ),
         ),
       ],

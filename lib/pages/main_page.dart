@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_resizable_container/flutter_resizable_container.dart';
 import 'package:phlitt/model/collections_model.dart';
 import 'package:phlitt/pages/environments_page.dart';
 import 'package:phlitt/widgets/render_request_groups.dart';
@@ -24,7 +25,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     Function writeback = widget.writeback;
     Collection collection = widget.collection;
-    ColorScheme colorScheme = Theme.of(context).colorScheme;
+    ThemeData colorContext = Theme.of(context);
+    ColorScheme colorScheme = colorContext.colorScheme;
     environmentController.text == ''
         ? environmentController.text =
             widget.collection.environments.first.environmentName
@@ -65,31 +67,32 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         if (wasOpen) selectRequest(request);
       });
     }
-
+    
     return GestureDetector(
       onTap: () => CustomContextMenuController.removeAny(),
       child: Scaffold(
         appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: colorContext.colorScheme.primary,
             title: Text(collection.collectionName,
                 style: TextStyle(color: colorScheme.onPrimary)),
             actions: [
               IconButton.filled(
                 icon: const Icon(Icons.settings),
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: colorContext.colorScheme.onPrimary,
                 iconSize: 37,
                 onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EnvironmentsPage(
-                        collection: collection,
-                        writeback: writeback,
-                      ),
-                    )).then((value) => setState(() {})),
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EnvironmentsPage(
+                      collection: collection,
+                      writeback: writeback,
+                    ),
+                  ),
+                ).then((value) => setState(() {})),
               ),
               Container(
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onPrimary),
+                    color: colorContext.colorScheme.onPrimary),
                 child: DropdownMenu(
                   controller: environmentController,
                   onSelected: (value) => setState(() {}),
@@ -105,56 +108,89 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   iconSize: 37,
                   color: colorScheme.onPrimary)
             ]),
-        body: Row(
-          mainAxisSize: MainAxisSize.min,
+        body: ResizableContainer(
+          direction: Axis.horizontal,
           children: [
-            Flexible(
-              flex: 1,
-              child: Column(children: [
-                RenderCollectionRequestGroups(
+            ResizableChild(
+              size: const ResizableSize.ratio(0.15),
+              child: Container(
+                color: colorContext.colorScheme.onPrimary,
+                child: RenderCollectionRequestGroups(
                   collection: collection,
                   selectRequest: selectRequest,
                   closeOpenRequest: closeOpenRequest,
                   renameOpenRequest: renameOpenRequest,
-                )
-              ]),
+                ),
+              ),
             ),
-            Flexible(
-                flex: 5,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(2.0),
-                      child: TabBar(
-                          controller: tabController,
-                          tabs: openRequests
-                              .map(
-                                (e) => Tab(text: e.requestName),
-                              )
-                              .toList()),
-                    ),
-                    Expanded(
-                      child: TabBarView(
-                          controller: tabController,
-                          children: openRequests
-                              .map(
-                                (e) => Container(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: ActiveRequest(
-                                        request: e,
-                                        environment: collection.environments
-                                            .where(
-                                              (element) =>
-                                                  element.environmentName ==
-                                                  environmentController.text,
-                                            )
-                                            .first)),
-                              )
-                              .toList()),
-                    ),
-                  ],
-                )),
+            ResizableChild(
+                child: Container(
+              color: colorContext.colorScheme.onPrimary,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.only(top: 2.0, left: 2.0, right: 2.0),
+                    color: colorContext.colorScheme.onPrimary,
+                    child: TabBar(
+                        tabAlignment: TabAlignment.start,
+                        dividerColor: Colors.black,
+                        isScrollable: true,
+                        unselectedLabelColor: Colors.grey,
+                        labelPadding: const EdgeInsets.all(0),
+                        controller: tabController,
+                        tabs: openRequests
+                            .map(
+                              (e) => Container(
+                                decoration: const BoxDecoration(
+                                    border: Border(
+                                        right: BorderSide(color: Colors.grey))),
+                                child: Tab(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      right: 12.0,
+                                      left: 12.0,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text(e.requestName),
+                                        IconButton(
+                                          icon: const Icon(Icons.close),
+                                          onPressed: () => closeOpenRequest(e),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList()),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                        controller: tabController,
+                        children: openRequests
+                            .map(
+                              (e) => Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 8.0, right: 8.0, bottom: 8.0),
+                                child: ActiveRequest(
+                                    request: e,
+                                    environment: collection.environments
+                                        .where(
+                                          (element) =>
+                                              element.environmentName ==
+                                              environmentController.text,
+                                        )
+                                        .first),
+                              ),
+                            )
+                            .toList()),
+                  ),
+                ],
+              ),
+            )),
           ],
         ),
       ),

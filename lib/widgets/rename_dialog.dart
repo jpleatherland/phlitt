@@ -14,15 +14,19 @@ void showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
           title: const Text('Request name:'),
-          content: TextFormField(
-            initialValue: request?.requestName ?? requestGroup.requestGroupName,
-            onChanged: (value) => callback(requestGroup, request,
-                hasRequest ? 'requestName' : 'requestGroupName', value),
-            onFieldSubmitted: (value) {
-              callback(requestGroup, request,
-                  hasRequest ? 'requestName' : 'requestGroupName', value);
-              Navigator.of(context).pop();
-            },
+          content: Focus(
+            child: TextFormField(
+              autofocus: true,
+              initialValue:
+                  request?.requestName ?? requestGroup.requestGroupName,
+              onChanged: (value) => callback(requestGroup, request,
+                  hasRequest ? 'requestName' : 'requestGroupName', value),
+              onFieldSubmitted: (value) {
+                callback(requestGroup, request,
+                    hasRequest ? 'requestName' : 'requestGroupName', value);
+                Navigator.of(context).pop();
+              },
+            ),
           ))));
 }
 
@@ -60,7 +64,8 @@ deleteCollectionDialog(
   BuildContext context,
   CollectionGroup collectionGroup,
   String collectionName,
-  void Function(CollectionGroup collectionGroup, String collectionName)
+  String collectionId,
+  void Function(CollectionGroup collectionGroup, String collectionId)
       callback,
 ) {
   Navigator.of(context).push(DialogRoute<void>(
@@ -78,7 +83,7 @@ deleteCollectionDialog(
                   child: IconButton(
                       iconSize: 50,
                       onPressed: () {
-                        callback(collectionGroup, collectionName);
+                        callback(collectionGroup, collectionId);
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(Icons.delete)),
@@ -122,6 +127,7 @@ deleteRequestGroupDialog(
   BuildContext context,
   Collection collection,
   String requestGroupName,
+  String requestGroupId,
   Function callback,
 ) {
   Navigator.of(context).push(DialogRoute<void>(
@@ -139,7 +145,7 @@ deleteRequestGroupDialog(
                   child: IconButton(
                       iconSize: 50,
                       onPressed: () {
-                        callback(collection, requestGroupName);
+                        callback(collection, requestGroupId);
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(Icons.delete)),
@@ -153,6 +159,7 @@ deleteRequestDialog(
   BuildContext context,
   RequestGroup requestGroup,
   String requestName,
+  String requestId,
   Function callback,
 ) {
   Navigator.of(context).push(DialogRoute<void>(
@@ -170,7 +177,7 @@ deleteRequestDialog(
                   child: IconButton(
                       iconSize: 50,
                       onPressed: () {
-                        callback(requestGroup, requestName);
+                        callback(requestGroup, requestId);
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(Icons.delete)),
@@ -184,6 +191,7 @@ deleteEnvironmentDialog(
   BuildContext context,
   Collection collection,
   String environmentName,
+  String environmentId,
   Function callback,
 ) {
   Navigator.of(context).push(DialogRoute<void>(
@@ -201,7 +209,7 @@ deleteEnvironmentDialog(
                   child: IconButton(
                       iconSize: 50,
                       onPressed: () {
-                        callback(collection, environmentName);
+                        callback(collection, environmentId);
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(Icons.delete)),

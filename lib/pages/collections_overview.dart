@@ -32,8 +32,8 @@ class _CollectionsPageState extends State<CollectionsPage> {
   }
 
   void deleteCollection(
-      CollectionGroup collectionGroup, String collectionName) {
-    widget.deleteCollection(collectionGroup, collectionName);
+      CollectionGroup collectionGroup, String collectionId) {
+    widget.deleteCollection(collectionGroup, collectionId);
     writeBack();
     setState(() {});
   }
@@ -87,6 +87,8 @@ class _CollectionsPageState extends State<CollectionsPage> {
                                     widget.collectionGroups,
                                     widget.collectionGroups.collections[index]
                                         .collectionName,
+                                    widget.collectionGroups.collections[index]
+                                        .collectionId,
                                     deleteCollection),
                               ),
                             ),

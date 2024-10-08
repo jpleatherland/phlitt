@@ -20,9 +20,9 @@ class EnvironmentsPage extends StatefulWidget {
 class EnvironmentsPageState extends State<EnvironmentsPage> {
   String selectedEnvironment = '';
 
-  void selectEnvironment(String environmentName) {
+  void selectEnvironment(String environmentId) {
     setState(() {
-      selectedEnvironment = environmentName;
+      selectedEnvironment = environmentId;
     });
   }
 
@@ -58,7 +58,7 @@ class EnvironmentsPageState extends State<EnvironmentsPage> {
                         context: context,
                         environment: environments
                             .where(
-                                (e) => e.environmentName == selectedEnvironment)
+                                (e) => e.environmentId == selectedEnvironment)
                             .first,
                       )
                     : const Center(child: Text('Select an environment')))

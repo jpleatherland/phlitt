@@ -1,0 +1,38 @@
+name: Build Flutter Windows App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Flutter
+      uses: flutter-actions/setup-flutter@v3
+      with:
+        channel: 'stable'
+        version: latest
+
+    - name: Install Flutter dependencies
+      run: flutter pub get
+
+    - name: Verify Flutter environment
+      run: flutter doctor
+
+    - name: Build Windows App
+      run: flutter build windows --release
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-app
+        path: build\windows\x64\runner\Release\

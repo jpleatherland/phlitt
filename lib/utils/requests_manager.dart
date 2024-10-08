@@ -63,7 +63,7 @@ class RequestsManager {
         putRequest(parsedUrl, encodedBody, headers, updateResponse);
         break;
       case 'DELETE':
-        deleteRequest(parsedUrl, updateResponse);
+        deleteRequest(parsedUrl, updateResponse, headers);
       default:
         break;
     }
@@ -76,20 +76,24 @@ class RequestsManager {
     request.body = requestBody;
     try {
       http.StreamedResponse response = await request.send();
+      var responseBody = await response.stream.bytesToString();
       if (response.statusCode > 399) {
         updateResponse({
           'statusCode': response.statusCode,
-          'body': {'error': await response.stream.bytesToString()}
+          'body': {'error': responseBody}
         });
       } else {
-        updateResponse({
-          'statusCode': response.statusCode,
-          'body': await jsonDecode(await response.stream.bytesToString())
-        });
+        try {
+          var jsonBody = await jsonDecode(responseBody);
+          updateResponse({'statusCode': response.statusCode, 'body': jsonBody});
+        } catch (err) {
+          updateResponse(
+              {'statusCode': response.statusCode, 'body': responseBody});
+        }
       }
     } catch (error) {
       updateResponse({
-        'statusCode': 500,
+        'statusCode': 0,
         'body': {'error': error.toString()}
       });
     }
@@ -103,7 +107,7 @@ class RequestsManager {
       if (response.statusCode > 399) {
         updateResponse({
           'statusCode': response.statusCode,
-          'body': {'error': response.body}
+          'body': {'error': response.reasonPhrase}
         });
       } else {
         updateResponse({
@@ -113,7 +117,7 @@ class RequestsManager {
       }
     } catch (error) {
       updateResponse({
-        'statusCode': 500,
+        'statusCode': 0,
         'body': {'error': error.toString()}
       });
     }
@@ -143,9 +147,9 @@ class RequestsManager {
     }
   }
 
-  void deleteRequest(Uri requestUrl, Function updateResponse) async {
+  void deleteRequest(Uri requestUrl, Function updateResponse, Map<String, String> requestHeaders) async {
     try {
-      http.Response response = await http.delete(requestUrl);
+      http.Response response = await http.delete(requestUrl, headers: requestHeaders);
       if (response.statusCode > 399) {
         updateResponse({
           'statusCode': response.statusCode,

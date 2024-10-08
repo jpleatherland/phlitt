@@ -1,14 +1,16 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:phlitt/utils/requests_manager.dart';
 import 'package:phlitt/pages/request_options_page.dart';
 import 'package:phlitt/model/collections_model.dart';
 import 'package:phlitt/utils/url_handler.dart';
+import 'package:phlitt/widgets/render_response.dart';
+import 'package:flutter_resizable_container/flutter_resizable_container.dart';
 
 class ActiveRequest extends StatefulWidget {
   final Request request;
   final Environment environment;
-  const ActiveRequest({super.key, required this.request, required this.environment});
+  const ActiveRequest(
+      {super.key, required this.request, required this.environment});
 
   @override
   State<ActiveRequest> createState() => _ActiveRequestState();
@@ -40,18 +42,37 @@ class _ActiveRequestState extends State<ActiveRequest> {
         TextEditingController(text: updatedRequest.requestUrl);
 
     void updateResponse(Map<String, dynamic> response) {
-      const encoder = JsonEncoder.withIndent('    ');
-      String prettyResponse = encoder.convert(response['body']);
-      if (mounted) {
+      if (response['body'] is String) {
         setState(
           () {
             isFetching = false;
             responseData = {
               'statusCode': response['statusCode'],
-              'body': prettyResponse
+              'body': response['body']
             };
           },
         );
+      } else {
+        try {
+          //const encoder = JsonEncoder.withIndent('    ');
+          //String prettyResponse = encoder.convert(response['body']);
+          if (mounted) {
+            setState(
+              () {
+                isFetching = false;
+                responseData = {
+                  'statusCode': response['statusCode'],
+                  'body': response['body']
+                };
+              },
+            );
+          }
+        } catch (error) {
+          setState(() {
+            isFetching = false;
+            response['body'] = error.toString();
+          });
+        }
       }
     }
 
@@ -193,22 +214,19 @@ class _ActiveRequestState extends State<ActiveRequest> {
       Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 5.0),
-            child: DropdownMenu<String>(
-                controller: requestMethodController,
-                label: const Text('Method'),
-                initialSelection: updatedRequest.requestMethod,
-                dropdownMenuEntries: <String>['GET', 'POST', 'PUT', 'DELETE']
-                    .map((String value) {
-                  return DropdownMenuEntry<String>(
-                    value: value,
-                    label: value,
-                  );
-                }).toList(),
-                onSelected: (value) =>
-                    updateRequest('requestMethod', value, false)),
-          ),
+          DropdownMenu<String>(
+              inputDecorationTheme: const InputDecorationTheme(isDense: true),
+              controller: requestMethodController,
+              initialSelection: updatedRequest.requestMethod,
+              dropdownMenuEntries:
+                  <String>['GET', 'POST', 'PUT', 'DELETE'].map((String value) {
+                return DropdownMenuEntry<String>(
+                  value: value,
+                  label: value,
+                );
+              }).toList(),
+              onSelected: (value) =>
+                  updateRequest('requestMethod', value, false)),
           Expanded(
               child: Padding(
             padding: const EdgeInsets.all(10.0),
@@ -220,6 +238,9 @@ class _ActiveRequestState extends State<ActiveRequest> {
                     : updateRequest('requestUrl', urlController.text, false)
               },
               child: TextField(
+                decoration: const InputDecoration(
+                    hintText:
+                        '{{environmentVariable}}/:pathVar/?queryParam=value&queryParam2=value2'),
                 controller: urlController,
                 onSubmitted: (value) =>
                     updateRequest('requestUrl', value, true),
@@ -234,35 +255,19 @@ class _ActiveRequestState extends State<ActiveRequest> {
         ],
       ),
       Expanded(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ResizableContainer(
+          direction: Axis.horizontal,
           children: [
-            Expanded(
+            ResizableChild(
                 child: RenderRequestOptions(
               requestOptions: updatedRequest.options,
               requestUrl: updatedRequest.requestUrl,
               updateUrl: updateUrlQueries,
             )),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Status Code: ${responseData['statusCode']}',
-                  textAlign: TextAlign.right,
-                ),
-                isFetching
-                    ? const Center(child: CircularProgressIndicator())
-                    : Expanded(
-                        child: SingleChildScrollView(
-                          child: SelectableText(
-                            responseData['body'] as String,
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ),
-              ],
-            )),
+            ResizableChild(
+              child: RenderResponse(
+                  responseData: responseData, isFetching: isFetching),
+            ),
           ],
         ),
       )
