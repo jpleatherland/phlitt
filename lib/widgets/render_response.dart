@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:json_view/json_view.dart';
+import 'package:phlitt/widgets/highlight_text.dart';
 
 class RenderResponse extends StatefulWidget {
   const RenderResponse({
@@ -64,7 +65,6 @@ class _RenderResponseState extends State<RenderResponse>
     }
 
     void findMatches(String searchTerm) {
-      print(scrollController.position);
       List<String> splitBody = responseBody.split('\n');
       int outerIndex = 0;
       Map<int, int> matches = {};
@@ -175,13 +175,23 @@ class _RenderResponseState extends State<RenderResponse>
                                   ),
                                 ),
                                 child: JsonView(
+                                  controller: scrollController,
                                   json: widget.responseData['body'],
                                 ),
                               ),
                               SingleChildScrollView(
                                 padding: const EdgeInsets.all(8.0),
                                 controller: scrollController,
-                                child: SelectableText(responseBody),
+                                child: SelectableText.rich(
+                                  highlightText(
+                                    responseBody,
+                                    'claim',
+                                    const TextStyle(),
+                                    const TextStyle(
+                                        backgroundColor: Colors.yellowAccent),
+                                    true,
+                                  ),
+                                ),
                               ),
                             ],
                           ),

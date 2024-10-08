@@ -28,29 +28,52 @@ class _RenderEnvironments extends State<RenderEnvironments> {
     List<Environment> environments = widget.collection.environments;
     Function newEnvironment = collectionsManager.newEnvironment;
 
-    void deleteEnvironment(Collection collection, String environmentName) {
-      collectionsManager.deleteEnvironment(collection, environmentName);
+    void deleteEnvironment(Collection collection, String environmentId) {
+      collectionsManager.deleteEnvironment(collection, environmentId);
       widget.selectEnvironment('');
       setState(() {});
     }
 
-    return ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        itemCount: environments.length,
-        itemBuilder: (BuildContext context, int index) {
-          return _ContextMenuRegion(
-            contextMenuBuilder: (BuildContext context, Offset offset) =>
-                contextMenu(offset, context, widget.collection,
-                    environments[index], newEnvironment, deleteEnvironment),
-            child: TextButton(
-              onPressed: () => widget.selectEnvironment(
-                  widget.collection.environments[index].environmentName),
-              child:
-                  Text(widget.collection.environments[index].environmentName),
+    return Column(
+      children: [
+        Expanded(
+          flex: 9,
+          child: Align(
+            alignment: Alignment.center,
+            child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemCount: environments.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _ContextMenuRegion(
+                  contextMenuBuilder: (BuildContext context, Offset offset) =>
+                      contextMenu(
+                          offset,
+                          context,
+                          widget.collection,
+                          environments[index],
+                          newEnvironment,
+                          deleteEnvironment),
+                  child: TextButton(
+                    onPressed: () => widget.selectEnvironment(
+                        widget.collection.environments[index].environmentId),
+                    child: Text(
+                        widget.collection.environments[index].environmentName),
+                  ),
+                );
+              },
             ),
-          );
-        });
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {newEnvironment(widget.collection); setState((){});},
+          ),
+        ),
+      ],
+    );
   }
 
   AdaptiveTextSelectionToolbar contextMenu(

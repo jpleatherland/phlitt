@@ -22,7 +22,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 0, 100, 193)),
+          seedColor: const Color.fromARGB(255, 0, 154, 228),
+          dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
+        ),
         visualDensity: density,
         useMaterial3: true,
         fontFamily: 'NotoSans',

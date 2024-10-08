@@ -17,11 +17,12 @@ class RenderEnvironmentParameters extends StatefulWidget {
 }
 
 class _RenderEnvironmentParameters extends State<RenderEnvironmentParameters> {
-  List<TextEditingController> envParamKeyControllers = [];
-  List<TextEditingController> envParamValueControllers = [];
-  bool isDirty = false;
+  @override
+  Widget build(BuildContext context) {
+    List<TextEditingController> envParamKeyControllers = [];
+    List<TextEditingController> envParamValueControllers = [];
+    bool isDirty = false;
 
-  Widget renderEnvironmentParameters() {
     Map<String, dynamic> envParams = widget.environment.environmentParameters;
 
     if (envParamKeyControllers.length > envParams.length) {
@@ -112,9 +113,6 @@ class _RenderEnvironmentParameters extends State<RenderEnvironmentParameters> {
                               hasFocus ? null : setState(() => isDirty = true),
                           child: TextFormField(
                             controller: envParamKeyControllers[index],
-                            onFieldSubmitted: (_) => setState(() {
-                              isDirty = true;
-                            }),
                           ),
                         ),
                       ),
@@ -126,9 +124,6 @@ class _RenderEnvironmentParameters extends State<RenderEnvironmentParameters> {
                               left: 8.0, right: 8.0, top: 4.0),
                           child: TextFormField(
                             controller: envParamValueControllers[index],
-                            onChanged: (_) => setState(() {
-                              isDirty = true;
-                            }),
                           )),
                     ),
                     Expanded(
@@ -153,20 +148,9 @@ class _RenderEnvironmentParameters extends State<RenderEnvironmentParameters> {
           ),
         ),
         Center(
-            child: isDirty
-                ? TextButton(
-                    onPressed: () => applyEnvChanges(),
-                    child: const Text('Apply'))
-                : const TextButton(
-                    onPressed: null,
-                    child: Text('Apply'),
-                  ))
+            child: TextButton(
+                onPressed: () => applyEnvChanges(), child: const Text('Apply')))
       ],
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return renderEnvironmentParameters();
   }
 }

@@ -106,7 +106,7 @@ mixin class CollectionsManager {
   void newEnvironment(Collection collection) {
     collection.environments.add(Environment(
         environmentId: uuid.v4().toString(),
-        environmentName: generateRandomString(),
+        environmentName: 'New Environment',
         environmentParameters: {}));
   }
 

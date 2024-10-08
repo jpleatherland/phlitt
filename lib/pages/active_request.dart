@@ -265,15 +265,9 @@ class _ActiveRequestState extends State<ActiveRequest> {
               updateUrl: updateUrlQueries,
             )),
             ResizableChild(
-                child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                    left: BorderSide(
-                        color: Theme.of(context).colorScheme.tertiary)),
-              ),
               child: RenderResponse(
                   responseData: responseData, isFetching: isFetching),
-            )),
+            ),
           ],
         ),
       )
