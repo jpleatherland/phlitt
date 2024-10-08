@@ -1,0 +1,25 @@
+display_name: Phlitt
+package_name: phlitt
+
+maintainer:
+  name: Jack Leatherland
+
+priority: optional
+
+section: x11
+
+installed_size: 15700
+
+essential: false
+
+keywords:
+  - API
+  - API Client
+
+generic_name: API Client
+
+categories:
+  - Development
+  - Utility
+
+startup_notify: true
