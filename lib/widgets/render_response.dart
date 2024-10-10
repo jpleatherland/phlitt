@@ -93,12 +93,9 @@ class _RenderResponseState extends State<RenderResponse>
           children: [
             Expanded(
               flex: 5,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: TextField(
-                  controller: searchController,
-                  decoration: const InputDecoration(hintText: 'search'),
-                ),
+              child: TextField(
+                controller: searchController,
+                decoration: const InputDecoration(hintText: 'search'),
               ),
             ),
             Expanded(
@@ -106,7 +103,7 @@ class _RenderResponseState extends State<RenderResponse>
               child: Row(
                 children: [
                   Text(
-                    '${currentSearchIndex + 1}/${searchResult.length}',
+                    '${searchResult.isNotEmpty ? currentSearchIndex + 1 : 0}/${searchResult.length}',
                   ),
                 ],
               ),

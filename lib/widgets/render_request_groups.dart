@@ -45,24 +45,24 @@ class _RenderCollectionRequestGroupsState
 
     ThemeData colorContext = Theme.of(context);
 
-    void deleteRequest(RequestGroup requestGroup, String requestName) {
+    void deleteRequest(RequestGroup requestGroup, String requestId) {
       widget.closeOpenRequest(requestGroup.requests
-          .where((element) => element.requestName == requestName)
+          .where((element) => element.requestId == requestId)
           .first);
-      collectionsManager.deleteRequest(requestGroup, requestName);
+      collectionsManager.deleteRequest(requestGroup, requestId);
       setState(() {});
     }
 
-    void deleteRequestGroup(Collection collection, String requestGroupName) {
+    void deleteRequestGroup(Collection collection, String requestGroupId) {
       for (Request request in collection.requestGroups
           .where(
-            (element) => element.requestGroupName == requestGroupName,
+            (element) => element.requestGroupId == requestGroupId,
           )
           .first
           .requests) {
         widget.closeOpenRequest(request);
       }
-      collectionsManager.deleteRequestGroup(collection, requestGroupName);
+      collectionsManager.deleteRequestGroup(collection, requestGroupId);
       setState(() {});
     }
 
@@ -81,118 +81,160 @@ class _RenderCollectionRequestGroupsState
       }
     }
 
-    return Column(
-      children: [
-        Expanded(
-          child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemCount: collection.requestGroups.length,
-              physics: const ClampingScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) {
-                return Theme(
-                  data: colorContext.copyWith(
-                    dividerColor: Colors.transparent,
-                  ),
-                  child: ExpansionTile(
-                      dense: true,
-                      initiallyExpanded: true,
-                      title: _ContextMenuRegion(
-                        contextMenuBuilder:
-                            (BuildContext context, Offset offset) => renameMenu(
-                          offset,
-                          context,
-                          collection.requestGroups[index],
-                          null,
-                          newRequest,
-                          newRequestGroup,
-                          deleteRequest,
-                          deleteRequestGroup,
-                        ),
-                        child: Text(
-                          collection.requestGroups[index].requestGroupName,
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
-                        ),
+    return LayoutBuilder(
+        builder: (BuildContext lbContext, BoxConstraints constraints) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 5.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: collection.requestGroups.length,
+                  physics: const ClampingScrollPhysics(),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Theme(
+                      data: colorContext.copyWith(
+                        dividerColor: Colors.transparent,
                       ),
-                      children: [
-                        ...collection.requestGroups[index].requests.map(
-                          (e) => _ContextMenuRegion(
-                            contextMenuBuilder:
-                                (BuildContext context, Offset offset) {
-                              return renameMenu(
-                                  offset,
-                                  context,
-                                  collection.requestGroups[index],
-                                  e,
-                                  newRequest,
-                                  newRequestGroup,
-                                  deleteRequest,
-                                  deleteRequestGroup);
-                            },
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 60,
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(e.requestMethod,
-                                        style: TextStyle(
-                                            color:
-                                                methodColor(e.requestMethod))),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: TextButton(
-                                    style: ButtonStyle(
-                                      shape: WidgetStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.zero,
-                                        ),
-                                      ),
-                                    ),
-                                    onPressed: () {
+                      child: ListTileTheme(
+                        contentPadding: const EdgeInsets.only(left: 8.0),
+                        dense: true,
+                        horizontalTitleGap: 0.0,
+                        child: ExpansionTile(
+                            dense: true,
+                            initiallyExpanded: true,
+                            title: _ContextMenuRegion(
+                              contextMenuBuilder:
+                                  (BuildContext cmbContext, Offset offset) =>
+                                      renameMenu(
+                                offset,
+                                cmbContext,
+                                collection.requestGroups[index],
+                                null,
+                                newRequest,
+                                newRequestGroup,
+                                deleteRequest,
+                                deleteRequestGroup,
+                              ),
+                              child: Text(
+                                collection
+                                    .requestGroups[index].requestGroupName,
+                                style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            children: [
+                              ...collection.requestGroups[index].requests.map(
+                                (e) => _ContextMenuRegion(
+                                  contextMenuBuilder:
+                                      (BuildContext rqCmbContext,
+                                          Offset offset) {
+                                    return renameMenu(
+                                        offset,
+                                        rqCmbContext,
+                                        collection.requestGroups[index],
+                                        e,
+                                        newRequest,
+                                        newRequestGroup,
+                                        deleteRequest,
+                                        deleteRequestGroup);
+                                  },
+                                  child: InkWell(
+                                    onTap: () {
                                       CustomContextMenuController.removeAny();
                                       selectRequest(e);
                                     },
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Tooltip(
-                                        message: e.requestName,
-                                        child: Text(
-                                          e.requestName,
-                                          style: TextStyle(
-                                              color: colorContext.colorScheme
-                                                  .onSecondaryFixed),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 4.0),
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: constraints.maxWidth < 180
+                                                ? 20
+                                                : 60,
+                                            child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Text(
+                                                constraints.maxWidth < 180
+                                                    ? e.requestMethod
+                                                        .substring(0, 2)
+                                                    : e.requestMethod,
+                                                style: TextStyle(
+                                                  color: methodColor(
+                                                      e.requestMethod),
+                                                  overflow: TextOverflow.clip,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Tooltip(
+                                                  message: e.requestName,
+                                                  child: Text(
+                                                    e.requestName,
+                                                    style: TextStyle(
+                                                        color: colorContext
+                                                            .colorScheme
+                                                            .onSecondaryFixed),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: () {
-                            setState(() =>
-                                newRequest(collection.requestGroups[index]));
-                          },
-                        ),
-                        const Divider(color: Colors.black),
-                      ]),
-                );
-              }),
+                              ),
+                              InkWell(
+                                onTap: () => setState(() => newRequest(
+                                    collection.requestGroups[index])),
+                                child: const SizedBox(
+                                  width: double.infinity,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Align(
+                                          alignment: Alignment.center,
+                                          child: Icon(Icons.add)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const Divider(
+                                indent: 5.0,
+                                color: Color.fromARGB(75, 0, 0, 0),
+                                thickness: 1.0,
+                              ),
+                            ]),
+                      ),
+                    );
+                  }),
+            ),
+            InkWell(
+              onTap: () => setState(() => newRequestGroup(widget.collection)),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add_circle),
+                ],
+              ),
+            ),
+          ],
         ),
-        IconButton(
-          icon: const Icon(Icons.add_circle),
-          onPressed: () => setState(() => newRequestGroup(widget.collection)),
-        ),
-      ],
-    );
+      );
+    });
   }
 
   AdaptiveTextSelectionToolbar renameMenu(
@@ -320,7 +362,7 @@ class _ContextMenuRegionState extends State<_ContextMenuRegion> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+      behavior: HitTestBehavior.translucent,
       onSecondaryTapUp: _onSecondaryTapUp,
       onTap: _onTap,
       onLongPress: null,

@@ -41,6 +41,8 @@ class _ActiveRequestState extends State<ActiveRequest> {
     TextEditingController urlController =
         TextEditingController(text: updatedRequest.requestUrl);
 
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
     void updateResponse(Map<String, dynamic> response) {
       if (response['body'] is String) {
         setState(
@@ -257,14 +259,23 @@ class _ActiveRequestState extends State<ActiveRequest> {
       Expanded(
         child: ResizableContainer(
           direction: Axis.horizontal,
+          divider: ResizableDivider(
+            padding: 15.0,
+            thickness: 0.25,
+            color: colorScheme.onSurface,
+          ),
           children: [
             ResizableChild(
-                child: RenderRequestOptions(
+              size: const ResizableSize.ratio(0.5),
+              minSize: 275,
+              child: RenderRequestOptions(
               requestOptions: updatedRequest.options,
               requestUrl: updatedRequest.requestUrl,
               updateUrl: updateUrlQueries,
             )),
             ResizableChild(
+              size: const ResizableSize.ratio(0.5),
+              minSize: 275,
               child: RenderResponse(
                   responseData: responseData, isFetching: isFetching),
             ),
