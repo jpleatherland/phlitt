@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:phlitt/model/collections_model.dart';
 
@@ -48,11 +49,14 @@ class _MyHomePageState extends State<MyHomePage> {
   var selectedIndex = 0;
   String selectedCollectionName = '';
   late Future<CollectionGroup> collectionsFile;
+  bool isWebCollectionChosen = false;
 
   @override
   void initState() {
     super.initState();
-    collectionsFile = widget.collections.readCollectionsFile();
+    if (!kIsWeb) {
+      collectionsFile = widget.collections.readCollectionsFile(false);
+    }
   }
 
   @override
@@ -74,15 +78,38 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         body: Center(
-          child: FutureBuilder(
-              future: collectionsFile,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Text('Loading...');
-                } else {
-                  return CollectionsPage(collectionGroups: snapshot.data!);
-                }
-              }),
+          child: kIsWeb && !isWebCollectionChosen
+              ? Row(
+                  children: [
+                    TextButton.icon(
+                      label: const Text('Upload collection file'),
+                      onPressed: () => setState(() {
+                        collectionsFile =
+                            widget.collections.readCollectionsFile(false);
+                        isWebCollectionChosen = true;
+                      }),
+                      icon: const Icon(Icons.upload_file),
+                    ),
+                    TextButton.icon(
+                      label: const Text('Use example collection'),
+                      onPressed: () => setState(() {
+                        collectionsFile =
+                            widget.collections.readCollectionsFile(true);
+                        isWebCollectionChosen = true;
+                      }),
+                      icon: const Icon(Icons.upload_file),
+                    ),
+                  ],
+                )
+              : FutureBuilder(
+                  future: collectionsFile,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Text('Loading...');
+                    } else {
+                      return CollectionsPage(collectionGroups: snapshot.data!);
+                    }
+                  }),
         ));
   }
 }

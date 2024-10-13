@@ -1,8 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:universal_html/html.dart' as html;
 
 import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:async';
 
 import 'package:phlitt/model/collections_model.dart';
 import 'package:uuid/uuid.dart';
@@ -28,10 +32,53 @@ mixin class CollectionsManager {
     }
   }
 
-  Future<CollectionGroup> readCollectionsFile() async {
+  Future<String> uploadFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      PlatformFile file = result.files.first;
+
+      final reader = html.FileReader();
+
+      final completer = Completer<String>();
+
+      reader.onLoadEnd.listen((e) {
+        final String fileContent = reader.result as String;
+        completer.complete(fileContent);
+      });
+
+      reader.readAsText(html.File([file.bytes!], file.name));
+
+      return completer.future;
+    }
+    return collectionTemplate;
+  }
+
+  void downloadFile(String contents) {
+    print('in download file');
+    print(contents);
+    final blob = html.Blob([contents], 'text/json', 'native');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    html.AnchorElement(href: url)
+      ..setAttribute('download', 'collections.json')
+      ..click();
+    html.Url.revokeObjectUrl(url);
+  }
+
+  Future<CollectionGroup> readCollectionsFile(bool useExample) async {
     try {
-      final file = await _localFile;
-      final contents = await file.readAsString();
+      String contents;
+      if (kIsWeb && !useExample) {
+        contents = await uploadFile();
+        if (contents == '') {
+          throw Exception('no file selected, or unable to load selected file');
+        }
+      } else if (kIsWeb && useExample) {
+        contents = collectionTemplate;
+      } else {
+        final file = await _localFile;
+        contents = await file.readAsString();
+      }
       final collections = jsonDecode(contents) as Map<String, dynamic>;
       CollectionGroup collectionToReturn =
           CollectionGroup.fromJson(collections);
@@ -42,11 +89,15 @@ mixin class CollectionsManager {
   }
 
   Future<void> writeCollections(CollectionGroup collection) async {
-    final file = await _localFile;
     final dataToEncode = collection.toJson(collection);
     final contents = jsonEncode(dataToEncode);
 
-    file.writeAsString(contents);
+    if (kIsWeb) {
+      downloadFile(contents);
+    } else {
+      final file = await _localFile;
+      file.writeAsString(contents);
+    }
   }
 
   void newRequest(RequestGroup requestGroup) {
