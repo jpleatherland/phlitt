@@ -221,7 +221,7 @@ class _ActiveRequestState extends State<ActiveRequest> {
               controller: requestMethodController,
               initialSelection: updatedRequest.requestMethod,
               dropdownMenuEntries:
-                  <String>['GET', 'POST', 'PUT', 'DELETE'].map((String value) {
+                  <String>['GET', 'PATCH', 'POST', 'PUT', 'DELETE'].map((String value) {
                 return DropdownMenuEntry<String>(
                   value: value,
                   label: value,

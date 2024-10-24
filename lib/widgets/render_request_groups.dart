@@ -72,6 +72,8 @@ class _RenderCollectionRequestGroupsState
           return Colors.green;
         case 'POST':
           return Colors.purple;
+        case 'PATCH':
+          return Colors.blueAccent;
         case 'DELETE':
           return Colors.redAccent;
         case 'PUT':

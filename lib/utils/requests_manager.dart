@@ -21,6 +21,7 @@ class RequestsManager {
     String currentScheme = requestUrl.scheme;
     String currentHost = requestUrl.host;
     int currentPort = requestUrl.port;
+
     List<String> splitPath = requestUrl.path.split('/').sublist(1);
     List<dynamic> updatedPath = [];
     for (var element in splitPath) {
@@ -34,12 +35,14 @@ class RequestsManager {
     String updatedScheme = currentScheme.isEmpty ? 'https' : currentScheme;
     Map<String, String> currentQueryParams = requestUrl.queryParameters;
     String authType = request.options.auth.authType;
+
     Uri parsedUrl = Uri(
         scheme: updatedScheme,
         host: currentHost,
         port: currentPort,
         path: updatedPath.join('/'),
         queryParameters: currentQueryParams);
+
     Map<String, String> headers = {'authorization': '$authType $authValue'};
     headers.addAll(request.options.requestHeaders
         .map((key, value) => MapEntry(key, value.toString())));
@@ -62,6 +65,9 @@ class RequestsManager {
       case 'PUT':
         putRequest(parsedUrl, encodedBody, headers, updateResponse);
         break;
+      case 'PATCH':
+        patchRequest(parsedUrl, encodedBody, headers, updateResponse);
+        break;
       case 'DELETE':
         deleteRequest(parsedUrl, updateResponse, headers);
       default:
@@ -74,9 +80,10 @@ class RequestsManager {
     http.Request request = http.Request('GET', requestUrl)
       ..headers.addAll(headers);
     request.body = requestBody;
+
     try {
       http.StreamedResponse response = await request.send();
-      var responseBody = await response.stream.bytesToString();
+      String responseBody = await response.stream.bytesToString();
       if (response.statusCode > 399) {
         updateResponse({
           'statusCode': response.statusCode,
@@ -84,7 +91,7 @@ class RequestsManager {
         });
       } else {
         try {
-          var jsonBody = await jsonDecode(responseBody);
+          dynamic jsonBody = await jsonDecode(responseBody);
           updateResponse({'statusCode': response.statusCode, 'body': jsonBody});
         } catch (err) {
           updateResponse(
@@ -147,9 +154,34 @@ class RequestsManager {
     }
   }
 
-  void deleteRequest(Uri requestUrl, Function updateResponse, Map<String, String> requestHeaders) async {
+  void patchRequest(Uri requestUrl, String requestBody,
+      Map<String, String> requestHeaders, Function updateResponse) async {
     try {
-      http.Response response = await http.delete(requestUrl, headers: requestHeaders);
+      http.Response response = await http.patch(requestUrl,
+          body: requestBody, headers: requestHeaders);
+      if (response.statusCode > 399) {
+        updateResponse({
+          'statusCode': response.statusCode,
+          'body': {'error': response.body}
+        });
+      } else {
+        updateResponse({
+          'statusCode': response.statusCode,
+          'body': json.decode(response.body)
+        });
+      }
+    } catch (error) {
+      updateResponse({
+        'statusCode': 500,
+        'body': {'error': error.toString()}
+      });
+    }
+  }
+  void deleteRequest(Uri requestUrl, Function updateResponse,
+      Map<String, String> requestHeaders) async {
+    try {
+      http.Response response =
+          await http.delete(requestUrl, headers: requestHeaders);
       if (response.statusCode > 399) {
         updateResponse({
           'statusCode': response.statusCode,
