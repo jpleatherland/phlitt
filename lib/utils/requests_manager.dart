@@ -4,168 +4,138 @@ import 'package:phlitt/model/collections_model.dart';
 import 'package:phlitt/utils/url_handler.dart';
 
 class RequestsManager {
-  void submitRequest(
-      Request request, Function updateResponse, Environment? environment) {
+  // Helper function to handle API responses
+  Future<Map<String, dynamic>> _handleResponse(http.Response response) async {
+    try {
+      if (response.statusCode >= 400) {
+        return {
+          'statusCode': response.statusCode,
+          'body': {'error': response.reasonPhrase}
+        };
+      } else {
+        var responseBody = json.decode(response.body);
+        return {'statusCode': response.statusCode, 'body': responseBody};
+      }
+    } catch (err) {
+      return {
+        'statusCode': response.statusCode,
+        'body': {'error': 'Failed to parse response'}
+      };
+    }
+  }
+
+  // Helper function to handle errors
+  Map<String, dynamic> _handleError(dynamic error) {
+    return {'statusCode': 500, 'body': {'error': error.toString()}};
+  }
+
+  // Submit request method
+  Future<Map<String, dynamic>> submitRequest(
+      Request request, Environment? environment) async {
     String updatedUrl = request.requestUrl;
     String authValue = request.options.auth.authValue;
     if (environment != null) {
       try {
         updatedUrl = replacePlaceholders(request.requestUrl, environment);
-        authValue =
-            replacePlaceholders(request.options.auth.authValue, environment);
+        authValue = replacePlaceholders(request.options.auth.authValue, environment);
       } catch (error) {
-        throw const FormatException('Environment parameter not found');
+        return _handleError('Environment parameter not found');
       }
     }
+
     Uri requestUrl = Uri.parse(updatedUrl);
-    String currentScheme = requestUrl.scheme;
+    String currentScheme = requestUrl.scheme.isEmpty ? 'https' : requestUrl.scheme;
     String currentHost = requestUrl.host;
     int currentPort = requestUrl.port;
     List<String> splitPath = requestUrl.path.split('/').sublist(1);
-    List<dynamic> updatedPath = [];
-    for (var element in splitPath) {
+    List<dynamic> updatedPath = splitPath.map((element) {
       if (element.startsWith(':')) {
-        updatedPath.add(
-            request.options.requestQuery.pathVariables[element.substring(1)]);
-      } else {
-        updatedPath.add(element);
+        return request.options.requestQuery.pathVariables[element.substring(1)];
       }
-    }
-    String updatedScheme = currentScheme.isEmpty ? 'https' : currentScheme;
-    Map<String, String> currentQueryParams = requestUrl.queryParameters;
-    String authType = request.options.auth.authType;
+      return element;
+    }).toList();
+
     Uri parsedUrl = Uri(
-        scheme: updatedScheme,
-        host: currentHost,
-        port: currentPort,
-        path: updatedPath.join('/'),
-        queryParameters: currentQueryParams);
-    Map<String, String> headers = {'authorization': '$authType $authValue'};
-    headers.addAll(request.options.requestHeaders
-        .map((key, value) => MapEntry(key, value.toString())));
+      scheme: currentScheme,
+      host: currentHost,
+      port: currentPort,
+      path: updatedPath.join('/'),
+      queryParameters: requestUrl.queryParameters,
+    );
+
+    Map<String, String> headers = {
+      'authorization': '${request.options.auth.authType} $authValue',
+    };
+    headers.addAll(request.options.requestHeaders.map((key, value) {
+      return MapEntry(key, value.toString());
+    }));
 
     String encodedBody = '';
     if (request.options.requestBody.bodyType == 'application/json') {
-      encodedBody =
-          jsonEncode(jsonDecode(request.options.requestBody.bodyValue));
+      encodedBody = jsonEncode(jsonDecode(request.options.requestBody.bodyValue));
     } else {
       encodedBody = request.options.requestBody.bodyValue;
     }
 
-    switch (request.requestMethod) {
-      case 'GET':
-        getRequest(parsedUrl, encodedBody, headers, updateResponse);
-        break;
-      case 'POST':
-        postRequest(parsedUrl, encodedBody, headers, updateResponse);
-        break;
-      case 'PUT':
-        putRequest(parsedUrl, encodedBody, headers, updateResponse);
-        break;
-      case 'DELETE':
-        deleteRequest(parsedUrl, updateResponse, headers);
-      default:
-        break;
+    try {
+      switch (request.requestMethod) {
+        case 'GET':
+          return await _getRequest(parsedUrl, headers);
+        case 'POST':
+          return await _postRequest(parsedUrl, encodedBody, headers);
+        case 'PUT':
+          return await _putRequest(parsedUrl, encodedBody, headers);
+        case 'DELETE':
+          return await _deleteRequest(parsedUrl, headers);
+        default:
+          return {'statusCode': 400, 'body': {'error': 'Invalid HTTP Method'}};
+      }
+    } catch (e) {
+      return _handleError(e);
     }
   }
 
-  void getRequest(Uri requestUrl, String requestBody,
-      Map<String, String> headers, Function updateResponse) async {
-    http.Request request = http.Request('GET', requestUrl)
-      ..headers.addAll(headers);
-    request.body = requestBody;
+  // GET Request
+  Future<Map<String, dynamic>> _getRequest(
+      Uri requestUrl, Map<String, String> headers) async {
     try {
-      http.StreamedResponse response = await request.send();
-      var responseBody = await response.stream.bytesToString();
-      if (response.statusCode > 399) {
-        updateResponse({
-          'statusCode': response.statusCode,
-          'body': {'error': responseBody}
-        });
-      } else {
-        try {
-          var jsonBody = await jsonDecode(responseBody);
-          updateResponse({'statusCode': response.statusCode, 'body': jsonBody});
-        } catch (err) {
-          updateResponse(
-              {'statusCode': response.statusCode, 'body': responseBody});
-        }
-      }
-    } catch (error) {
-      updateResponse({
-        'statusCode': 0,
-        'body': {'error': error.toString()}
-      });
+      final response = await http.get(requestUrl, headers: headers);
+      return _handleResponse(response);
+    } catch (e) {
+      return _handleError(e);
     }
   }
 
-  void postRequest(Uri requestUrl, String requestBody,
-      Map<String, String> requestHeaders, Function updateResponse) async {
+  // POST Request
+  Future<Map<String, dynamic>> _postRequest(
+      Uri requestUrl, String requestBody, Map<String, String> headers) async {
     try {
-      http.Response response = await http.post(requestUrl,
-          body: requestBody, headers: requestHeaders);
-      if (response.statusCode > 399) {
-        updateResponse({
-          'statusCode': response.statusCode,
-          'body': {'error': response.reasonPhrase}
-        });
-      } else {
-        updateResponse({
-          'statusCode': response.statusCode,
-          'body': json.decode(response.body)
-        });
-      }
-    } catch (error) {
-      updateResponse({
-        'statusCode': 0,
-        'body': {'error': error.toString()}
-      });
+      final response = await http.post(requestUrl, body: requestBody, headers: headers);
+      return _handleResponse(response);
+    } catch (e) {
+      return _handleError(e);
     }
   }
 
-  void putRequest(Uri requestUrl, String requestBody,
-      Map<String, String> requestHeaders, Function updateResponse) async {
+  // PUT Request
+  Future<Map<String, dynamic>> _putRequest(
+      Uri requestUrl, String requestBody, Map<String, String> headers) async {
     try {
-      http.Response response = await http.put(requestUrl,
-          body: requestBody, headers: requestHeaders);
-      if (response.statusCode > 399) {
-        updateResponse({
-          'statusCode': response.statusCode,
-          'body': {'error': response.body}
-        });
-      } else {
-        updateResponse({
-          'statusCode': response.statusCode,
-          'body': json.decode(response.body)
-        });
-      }
-    } catch (error) {
-      updateResponse({
-        'statusCode': 500,
-        'body': {'error': error.toString()}
-      });
+      final response = await http.put(requestUrl, body: requestBody, headers: headers);
+      return _handleResponse(response);
+    } catch (e) {
+      return _handleError(e);
     }
   }
 
-  void deleteRequest(Uri requestUrl, Function updateResponse, Map<String, String> requestHeaders) async {
+  // DELETE Request
+  Future<Map<String, dynamic>> _deleteRequest(
+      Uri requestUrl, Map<String, String> headers) async {
     try {
-      http.Response response = await http.delete(requestUrl, headers: requestHeaders);
-      if (response.statusCode > 399) {
-        updateResponse({
-          'statusCode': response.statusCode,
-          'body': {'error': response.body}
-        });
-      } else {
-        updateResponse({
-          'statusCode': response.statusCode,
-          'body': json.decode(response.body)
-        });
-      }
-    } catch (error) {
-      updateResponse({
-        'statusCode': 500,
-        'body': {'error': error.toString()}
-      });
+      final response = await http.delete(requestUrl, headers: headers);
+      return _handleResponse(response);
+    } catch (e) {
+      return _handleError(e);
     }
   }
 }

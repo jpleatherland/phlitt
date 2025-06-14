@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:phlitt/widgets/render_request_body.dart';
-import 'package:phlitt/widgets/render_request_auth.dart';
-import 'package:phlitt/widgets/render_request_query.dart';
-import 'package:phlitt/widgets/render_request_headers.dart';
+import 'package:phlitt/widgets/requestWidgets/render_request_body.dart';
+import 'package:phlitt/widgets/requestWidgets/render_request_auth.dart';
+import 'package:phlitt/widgets/requestWidgets/render_request_query.dart';
+import 'package:phlitt/widgets/requestWidgets/render_request_headers.dart';
 import 'package:phlitt/model/collections_model.dart';
 
 class RenderRequestOptions extends StatefulWidget {
   final RequestOptions requestOptions;
   final String requestUrl;
-  final Function updateUrl;
+  final void Function(String, String, String, String) updateUrl;
 
-  const RenderRequestOptions(
+  RenderRequestOptions(
       {super.key,
       required this.requestOptions,
       required this.requestUrl,
-      required this.updateUrl});
+      required this.updateUrl}) {
+    print('RenderRequestOptions constructor: requestUrl = \\$requestUrl');
+  }
 
   @override
   State<RenderRequestOptions> createState() => _RenderRequestOptionsState();
@@ -23,8 +25,15 @@ class RenderRequestOptions extends StatefulWidget {
 class _RenderRequestOptionsState extends State<RenderRequestOptions> {
   @override
   Widget build(BuildContext context) {
-    List<String> requestOptionHeadings =
-        ['Query Params', 'Body', 'Headers', 'Auth'];
+    print('RenderRequestOptions build: requestUrl = \\${widget.requestUrl}');
+    final optionKeys = widget.requestOptions.toJson().keys.toList();
+
+    List<String> requestOptionHeadings = [
+      'Query Params',
+      'Body',
+      'Headers',
+      'Auth'
+    ];
 
     updateRequestOptions(List<String> newOptions) {
       List<String> splitNewOptions = [];
@@ -55,10 +64,16 @@ class _RenderRequestOptionsState extends State<RenderRequestOptions> {
             requestUrl: widget.requestUrl,
             updateUrl: widget.updateUrl,
           );
-        case 'requestHeaders' :
+        case 'requestHeaders':
           return RenderRequestHeader(
+            headers:
+                Map<String, String>.from(widget.requestOptions.requestHeaders),
+            onHeadersChanged: (newHeaders) {
+              setState(() {
+                widget.requestOptions.requestHeaders = newHeaders;
+              });
+            },
             context: context,
-            requestOptions: widget.requestOptions,
           );
         default:
           return Text('$requestHeading to be implemented');
@@ -69,34 +84,33 @@ class _RenderRequestOptionsState extends State<RenderRequestOptions> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
-            flex: 5,
-            child: DefaultTabController(
-              length: requestOptionHeadings.length,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(2.0),
-                    child: TabBar(
-                        tabs: requestOptionHeadings
-                            .map(
-                              (e) => Tab(
-                                  text:
-                                      e.replaceRange(0, 1, e[0].toUpperCase())),
-                            )
-                            .toList()),
+          flex: 5,
+          child: DefaultTabController(
+            length: optionKeys.length,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(2.0),
+                  child: TabBar(
+                      tabs: requestOptionHeadings
+                          .map(
+                            (e) => Tab(
+                                text: e.replaceRange(0, 1, e[0].toUpperCase())),
+                          )
+                          .toList()),
+                ),
+                Expanded(
+                  child: TabBarView(
+                    children: optionKeys
+                        .map<Widget>((key) => getOptionPage(key))
+                        .toList(),
                   ),
-                  Expanded(
-                    child: TabBarView(
-                        children: widget.requestOptions
-                            .toJson()
-                            .keys
-                            .map<Widget>((key) => getOptionPage(key))
-                            .toList()),
-                  ),
-                ],
-              ),
-            )),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

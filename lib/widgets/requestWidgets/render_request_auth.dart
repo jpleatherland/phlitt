@@ -7,10 +7,15 @@ class RenderRequestAuth extends StatelessWidget {
   final List<String> authTypeOptions = ['ApiKey', 'Basic', 'Bearer', 'No Auth'];
 
   RenderRequestAuth(
-      {super.key, required this.requestOptions, required this.onUpdated});
+      {super.key, required this.requestOptions, required this.onUpdated}) {
+    print(
+        'RenderRequestAuth constructor: authType = \\${requestOptions.auth.authType}');
+  }
 
   @override
   Widget build(BuildContext context) {
+    print(
+        'RenderRequestAuth build: authType = \\${requestOptions.auth.authType}');
     return Column(
       children: [
         DropdownMenu(

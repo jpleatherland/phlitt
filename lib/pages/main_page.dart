@@ -20,9 +20,88 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   List<Request> openRequests = [];
   TextEditingController environmentController = TextEditingController();
+  TabController? tabController;
+  int _lastTabCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    print('initState: openRequests.length = \\${openRequests.length}');
+    tabController = TabController(length: openRequests.length, vsync: this);
+    _lastTabCount = openRequests.length;
+  }
+
+  @override
+  void dispose() {
+    print('dispose: disposing tabController and environmentController');
+    tabController?.dispose();
+    environmentController.dispose();
+    super.dispose();
+  }
+
+  void _updateTabControllerIfNeeded() {
+    if (tabController == null || openRequests.length != _lastTabCount) {
+      print(
+          'Updating TabController: old length = \\$_lastTabCount, new length = \\${openRequests.length}');
+      tabController?.dispose();
+      tabController = TabController(length: openRequests.length, vsync: this);
+      _lastTabCount = openRequests.length;
+      if (openRequests.isNotEmpty) {
+        tabController!.index = openRequests.length - 1;
+        print('Set tabController index to \\${tabController!.index}');
+      }
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant MainPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _updateTabControllerIfNeeded();
+  }
+
+  void selectRequest(Request request) {
+    print('selectRequest called for requestId: \\${request.requestId}');
+    if (!openRequests.contains(request)) {
+      setState(() {
+        openRequests.add(request);
+        _updateTabControllerIfNeeded();
+      });
+    } else {
+      if (tabController != null) {
+        tabController!.index = openRequests.indexOf(request);
+        print(
+            'Tab already open, set tabController index to \\${tabController!.index}');
+      }
+      setState(() {});
+    }
+  }
+
+  void closeOpenRequest(Request request) {
+    print('closeOpenRequest called for requestId: \\${request.requestId}');
+    if (openRequests.contains(request)) {
+      setState(() {
+        openRequests.remove(request);
+        _updateTabControllerIfNeeded();
+      });
+    }
+  }
+
+  void renameOpenRequest(Request request, String newRequestName) {
+    print('renameOpenRequest called for requestId: \\${request.requestId}');
+    bool wasOpen = false;
+    if (openRequests.contains(request)) {
+      closeOpenRequest(request);
+      wasOpen = true;
+    }
+    setState(() {
+      request.requestName = newRequestName;
+      if (wasOpen) selectRequest(request);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    _updateTabControllerIfNeeded();
     Function writeback = widget.writeback;
     Collection collection = widget.collection;
     ThemeData colorContext = Theme.of(context);
@@ -31,42 +110,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         ? environmentController.text =
             widget.collection.environments.first.environmentName
         : environmentController.text;
-
-    TabController tabController =
-        TabController(length: openRequests.length, vsync: this);
-    if (openRequests.isNotEmpty) {
-      tabController.index = openRequests.length - 1;
-    }
-
-    void selectRequest(Request request) {
-      if (!openRequests.contains(request)) {
-        setState(
-          () => openRequests.add(request),
-        );
-      } else {
-        tabController.index = openRequests.indexOf(request);
-      }
-    }
-
-    void closeOpenRequest(Request request) {
-      if (openRequests.contains(request)) {
-        setState(
-          () => openRequests.remove(request),
-        );
-      }
-    }
-
-    void renameOpenRequest(Request request, String newRequestName) {
-      bool wasOpen = false;
-      if (openRequests.contains(request)) {
-        closeOpenRequest(request);
-        wasOpen = true;
-      }
-      setState(() {
-        request.requestName = newRequestName;
-        if (wasOpen) selectRequest(request);
-      });
-    }
+    print(
+        'build: openRequests.length = \\${openRequests.length}, tabController.length = \\${tabController?.length}');
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
@@ -76,6 +121,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         child: Scaffold(
           appBar: AppBar(
               backgroundColor: colorScheme.primary,
+              surfaceTintColor: Colors.transparent,
+              shadowColor: Colors.black,
+              elevation: 4,
               title: Text(collection.collectionName,
                   style: TextStyle(color: colorScheme.onPrimary)),
               actions: [
@@ -141,61 +189,60 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       padding: const EdgeInsets.only(
                           top: 2.0, left: 2.0, right: 2.0),
                       color: colorContext.colorScheme.surface,
-                      child: TabBar(
-                          tabAlignment: TabAlignment.start,
-                          dividerColor: colorContext.colorScheme.surfaceDim,
-                          isScrollable: true,
-                          unselectedLabelColor: Colors.grey,
-                          labelPadding: const EdgeInsets.all(0),
-                          controller: tabController,
-                          tabs: openRequests
-                              .map(
-                                (e) => Container(
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                          right: BorderSide(
-                                              color: colorContext
-                                                  .colorScheme.surfaceDim))),
-                                  child: Tab(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        right: 12.0,
-                                        left: 12.0,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Text(e.requestName),
-                                          IconButton(
-                                            icon: const Icon(Icons.close),
-                                            onPressed: () =>
-                                                closeOpenRequest(e),
-                                          )
-                                        ],
+                      child: Card(
+                        margin: const EdgeInsets.all(8),
+                        child: TabBar(
+                            tabAlignment: TabAlignment.start,
+                            dividerColor: colorContext.colorScheme.surfaceDim,
+                            isScrollable: true,
+                            unselectedLabelColor: Colors.grey,
+                            labelPadding: const EdgeInsets.all(0),
+                            controller: tabController,
+                            tabs: openRequests
+                                .map(
+                                  (e) => Container(
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                            right: BorderSide(
+                                                color: colorContext
+                                                    .colorScheme.surfaceDim))),
+                                    child: Tab(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 12.0,
+                                          left: 12.0,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Text(e.requestName),
+                                            IconButton(
+                                              icon: const Icon(Icons.close),
+                                              onPressed: () =>
+                                                  closeOpenRequest(e),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              )
-                              .toList()),
+                                )
+                                .toList()),
+                      ),
                     ),
                     Expanded(
                       child: TabBarView(
                           controller: tabController,
                           children: openRequests
                               .map(
-                                (e) => Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8.0, bottom: 8.0),
-                                  child: ActiveRequest(
-                                      request: e,
-                                      environment: collection.environments
-                                          .where(
-                                            (element) =>
-                                                element.environmentName ==
-                                                environmentController.text,
-                                          )
-                                          .first),
-                                ),
+                                (e) => ActiveRequest(
+                                    request: e,
+                                    environment: collection.environments
+                                        .where(
+                                          (element) =>
+                                              element.environmentName ==
+                                              environmentController.text,
+                                        )
+                                        .first),
                               )
                               .toList()),
                     ),

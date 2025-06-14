@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phlitt/model/collections_model.dart';
-import 'package:phlitt/widgets/render_environments.dart';
-import 'package:phlitt/widgets/render_environment_parameters.dart';
+import 'package:phlitt/widgets/environmentWidgets/render_environments.dart';
+import 'package:phlitt/widgets/environmentWidgets/render_environment_parameters.dart';
 import 'package:phlitt/widgets/custom_context_menu_controller.dart';
 
 class EnvironmentsPage extends StatefulWidget {
@@ -21,9 +21,11 @@ class EnvironmentsPageState extends State<EnvironmentsPage> {
   String selectedEnvironment = '';
 
   void selectEnvironment(String environmentId) {
-    setState(() {
-      selectedEnvironment = environmentId;
-    });
+    setState(
+      () {
+        selectedEnvironment = environmentId;
+      },
+    );
   }
 
   @override
@@ -33,36 +35,46 @@ class EnvironmentsPageState extends State<EnvironmentsPage> {
     return GestureDetector(
       onTap: () => CustomContextMenuController.removeAny(),
       child: Scaffold(
-          appBar: AppBar(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              title: Text('Environments Manager',
-                  style: TextStyle(color: colorScheme.onPrimary)),
-              actions: [
-                IconButton(
-                    onPressed: () => widget.writeback(),
-                    icon: const Icon(Icons.save),
-                    iconSize: 37,
-                    color: colorScheme.onPrimary)
-              ]),
-          body: Row(mainAxisSize: MainAxisSize.min, children: [
+        appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            title: Text(
+              'Environments Manager',
+              style: TextStyle(color: colorScheme.onPrimary),
+            ),
+            actions: [
+              IconButton(
+                onPressed: () => widget.writeback(),
+                icon: const Icon(Icons.save),
+                iconSize: 37,
+                color: colorScheme.onPrimary,
+              )
+            ]),
+        body: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
             Expanded(
               flex: 1,
               child: RenderEnvironments(
-                  collection: widget.collection,
-                  selectEnvironment: selectEnvironment),
+                collection: widget.collection,
+                selectEnvironment: selectEnvironment,
+              ),
             ),
             Expanded(
-                flex: 5,
-                child: selectedEnvironment.isNotEmpty
-                    ? RenderEnvironmentParameters(
-                        context: context,
-                        environment: environments
-                            .where(
-                                (e) => e.environmentId == selectedEnvironment)
-                            .first,
-                      )
-                    : const Center(child: Text('Select an environment')))
-          ])),
+              flex: 5,
+              child: selectedEnvironment.isNotEmpty
+                  ? RenderEnvironmentParameters(
+                      context: context,
+                      environment: environments
+                          .where((e) => e.environmentId == selectedEnvironment)
+                          .first,
+                    )
+                  : const Center(
+                      child: Text('Select an environment'),
+                    ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

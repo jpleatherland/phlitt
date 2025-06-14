@@ -1,5 +1,3 @@
-import 'package:uuid/uuid.dart';
-
 class CollectionGroup {
   CollectionGroup({required this.collections});
   List<Collection> collections;
@@ -12,9 +10,9 @@ class CollectionGroup {
     return CollectionGroup(collections: collections);
   }
 
-  Map<String, dynamic> toJson(CollectionGroup collectionGroup) {
+  Map<String, dynamic> toJson() {
     return {
-      'collections': collectionGroup.collections
+      'collections': collections
           .map(
             (e) => e.toJson(),
           )
@@ -36,23 +34,13 @@ class Collection {
 
   factory Collection.fromCollectionGroup(
       CollectionGroup data, String collectionToSelect) {
-    String collectionId = data.collections
-        .firstWhere((e) => e.collectionId == collectionToSelect)
-        .collectionId;
-    String collectionName = data.collections
-        .firstWhere((e) => e.collectionName == collectionToSelect)
-        .collectionName;
-    List<RequestGroup> requestGroups = data.collections
-        .firstWhere((e) => e.collectionName == collectionToSelect)
-        .requestGroups;
-    List<Environment> environments = data.collections
-        .firstWhere((e) => e.collectionName == collectionToSelect)
-        .environments;
+    final selected = data.collections
+        .firstWhere((e) => e.collectionName == collectionToSelect);
     return Collection(
-        collectionId: collectionId,
-        collectionName: collectionName,
-        requestGroups: requestGroups,
-        environments: environments);
+        collectionId: selected.collectionId,
+        collectionName: selected.collectionName,
+        requestGroups: selected.requestGroups,
+        environments: selected.environments);
   }
 
   factory Collection.toCollectionGroup(Map<String, dynamic> data) {
@@ -237,12 +225,22 @@ class RequestQuery {
     Map<String, dynamic>? pathVariables =
         data['pathVariables'] as Map<String, dynamic>?;
     return RequestQuery(
-        queryParams: queryParams ?? {'': ''},
-        pathVariables: pathVariables ?? {'': ''});
+        queryParams: queryParams ?? const {},
+        pathVariables: pathVariables ?? const {});
   }
 
   Map<String, dynamic> toJson() {
     return {'queryParams': queryParams, 'pathVariables': pathVariables};
+  }
+
+  RequestQuery copyWith({
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? pathVariables,
+  }) {
+    return RequestQuery(
+      queryParams: queryParams ?? this.queryParams,
+      pathVariables: pathVariables ?? this.pathVariables,
+    );
   }
 }
 
@@ -263,9 +261,10 @@ class RequestBody {
   }
 }
 
-class RequestHeaders {
-  RequestHeaders();
-}
+//TODO
+// class RequestHeaders {
+//   RequestHeaders();
+// }
 
 class Auth {
   Auth({required this.authType, required this.authValue});

@@ -1,220 +1,233 @@
 import 'package:flutter/material.dart';
 import 'package:phlitt/model/collections_model.dart';
 
-void showDialog(
+Future<void> showRequestOrGroupRenameDialog(
   BuildContext context,
   RequestGroup requestGroup,
   Request? request,
-  void Function(RequestGroup requestGroup, Request? request,
-          String valueToUpdate, dynamic value)
-      callback,
-) {
-  bool hasRequest = request?.requestName != null;
-  Navigator.of(context).push(DialogRoute<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-          title: const Text('Request name:'),
-          content: Focus(
-            child: TextFormField(
-              autofocus: true,
-              initialValue:
-                  request?.requestName ?? requestGroup.requestGroupName,
-              onChanged: (value) => callback(requestGroup, request,
-                  hasRequest ? 'requestName' : 'requestGroupName', value),
-              onFieldSubmitted: (value) {
-                callback(requestGroup, request,
-                    hasRequest ? 'requestName' : 'requestGroupName', value);
-                Navigator.of(context).pop();
-              },
-            ),
-          ))));
+  void Function(RequestGroup, Request?, String, String) callback,
+) async {
+  final hasRequest = request != null;
+  final controller = TextEditingController(
+    text: hasRequest ? request.requestName : requestGroup.requestGroupName,
+  );
+
+  final result = await showDialog<String>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: Text(hasRequest ? 'Rename Request' : 'Rename Request Group'),
+      content: TextFormField(
+        controller: controller,
+        autofocus: true,
+        decoration: const InputDecoration(labelText: 'New name'),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () {
+            final value = controller.text.trim();
+            if (value.isNotEmpty) {
+              Navigator.pop(context, value);
+            }
+          },
+          child: const Text('Rename'),
+        ),
+      ],
+    ),
+  );
+
+  if (result != null) {
+    callback(requestGroup, request,
+        hasRequest ? 'requestName' : 'requestGroupName', result);
+  }
 }
 
-showCollectionsDialog(
+Future<void> showCollectionsDialog(
   BuildContext context,
   Collection collection,
-  void Function(Collection collection, String value) callback,
-) {
-  TextEditingController controller =
-      TextEditingController(text: collection.collectionName);
-  Navigator.of(context).push(DialogRoute<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-            title: const Text('Collection name:'),
-            content: Column(
-              children: [
-                TextFormField(
-                    controller: controller,
-                    onFieldSubmitted: (value) {
-                      callback(collection, value);
-                      Navigator.of(context).pop();
-                    }),
-                IconButton(
-                    onPressed: () {
-                      callback(collection, controller.text);
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.save))
-              ],
-            ),
-          )));
+  void Function(Collection, String) callback,
+) async {
+  final controller = TextEditingController(text: collection.collectionName);
+
+  final result = await showDialog<String>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text('Rename Collection'),
+      content: TextFormField(
+        controller: controller,
+        decoration: const InputDecoration(labelText: 'New name'),
+        autofocus: true,
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () {
+            final value = controller.text.trim();
+            if (value.isNotEmpty) Navigator.pop(context, value);
+          },
+          child: const Text('Rename'),
+        ),
+      ],
+    ),
+  );
+
+  if (result != null) {
+    callback(collection, result);
+  }
 }
 
-deleteCollectionDialog(
+Future<void> deleteCollectionDialog(
   BuildContext context,
   CollectionGroup collectionGroup,
   String collectionName,
   String collectionId,
-  void Function(CollectionGroup collectionGroup, String collectionId)
-      callback,
-) {
-  Navigator.of(context).push(DialogRoute<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-            title: Text('Delete collection $collectionName ?'),
-            content: Row(
-              children: [
-                Expanded(
-                    child: IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        iconSize: 50,
-                        onPressed: () => Navigator.of(context).pop())),
-                Expanded(
-                  child: IconButton(
-                      iconSize: 50,
-                      onPressed: () {
-                        callback(collectionGroup, collectionId);
-                        Navigator.of(context).pop();
-                      },
-                      icon: const Icon(Icons.delete)),
-                )
-              ],
-            ),
-          )));
+  void Function(String) callback,
+) async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: Text('Delete "$collectionName"?'),
+      content: const Text('Are you sure you want to delete this collection?'),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Delete'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirm == true) {
+    callback(collectionId);
+  }
 }
 
-renameEnvironmentDialog(
+Future<void> renameEnvironmentDialog(
   BuildContext context,
   Environment environment,
-  void Function(Environment environment, String value) callback,
-) {
-  TextEditingController controller =
-      TextEditingController(text: environment.environmentName);
-  Navigator.of(context).push(DialogRoute<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-            title: const Text('Environment name:'),
-            content: Column(
-              children: [
-                TextFormField(
-                    controller: controller,
-                    onFieldSubmitted: (value) {
-                      callback(environment, value);
-                      Navigator.of(context).pop();
-                    }),
-                IconButton(
-                    onPressed: () {
-                      callback(environment, controller.text);
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.save))
-              ],
-            ),
-          )));
+  void Function(Environment, String) callback,
+) async {
+  final controller = TextEditingController(text: environment.environmentName);
+
+  final result = await showDialog<String>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text('Rename Environment'),
+      content: TextFormField(
+        controller: controller,
+        autofocus: true,
+        decoration: const InputDecoration(labelText: 'New name'),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () {
+            final value = controller.text.trim();
+            if (value.isNotEmpty) Navigator.pop(context, value);
+          },
+          child: const Text('Rename'),
+        ),
+      ],
+    ),
+  );
+
+  if (result != null) {
+    callback(environment, result);
+  }
 }
 
-deleteRequestGroupDialog(
+Future<void> deleteRequestGroupDialog(
   BuildContext context,
   Collection collection,
   String requestGroupName,
   String requestGroupId,
-  Function callback,
-) {
-  Navigator.of(context).push(DialogRoute<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-            title: Text('Delete request group: $requestGroupName?'),
-            content: Row(
-              children: [
-                Expanded(
-                    child: IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        iconSize: 50,
-                        onPressed: () => Navigator.of(context).pop())),
-                Expanded(
-                  child: IconButton(
-                      iconSize: 50,
-                      onPressed: () {
-                        callback(collection, requestGroupId);
-                        Navigator.of(context).pop();
-                      },
-                      icon: const Icon(Icons.delete)),
-                )
-              ],
-            ),
-          )));
+  void Function(Collection, String) callback,
+) async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: Text('Delete "$requestGroupName"?'),
+      content: const Text('This will permanently delete the request group.'),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Delete'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirm == true) {
+    callback(collection, requestGroupId);
+  }
 }
 
-deleteRequestDialog(
+Future<void> deleteRequestDialog(
   BuildContext context,
   RequestGroup requestGroup,
   String requestName,
   String requestId,
-  Function callback,
-) {
-  Navigator.of(context).push(DialogRoute<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-            title: Text('Delete request: $requestName?'),
-            content: Row(
-              children: [
-                Expanded(
-                    child: IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        iconSize: 50,
-                        onPressed: () => Navigator.of(context).pop())),
-                Expanded(
-                  child: IconButton(
-                      iconSize: 50,
-                      onPressed: () {
-                        callback(requestGroup, requestId);
-                        Navigator.of(context).pop();
-                      },
-                      icon: const Icon(Icons.delete)),
-                )
-              ],
-            ),
-          )));
+  void Function(RequestGroup, String) callback,
+) async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: Text('Delete "$requestName"?'),
+      content: const Text('This will permanently delete the request.'),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Delete'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirm == true) {
+    callback(requestGroup, requestId);
+  }
 }
 
-deleteEnvironmentDialog(
+Future<void> deleteEnvironmentDialog(
   BuildContext context,
   Collection collection,
   String environmentName,
   String environmentId,
-  Function callback,
-) {
-  Navigator.of(context).push(DialogRoute<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-            title: Text('Delete environment: $environmentName?'),
-            content: Row(
-              children: [
-                Expanded(
-                    child: IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        iconSize: 50,
-                        onPressed: () => Navigator.of(context).pop())),
-                Expanded(
-                  child: IconButton(
-                      iconSize: 50,
-                      onPressed: () {
-                        callback(collection, environmentId);
-                        Navigator.of(context).pop();
-                      },
-                      icon: const Icon(Icons.delete)),
-                )
-              ],
-            ),
-          )));
+  void Function(Collection, String) callback,
+) async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: Text('Delete "$environmentName"?'),
+      content: const Text('Are you sure you want to delete this environment?'),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Delete'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirm == true) {
+    callback(collection, environmentId);
+  }
 }

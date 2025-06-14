@@ -5,7 +5,6 @@ import 'package:universal_html/html.dart' as html;
 
 import 'dart:io';
 import 'dart:convert';
-import 'dart:math';
 import 'dart:async';
 
 import 'package:phlitt/model/collections_model.dart';
@@ -89,7 +88,7 @@ mixin class CollectionsManager {
   }
 
   Future<void> writeCollections(CollectionGroup collection) async {
-    final dataToEncode = collection.toJson(collection);
+    final dataToEncode = collection.toJson();
     final contents = jsonEncode(dataToEncode);
 
     if (kIsWeb) {
@@ -144,7 +143,7 @@ mixin class CollectionsManager {
         environments: [
           Environment(
               environmentId: uuid.v4().toString(),
-              environmentName: generateRandomString(),
+              environmentName: 'New Environment',
               environmentParameters: {})
         ]));
   }
@@ -164,11 +163,5 @@ mixin class CollectionsManager {
   void deleteEnvironment(Collection collection, String environmentId) {
     collection.environments
         .removeWhere((e) => e.environmentId == environmentId);
-  }
-
-  String generateRandomString() {
-    var r = Random();
-    return String.fromCharCodes(
-        List.generate(10, (index) => r.nextInt(33) + 89));
   }
 }

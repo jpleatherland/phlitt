@@ -1,84 +1,93 @@
 import 'package:flutter/material.dart';
-import 'package:phlitt/model/collections_model.dart';
 
 class RenderRequestHeader extends StatefulWidget {
-  final RequestOptions requestOptions;
+  final Map<String, String> headers;
+  final void Function(Map<String, String> newHeaders) onHeadersChanged;
   final BuildContext context;
 
-  const RenderRequestHeader({
+  RenderRequestHeader({
     super.key,
-    required this.requestOptions,
+    required this.headers,
+    required this.onHeadersChanged,
     required this.context,
-  });
+  }) {
+    print('RenderRequestHeader constructor: headers = \\${headers.toString()}');
+  }
 
   @override
   State<RenderRequestHeader> createState() => _RenderRequestHeader();
 }
 
 class _RenderRequestHeader extends State<RenderRequestHeader> {
-  List<TextEditingController> headerKeyControllers = [];
-  List<TextEditingController> headerValueControllers = [];
+  late List<TextEditingController> headerKeyControllers;
+  late List<TextEditingController> headerValueControllers;
   bool isDirty = false;
 
+  @override
+  void initState() {
+    super.initState();
+    print(
+        'RenderRequestHeader initState: headers = \\${widget.headers.toString()}');
+    headerKeyControllers = [];
+    headerValueControllers = [];
+    _initControllers();
+  }
+
+  @override
+  void didUpdateWidget(RenderRequestHeader oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.headers != oldWidget.headers) {
+      _initControllers();
+    }
+  }
+
+  void _initControllers() {
+    headerKeyControllers =
+        widget.headers.keys.map((k) => TextEditingController(text: k)).toList();
+    headerValueControllers = widget.headers.keys
+        .map((k) => TextEditingController(text: widget.headers[k] as String))
+        .toList();
+  }
+
+  @override
+  void dispose() {
+    for (final controller in [
+      ...headerKeyControllers,
+      ...headerValueControllers,
+    ]) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
   Widget renderQueryOptions() {
-    Map<String, dynamic> headers = widget.requestOptions.requestHeaders;
-
-    if (headerKeyControllers.length > headers.length) {
-      int originalControllerLength = headerKeyControllers.length;
-      int itemsRemoved = 0;
-      for (int i = 0; i < originalControllerLength; i++) {
-        if (!headers.keys
-            .contains(headerKeyControllers[i - itemsRemoved].text)) {
-          headerKeyControllers.removeAt(i - itemsRemoved);
-          headerValueControllers.removeAt(i - itemsRemoved);
-          itemsRemoved++;
-        }
-      }
-    }
-
-    for (int i = 0; i < headers.keys.length; i++) {
-      if (headerKeyControllers.length <= i) {
-        headerKeyControllers
-            .add(TextEditingController(text: headers.keys.elementAt(i)));
-        headerValueControllers.add(TextEditingController(
-            text: headers[headers.keys.elementAt(i)] as String));
-      }
-    }
-
     void applyHeaderChanges() {
-      widget.requestOptions.requestHeaders = {};
-      for (int i = 0; i < headers.keys.length; i++) {
-        widget.requestOptions.requestHeaders[headerKeyControllers[i].text] =
+      Map<String, String> newHeaders = {};
+      for (int i = 0; i < headerKeyControllers.length; i++) {
+        newHeaders[headerKeyControllers[i].text] =
             headerValueControllers[i].text;
       }
+      widget.onHeadersChanged(newHeaders);
       setState(() {
         isDirty = false;
       });
     }
 
     void addEnvParam() {
-      setState(
-        () => widget.requestOptions.requestHeaders[
-                'newHeader${widget.requestOptions.requestHeaders.length}'] =
-            'newHeaderValue',
-      );
+      setState(() {
+        final newHeaders = Map<String, String>.from(widget.headers);
+        newHeaders['newHeader${widget.headers.length}'] = 'newHeaderValue';
+        widget.onHeadersChanged(newHeaders);
+        _initControllers();
+      });
     }
 
     void deleteHeader(String headerKey, int index) {
-      // Set the param key to the latest value in the text controller
-      // envParamKey might not exist in the original collection
-      // if it has been changed and the change not applied
-      // then remove the key from the original env params map
-      String oldKey =
-          widget.requestOptions.requestHeaders.entries.elementAt(index).key;
-      Map<String, String> newMap = {};
-      widget.requestOptions.requestHeaders.forEach((key, value) {
-        String newKey = key == oldKey ? headerKey : key;
-        newMap[newKey] = value as String;
-      });
-      widget.requestOptions.requestHeaders = newMap;
+      final newHeaders = Map<String, String>.from(widget.headers);
+      newHeaders.remove(headerKey);
+      widget.onHeadersChanged(newHeaders);
       setState(() {
-        widget.requestOptions.requestHeaders.remove(headerKey);
+        _initControllers();
       });
     }
 
@@ -95,7 +104,7 @@ class _RenderRequestHeader extends State<RenderRequestHeader> {
           flex: 3,
           child: ListView.builder(
               shrinkWrap: true,
-              itemCount: headers.length,
+              itemCount: headerKeyControllers.length,
               itemBuilder: (context, index) {
                 return (Row(
                   children: [
@@ -164,6 +173,8 @@ class _RenderRequestHeader extends State<RenderRequestHeader> {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        'RenderRequestHeader build: headers = \\${widget.headers.toString()}');
     return renderQueryOptions();
   }
 }

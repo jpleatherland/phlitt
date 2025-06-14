@@ -69,7 +69,10 @@ class _RenderEnvironments extends State<RenderEnvironments> {
           flex: 1,
           child: IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {newEnvironment(widget.collection); setState((){});},
+            onPressed: () {
+              newEnvironment(widget.collection);
+              setState(() {});
+            },
           ),
         ),
       ],
@@ -77,12 +80,13 @@ class _RenderEnvironments extends State<RenderEnvironments> {
   }
 
   AdaptiveTextSelectionToolbar contextMenu(
-      Offset offset,
-      BuildContext context,
-      Collection collection,
-      Environment environment,
-      Function newEnvironment,
-      Function deleteEnvironment) {
+    Offset offset,
+    BuildContext context,
+    Collection collection,
+    Environment environment,
+    Function newEnvironment,
+    void Function(Collection, String) deleteEnvironment,
+  ) {
     return AdaptiveTextSelectionToolbar.buttonItems(
       anchors: TextSelectionToolbarAnchors(
         primaryAnchor: offset,
@@ -92,7 +96,10 @@ class _RenderEnvironments extends State<RenderEnvironments> {
           onPressed: () {
             CustomContextMenuController.removeAny();
             rd.renameEnvironmentDialog(
-                context, environment, environmentUpdated);
+              context,
+              environment,
+              environmentUpdated,
+            );
           },
           label: 'Rename',
         ),
@@ -105,20 +112,22 @@ class _RenderEnvironments extends State<RenderEnvironments> {
           label: 'Add Environment',
         ),
         ContextMenuButtonItem(
-            onPressed: () {
-              if (widget.collection.environments.length > 1) {
-                CustomContextMenuController.removeAny();
-                rd.deleteEnvironmentDialog(
-                    context,
-                    widget.collection,
-                    environment.environmentName,
-                    environment.environmentId,
-                    deleteEnvironment);
-              } else {
-                null;
-              }
-            },
-            label: 'Delete Environment')
+          onPressed: () {
+            if (widget.collection.environments.length > 1) {
+              CustomContextMenuController.removeAny();
+              rd.deleteEnvironmentDialog(
+                context,
+                widget.collection,
+                environment.environmentName,
+                environment.environmentId,
+                deleteEnvironment,
+              );
+            } else {
+              null;
+            }
+          },
+          label: 'Delete Environment',
+        )
       ],
     );
   }
