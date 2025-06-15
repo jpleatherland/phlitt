@@ -8,15 +8,13 @@ class RenderRequestQuery extends StatefulWidget {
   final void Function(
       String oldKey, String newKey, String newValue, String type) updateUrl;
 
-  RenderRequestQuery({
+  const RenderRequestQuery({
     super.key,
     required this.requestQuery,
     required this.context,
     required this.requestUrl,
     required this.updateUrl,
-  }) {
-    print('RenderRequestQuery constructor: requestUrl = \\${requestUrl}');
-  }
+  });
 
   @override
   State<RenderRequestQuery> createState() => _RenderRequestQueryState();
@@ -31,7 +29,6 @@ class _RenderRequestQueryState extends State<RenderRequestQuery> {
   @override
   void initState() {
     super.initState();
-    print('RenderRequestQuery initState: requestUrl = \\${widget.requestUrl}');
     _initControllers();
   }
 

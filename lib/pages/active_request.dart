@@ -30,20 +30,16 @@ class ActiveRequestState extends State<ActiveRequest> {
     super.initState();
     updatedRequest = widget.request;
     urlController.text = updatedRequest.requestUrl;
-    print(
-        'ActiveRequest initState: requestId = \\${updatedRequest.requestId}, url = \\${updatedRequest.requestUrl}');
   }
 
   @override
   void dispose() {
-    print('ActiveRequest dispose: requestId = \\${updatedRequest.requestId}');
     requestMethodController.dispose();
     urlController.dispose();
     super.dispose();
   }
 
   Future<void> updateResponse(Map<String, dynamic> response) async {
-    print('ActiveRequest updateResponse: response = \\${response.toString()}');
     if (response['body'] is String) {
       setState(() {
         isFetching = false;
@@ -71,25 +67,18 @@ class ActiveRequestState extends State<ActiveRequest> {
   }
 
   Future<void> submitRequest(Request request, Environment? environment) async {
-    print(
-        'ActiveRequest submitRequest: requestId = \\${request.requestId}, url = \\${request.requestUrl}');
     setState(() => isFetching = true);
     try {
       final response = await rm.submitRequest(updatedRequest, environment);
       updateResponse(response);
     } on FormatException catch (error) {
-      print(
-          'ActiveRequest submitRequest: FormatException = \\${error.message}');
       updateResponse({'statusCode': 400, 'body': error.message});
     } catch (error) {
-      print('ActiveRequest submitRequest: Exception = \\${error.toString()}');
       updateResponse({'statusCode': 400, 'body': error.toString()});
     }
   }
 
   void updateRequest(String key, dynamic value, bool send) {
-    print(
-        'ActiveRequest updateRequest: key = \\${key}, value = \\${value}, send = \\${send}');
     switch (key) {
       case 'requestMethod':
         updatedRequest.requestMethod = value as String;
@@ -105,7 +94,6 @@ class ActiveRequestState extends State<ActiveRequest> {
   }
 
   void updateRequestQueries(String requestUrl) {
-    print('ActiveRequest updateRequestQueries: requestUrl = \\${requestUrl}');
     final uri = Uri.parse(requestUrl);
     Map<String, dynamic> updatedPathVariables = {};
     final pathVariables = uri.pathSegments;
@@ -134,8 +122,6 @@ class ActiveRequestState extends State<ActiveRequest> {
 
   void updateUrlQueries(String originalKey, String queryKey, String queryValue,
       String queryType) {
-    print(
-        'ActiveRequest updateUrlQueries: originalKey = \\${originalKey}, queryKey = \\${queryKey}, queryValue = \\${queryValue}, queryType = \\${queryType}');
     setState(() {
       final rq = updatedRequest.options.requestQuery;
       String newUrl = updatedRequest.requestUrl;
@@ -188,10 +174,6 @@ class ActiveRequestState extends State<ActiveRequest> {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        'ActiveRequest build: requestId = \\${updatedRequest.requestId}, url = \\${updatedRequest.requestUrl}');
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -229,23 +211,20 @@ class ActiveRequestState extends State<ActiveRequest> {
                   child: Focus(
                     onFocusChange: (hasFocus) {
                       if (!hasFocus) {
-                        // updateRequest('requestUrl', urlController.text, false);
+                        updateRequest('requestUrl', urlController.text, false);
                       }
                     },
                     child: TextField(
-                        textAlignVertical: TextAlignVertical.center,
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(
-                                left: 10.0,
-                                top: 15.0,
-                                right: 10.0,
-                                bottom: 17.0),
-                            hintText:
-                                '{{environmentVariable}}/:pathVar/?queryParam=value&queryParam2=value2'),
-                        controller: urlController,
-                        onSubmitted: (value) => ()
-                        // updateRequest('requestUrl', value, true),
-                        ),
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                              left: 10.0, top: 15.0, right: 10.0, bottom: 17.0),
+                          hintText:
+                              '{{environmentVariable}}/:pathVar/?queryParam=value&queryParam2=value2'),
+                      controller: urlController,
+                      onSubmitted: (value) =>
+                          updateRequest('requestUrl', value, true),
+                    ),
                   ),
                 ),
               ),
@@ -263,15 +242,19 @@ class ActiveRequestState extends State<ActiveRequest> {
         Expanded(
           child: ResizableContainer(
             direction: Axis.horizontal,
-            divider: ResizableDivider(
-              padding: 15.0,
-              thickness: 0.25,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            // divider: ResizableDivider(
+            //   padding: 15.0,
+            //   thickness: 0.25,
+            //   color: Theme.of(context).colorScheme.onSurface,
+            // ),
             children: [
               ResizableChild(
-                size: const ResizableSize.ratio(0.5),
-                minSize: 275,
+                size: const ResizableSize.ratio(0.5, min: 275),
+                divider: ResizableDivider(
+                  padding: 15.0,
+                  thickness: 0.25,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
                 child: SizedBox.expand(
                   child: RenderRequestOptions(
                     requestOptions: updatedRequest.options,
@@ -281,8 +264,8 @@ class ActiveRequestState extends State<ActiveRequest> {
                 ),
               ),
               ResizableChild(
-                size: const ResizableSize.ratio(0.5),
-                minSize: 275,
+                size: const ResizableSize.ratio(0.5, min: 275),
+                // minSize: 275,
                 child: SizedBox.expand(
                   child: RenderResponse(
                     responseData: responseData,

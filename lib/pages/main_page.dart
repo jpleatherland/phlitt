@@ -161,15 +161,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ]),
           body: ResizableContainer(
             direction: Axis.horizontal,
-            divider: const ResizableDivider(
-              padding: 15.0,
-              color: Color.fromARGB(25, 0, 0, 0),
-            ),
             children: [
               ResizableChild(
-                size: const ResizableSize.ratio(0.15),
-                minSize: 150,
-                maxSize: constraints.maxWidth * 0.2,
+                size: const ResizableSize.ratio(0.15, min: 150),
+                divider: ResizableDivider(
+                  padding: 10.0,
+                  thickness: 1.5,
+                  color: Theme.of(context).colorScheme.onSurface,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                ),
                 child: InkWell(
                   child: RenderCollectionRequestGroups(
                     collection: collection,

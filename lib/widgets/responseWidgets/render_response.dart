@@ -5,15 +5,11 @@ import './json_response_tab.dart';
 import './selectable_text_tab.dart';
 
 class RenderResponse extends StatefulWidget {
-  RenderResponse({
+  const RenderResponse({
     super.key,
     required this.responseData,
     required this.isFetching,
-  }) {
-    print(
-        'RenderResponse constructor: responseData = \\${responseData.toString()}');
-  }
-
+  });
   final Map<String, dynamic> responseData;
   final bool isFetching;
 
@@ -83,12 +79,10 @@ class _RenderResponseState extends State<RenderResponse>
                   child: TabBarView(
                     controller: tabController,
                     children: [
-                      Text('hi'),
-                      // Text('hi2'),
-                      // JsonResponseTab(
-                      //   isFetching: widget.isFetching,
-                      //   responseData: widget.responseData['body'],
-                      // ),
+                      JsonResponseTab(
+                        isFetching: widget.isFetching,
+                        responseData: widget.responseData['body'],
+                      ),
                       SelectableTextTab(
                         isFetching: widget.isFetching,
                         responseBody: responseBody,

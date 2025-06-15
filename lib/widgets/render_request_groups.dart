@@ -173,7 +173,7 @@ class _RenderCollectionRequestGroupsState
                                                     color: methodColor(
                                                         e.requestMethod),
                                                     overflow: TextOverflow.clip,
-                                                    fontWeight: FontWeight.bold,
+                                                    // fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                               ),
@@ -193,8 +193,7 @@ class _RenderCollectionRequestGroupsState
                                                         color: colorContext
                                                             .colorScheme
                                                             .onSurfaceVariant,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        // fontWeight: FontWeight.bold,
                                                         fontSize: 16,
                                                       ),
                                                       overflow:
